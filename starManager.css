@@ -1,0 +1,25 @@
+body{
+}
+
+.title {
+	text-align: center;
+}
+
+.starmark {
+	width: 50%;
+	margin: auto;
+	font-size: 20px;
+	list-style-type: none;
+
+}
+
+.starmark-link{
+	overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.star-rating {
+	padding-right: 20px;
+	font-weight: 400;
+
+}

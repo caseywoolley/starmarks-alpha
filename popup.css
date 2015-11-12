@@ -2,6 +2,10 @@ fieldset, label { margin: 0; padding: 0; }
 body{ margin: 10px; }
 h1 { font-size: 1.5em; margin: 10px; }
 
+.managerBtn {
+	width:100%;
+}
+
 /****** Style Star Rating Widget *****/
 
 .rating { 
