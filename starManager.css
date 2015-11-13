@@ -1,25 +1,102 @@
-body{
+@import url(https://fonts.googleapis.com/css?family=Lobster);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300);
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #F2EDEE;
+  color: #313E50;
+  font-size: 16px;
 }
 
-.title {
-	text-align: center;
+header {
+  background-color: #2B4162;
+  border-bottom: solid 5px #FCF7F8;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  color: #F28F3B;
 }
 
-.starmark {
-	width: 50%;
-	margin: auto;
-	font-size: 20px;
-	list-style-type: none;
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.main-logo {
+  font-family: 'Lobster', cursive;
+  display: inline-block;
+  padding-left: 20px;
+  padding-top: 10px;
+  margin:auto;
 
 }
 
-.starmark-link{
-	overflow: hidden;
-  text-overflow: ellipsis;
+.title-bar {
+  overflow: hidden;
+  width: 90%;
 }
 
 .star-rating {
-	padding-right: 20px;
-	font-weight: 400;
 
+  font-weight: 100;
+  font-size: 30px;
+  white-space: nowrap;
+  float: right;
+  color: #F28F3B;
+}
+
+.star-url {
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.star-title {
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100px;
+  text-overflow: ellipsis;
+  margin-right: 5px;
+  font-size: 30px;
+}
+
+.starmark-link,
+.starmark-link:link,
+.starmark-link:hover,
+.starmark-link:active,
+.starmark-link:visited {
+  text-decoration: none;
+  color: #2B4162;
+}
+
+.starmark-link:hover {
+  color: #F28F3B;
+}
+
+.starmarks {
+  width: 900px;
+  margin-top: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.starmark {
+  margin-top: 4px;
+}
+
+.starmark {
+  border-radius: 5px;
+
+}
+
+.starmark {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: #E3E6EF;
+  padding: 15px;
+  border: solid 1px #CED3DC;
+  word-wrap: break-word;
 }

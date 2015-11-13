@@ -3,19 +3,23 @@
   "version": "0.1",
   "description": "A chrome bookmark manager with ratings",
   "permissions": [
-    "bookmarks", "tabs", "storage", "<all_urls>"
+    "bookmarks", "tabs", "storage", "background"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["background.js"]
+    }
   ],
   "browser_action": {
       "default_title": "starmarks",
       "default_icon": "icon.png",
       "default_popup": "popup.html"
+
   },
-  "content_scripts": [
-    { 
-      "matches": ["<all_urls>"],
-      "css": ["popup.css"]
-    }
-  ],
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'"
 }
