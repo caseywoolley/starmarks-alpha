@@ -3,58 +3,12 @@ $(function() {
   chrome.storage.local.get(null, function(items) {
     console.log('local storage: ', items);
   });
+  //TODO: get bookmark object from background
   chrome.runtime.sendMessage({bookmarks: 'all'}, function(response){
     console.log('background', response);
   });
   getBookmarkList();
 });
-
-var searchBookmarks = function(query, callback) {
-  chrome.bookmarks.getTree(function(bookmarkTree) {
-    callback(bookmarkTree[0]);
-  });
-};
-
-var getStarMarks = function() {
-
-};
-
-// var displayBookmarks = function() {
-//   chrome.storage.sync.get(null, function(data) {
-//     console.log('starMarks: ', data);
-
-//     var $starMarks = $('.starmarks');
-
-//     for (var url in data) {
-//       starMark = data[url];
-//       $starMarks.append('<li class="starmark"><a class="starmark-link" href="' + url +
-//         '"><div class="title-bar"><span class="star-title">' +
-//         (starMark.title || 'untitled') + '</span></div><span class="star-url">' + url + '</span></a><span class="star-rating">' + (starMark.stars || 0) +
-//         ' Stars</span></li>');
-//       //chrome.storage.sync.remove(url); //reset bookmarks
-//     }
-//   });
-
-// };
-
-var loadStarMarks = function() {
-  //get bookmark tree
-  var bookmarkTreeNodes = chrome.bookmarks.getTree(
-    function(bookmarkTree) {
-      console.log('bookmarks', bookmarkTree);
-      //dateAdded:date, dateGroupModified:date, id:string,
-      //index:int, parentId:string, title:string, url:string
-
-      //recurse over all bookmarks
-      bookmarksList = getBookmarkList(bookmarkTree);
-
-
-      //decorate with starmark metadata if exisits
-      //else add default metadata entry
-      //add folders as tags if not already there
-      //add bookmarks in folders to tag arrays
-    });
-};
 
 //TODO: search criteria - search by text, date, tag, rating
 
@@ -68,7 +22,7 @@ var getBookmarkList = function() {
     chrome.storage.local.get(null, function(starData) {
       console.log('starMarks', starData);
       var mergeMarks = function(node) {
-        var list = [];
+        var list = {};
         //base - add bookmark if has url
         if (node.url !== undefined) {
           var starMark = starData[node.url];
@@ -89,7 +43,8 @@ var getBookmarkList = function() {
           bookmark = node;
           delete bookmark.children; //don't need this
           bookmark = _.extend(bookmark, starMark);
-          list.push(bookmark);
+          //list.push(bookmark);
+          list[node.url]= bookmark;
         } else {
           //else add tag if doesn't exist 
         }
@@ -98,7 +53,8 @@ var getBookmarkList = function() {
         if (node.children && node.children.length > 0) {
           for (var i = 0; i < node.children.length; i++) {
             var child = node.children[i];
-            list = list.concat(mergeMarks(child));
+            //list = list.concat(mergeMarks(child));
+            list = _.extend(list, mergeMarks(child));
           }
         }
         return list;
@@ -118,9 +74,10 @@ var displayBookmarks = function(list) {
 
   var $starMarks = $('.starmarks');
 
-  for (var i = 0; i < list.length; i++) {
-    var bookmark = list[i];
-    if (bookmark.stars > 0 ){
+  for (var url in list) {
+    var bookmark = list[url];
+    //if (bookmark.stars > 0 ){
+      if (url.indexOf("apple") > -1){
     //starMark = data[url];
     $starMarks.append('<li class="starmark"><a class="starmark-link" href="' + bookmark.url +
       '"><div class="title-bar"><span class="star-title">' +
@@ -164,40 +121,4 @@ var roughSizeOfObject = function( object ) {
         }
     }
     return bytes;
-}
-
-/*
-searchBookmarks(null, function(bookmarkTree) {
-    console.log(bookmarkTree);
-    chrome.storage.sync.get(null, function(starData) {
-
-      var combineMarks = function(node) {
-        var bookmarks = [];
-        //iterate over bookmarks
-        for (var key in node) {
-          var bookmark = node[key];
-
-          //add star data
-          if (starData[bookmark.url] !== null) {
-            bookmark.stars = starData.stars;
-          }
-
-          bookmarks.push(bookmark);
-          //recurse node
-          if (bookmark.children.length > 0) {
-            for (var i = 0; i < bookmark.children.length; i ++){
-                var child = bookmark.children[i];
-                bookmarks = bookmarks.concat( combineMarks(child) );
-            }
-          }
-
-        }
-        return bookmarks;
-      };
-      var allMarks = combineMarks(bookMarkTree);
-      console.log(allMarks);
-
-    });
-
-  });
-  */
+};

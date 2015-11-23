@@ -1,26 +1,33 @@
-var starMarksDB;
-/* ////reset starmarks DB
-    chrome.storage.sync.remove('starMarksDB', function(){
-    	console.log('deleted db');
-    }); ////////remove db temp
-*/
-
-
 $(function() {
   //TODO - see if bookmark already exists to display
+
   var clicked = false;
+    //get current starMark
+    getStarMark(function(starMark){
+      console.log('current',starMark);
+      var url = Object.keys(starMark)[0];
+      $('input[name="rating"][value="'+ starMark[url].stars +'"]').prop('checked', true);
+
+      //set badge
+      chrome.browserAction.setBadgeText({
+        text: starMark[url].stars
+      });
+    });
 
   //Save bookmark on star selection
-  $('.star').on('click', function() {
+  $('.rating').delegate('.star', 'click', function() {
     if (!clicked) {
       clicked = true;
       var rating = $(this).attr('id');
       //style the badge: https://developer.chrome.com/extensions/browserAction#method-setBadgeBackgroundColor
-      chrome.browserAction.setBadgeText({text: rating});
+      chrome.browserAction.setBadgeText({
+        text: rating
+      });
       createStarMark(rating);
       window.close();
     }
   });
+
 
   //Open bookmark manager
   $('.managerBtn').on('click', function() {
@@ -42,12 +49,18 @@ $(function() {
   });
 });
 
+var getStarMark = function(callback) {
+  console.log('get');
+  getCurrentTab(function(tab) {
+    console.log(tab);
+    chrome.storage.local.get(tab.url, function(data){
+      callback(data);
+    });
+  });
+};
 
 var createStarMark = function(rating) {
-  // loadStarMarksDB(function(db) {
-  //   starMarksDB = db;
-  //   console.log(db);
-  // });
+  rating = rating || 0;
   getCurrentTab(function(tab) {
     //get bookmark data
     var bookmark = {
@@ -58,7 +71,7 @@ var createStarMark = function(rating) {
 
     //get star data
     var starData = {
-    	title: tab.title,
+      title: tab.title,
       stars: rating,
       visits: 0,
       lastVisit: Date.now()
@@ -100,37 +113,6 @@ var saveStarData = function(key, starObj) {
   });
 };
 
-var getStarData = function(key) {
-  chrome.storage.local.get(key, function(starData) {
-    console.log(starData);
-    return starData;
-  });
-};
-
-var loadStarMarksDB = function(callback) {
-  chrome.storage.local.get('starMarksDB', function(data) {
-    if (data.starMarksDB === undefined) {
-      starMarksDB = {
-        starMarksDB: {
-          urls: {},
-          tags: {},
-          views: {}
-        }
-      };
-      //initialize DB
-      chrome.storage.local.set(starMarksDB, function(data) {
-        console.log('starMarksDB created');
-        callback(data);
-      });
-    } else {
-      //return existing DB
-      console.log('starMarksDB: ', data.starMarksDB);
-      callback(data.starMarksDB);
-    }
-  });
-
-};
-
 
 
 
@@ -140,10 +122,6 @@ var setDefaultFolder = function() {
 
 //TODO: move everything into an app object so exectuion doesn't have to be at the bottom
 //load starmarks db
-
-loadStarMarksDB(function(db) {
-  starMarksDB = db;
-});
 
 //TODO: save starmark data
 //TODO: make the icon indicate saved bookmark (w/visit count?)

@@ -34,8 +34,7 @@ ul {
 }
 
 .title-bar {
-  overflow: hidden;
-  width: 90%;
+
 }
 
 .star-rating {
@@ -48,16 +47,19 @@ ul {
 }
 
 .star-url {
+  display:inline-block;
   font-size: 15px;
   white-space: nowrap;
   overflow: hidden;
-  width: 90%;
+  text-overflow: ellipsis;
+  width: 80%;
 }
 
 .star-title {
+  display:inline-block;
   white-space: nowrap;
   overflow: hidden;
-  width: 100px;
+  width: 80%;
   text-overflow: ellipsis;
   margin-right: 5px;
   font-size: 30px;
