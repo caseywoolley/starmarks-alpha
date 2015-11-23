@@ -14,7 +14,10 @@ $(function() {
   $('.star').on('click', function() {
     if (!clicked) {
       clicked = true;
-      createStarMark($(this).attr('id'));
+      var rating = $(this).attr('id');
+      //style the badge: https://developer.chrome.com/extensions/browserAction#method-setBadgeBackgroundColor
+      chrome.browserAction.setBadgeText({text: rating});
+      createStarMark(rating);
       window.close();
     }
   });
@@ -34,17 +37,17 @@ $(function() {
   });
 
   //get all storage data
-  chrome.storage.sync.get(null, function(items) {
-    console.log('starMarks: ', items);
+  chrome.storage.local.get(null, function(items) {
+    console.log('local storage: ', items);
   });
 });
 
 
 var createStarMark = function(rating) {
-  loadStarMarksDB(function(db) {
-    starMarksDB = db;
-    console.log(db);
-  });
+  // loadStarMarksDB(function(db) {
+  //   starMarksDB = db;
+  //   console.log(db);
+  // });
   getCurrentTab(function(tab) {
     //get bookmark data
     var bookmark = {
@@ -61,7 +64,7 @@ var createStarMark = function(rating) {
       lastVisit: Date.now()
     };
 
-    //save bookmark
+    //save bookmark if doesn't exist
     saveBookmark(bookmark);
     //save star data
     var key = bookmark.url;
@@ -82,6 +85,7 @@ var getCurrentTab = function(callback) {
 };
 
 var saveBookmark = function(bookmark) {
+  //if bookmark doesn't exist save bookmark
   chrome.bookmarks.create(bookmark, function(newBookmark) {
     console.log('added: ' + newBookmark.title);
   });
@@ -91,20 +95,20 @@ var saveStarData = function(key, starObj) {
   var starData = {};
   starData[key] = starObj;
   console.log(starData);
-  chrome.storage.sync.set(starData, function() {
+  chrome.storage.local.set(starData, function() {
     console.log('starData saved');
   });
 };
 
 var getStarData = function(key) {
-  chrome.storage.sync.get(key, function(starData) {
-    // retirieved.
+  chrome.storage.local.get(key, function(starData) {
     console.log(starData);
+    return starData;
   });
 };
 
 var loadStarMarksDB = function(callback) {
-  chrome.storage.sync.get('starMarksDB', function(data) {
+  chrome.storage.local.get('starMarksDB', function(data) {
     if (data.starMarksDB === undefined) {
       starMarksDB = {
         starMarksDB: {
@@ -114,7 +118,7 @@ var loadStarMarksDB = function(callback) {
         }
       };
       //initialize DB
-      chrome.storage.sync.set(starMarksDB, function(data) {
+      chrome.storage.local.set(starMarksDB, function(data) {
         console.log('starMarksDB created');
         callback(data);
       });

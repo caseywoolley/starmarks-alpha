@@ -1,3 +1,4 @@
+/*https://coolors.co/app/e3e6ef-666a86-2b4162-ecc8af-f28f3b*/
 @import url(https://fonts.googleapis.com/css?family=Lobster);
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300);
 
@@ -49,6 +50,8 @@ ul {
 .star-url {
   font-size: 15px;
   white-space: nowrap;
+  overflow: hidden;
+  width: 90%;
 }
 
 .star-title {
