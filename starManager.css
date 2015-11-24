@@ -40,29 +40,27 @@ ul {
 .star-rating {
 
   font-weight: 100;
-  font-size: 30px;
-  white-space: nowrap;
-  float: right;
+  font-size: 12px;
+  
   color: #F28F3B;
 }
 
 .star-url {
-  display:inline-block;
-  font-size: 15px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 80%;
+  font-size: 10px;
 }
 
-.star-title {
+.star-title { 
+  margin-right: 5px;
+  font-size: 15px;
+}
+
+.star-title,
+.star-url {
   display:inline-block;
+  width: 40%;
   white-space: nowrap;
   overflow: hidden;
-  width: 80%;
   text-overflow: ellipsis;
-  margin-right: 5px;
-  font-size: 30px;
 }
 
 .starmark-link,
@@ -78,6 +76,12 @@ ul {
   color: #F28F3B;
 }
 
+.favicon {
+  width: 16px;
+  margin-right: 5px;
+  display: inline-block;
+}
+
 .starmarks {
   width: 900px;
   margin-top: 15px;
@@ -89,10 +93,7 @@ ul {
 
 .starmark {
   margin-top: 4px;
-}
-
-.starmark {
-  border-radius: 5px;
+  border-radius: 10px;
 
 }
 
@@ -101,7 +102,40 @@ ul {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   background-color: #E3E6EF;
-  padding: 15px;
+  padding: 5px;
   border: solid 1px #CED3DC;
   word-wrap: break-word;
 }
+
+
+/****** Style Star Rating Widget *****/
+
+.rating { 
+  border: none;
+  float: left;
+}
+
+.rating > input { display: none; } 
+.rating > label:before { 
+  margin: 1px;
+  font-size: 2em;
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f005";
+}
+
+.rating > label { 
+  color: #ddd; 
+ float: right; 
+}
+
+/***** CSS Magic to Highlight Stars on Hover *****/
+
+.rating > input:checked ~ label, /* show gold star when clicked */
+.rating:not(:checked) > label:hover, /* hover current star */
+.rating:not(:checked) > label:hover ~ label { color: #FFD700;  } /* hover previous stars in list */
+
+.rating > input:checked + label:hover, /* hover current star when changing rating */
+.rating > input:checked ~ label:hover,
+.rating > label:hover ~ input:checked ~ label, /* lighten current selection */
+.rating > input:checked ~ label:hover ~ label { color: #FFED85;  } 

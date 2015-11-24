@@ -16,7 +16,7 @@ chrome.webNavigation.onCompleted.addListener(function(details) {
 	//load starmark instance if exists
 });
 
-
+ */
 
 chrome.bookmarks.getTree(function(bookmarkTree) {
     console.log('bookmarks', bookmarkTree);
@@ -87,6 +87,6 @@ chrome.runtime.onMessage.addListener(
     if (request.bookmarks == "all")
       sendResponse({bookmarks: 'allBookmarks'});
   });
-  */
+ 
 
 
