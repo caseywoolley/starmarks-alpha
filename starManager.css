@@ -8,6 +8,7 @@ body {
   color: #313E50;
   font-size: 16px;
   height: 100%;
+  
 }
 
 header {
@@ -19,10 +20,8 @@ header {
   color: #F28F3B;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+table tr {
+  height:1em;
 }
 
 .main-logo {
@@ -34,15 +33,19 @@ ul {
 
 }
 
+.search-bar {
+  width: 100%;
+}
+
 .title-bar {
 
 }
 
 .star-rating {
-
+  
   font-weight: 100;
   font-size: 12px;
-  
+  width:140px;
   color: #F28F3B;
 }
 
@@ -55,10 +58,9 @@ ul {
   font-size: 15px;
 }
 
-.star-title,
+.titler,
 .star-url {
-  display:inline-block;
-  width: 40%;
+  width: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -84,16 +86,12 @@ ul {
 }
 
 .starmarks {
-  width: 900px;
   margin-top: 15px;
-  margin-left: auto;
-  margin-right: auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
+
 }
 
 .starmark {
-  margin-top: 4px;
+  margin-top: 0px;
   border-radius: 10px;
 
 }
@@ -103,9 +101,68 @@ ul {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   background-color: #E3E6EF;
-  padding: 5px;
+  padding: 0px;
   border: solid 1px #CED3DC;
   word-wrap: break-word;
+}
+
+
+/****** Date Selector *****/
+
+.plan-date-selector {
+  margin: 1em auto;
+  color: #aaa;
+  -webkit-font-smoothing: antialiased;
+}
+.plan-date-selector a {
+  color: #aaa;
+}
+.plan-date-selector a:hover {
+  color: #559DB7;
+}
+.plan-date-selector .prev, .plan-date-selector .next, .plan-date-selector .date-input-container {
+  display: inline-block;
+  vertical-align: top;
+  float: left;
+}
+.plan-date-selector .prev, .plan-date-selector .next {
+  margin: 0 0.5em;
+}
+.plan-date-selector .prev i, .plan-date-selector .next i {
+  font-size: 3em;
+  line-height: 0.75em;
+}
+.plan-date-selector .date-input-container {
+  position: relative;
+}
+.plan-date-selector input[type="date"] {
+  width: 240px;
+  margin: 0;
+  margin-right: 36px;
+  color: #aaa;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: "Asap", sans-serif;
+  border-color: #d8d8d8;
+  border-radius: 3px;
+  box-shadow: none;
+}
+.plan-date-selector input[type="date"]:focus {
+  color: #559DB7;
+}
+.plan-date-selector .date-submit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  line-height: 2em;
+  width: 40px;
+  font-size: 18px;
+  border-radius: 0 3px 3px 0;
+  text-align: center;
+  background: -webkit-linear-gradient(#fcfcfc, #f7f7f7);
+  background: linear-gradient(#fcfcfc, #f7f7f7);
+  border: 1px solid #cdcdcd;
 }
 
 
@@ -119,7 +176,7 @@ ul {
 .rating > input { display: none; } 
 .rating > label:before { 
   margin: 1px;
-  font-size: 2em;
+  font-size: 1.5em;
   font-family: FontAwesome;
   display: inline-block;
   content: "\f005";

@@ -1,11 +1,90 @@
-var starMarks = [];
-var filters = {};
-var displayed = 0;
-var loaded = true;
-$(function() {
+var app = angular.module('app', ['infinite-scroll']);
+
+app.controller('starManager', function($scope, StarMarks ){
+
+  $scope.starMarks = {};
+  _.extend($scope.starMarks, StarMarks);
+
+  $scope.allBookmarks = [];
+  $scope.filteredBookmarks = [];
+  $scope.displayedBookmarks = [];
+  $scope.filters = {};
+  $scope.loading = true;
+
+  $scope.getAll = function(){
+    $scope.loading = true;
+    $scope.displayed = [];
+
+    StarMarks.getBookmarkList(function(bookmarks){
+      $scope.allBookmarks = bookmarks;
+      //make a filter function for this
+      //http://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value-in-javascript
+      function compare(a, b) {
+        if (a.stars < b.stars)
+          return -1;
+        if (a.stars > b.stars)
+          return 1;
+        return 0;
+      }
+      $scope.allBookmarks.sort(compare).reverse();
+
+      $scope.loading = false;
+      $scope.$apply();
+    });
+  };
+
+  $scope.filterBookmarks = function(){
+    //use scope filters
+  };
+
+  $scope.sortBookmarks = function(column){
+
+  };
 
   
 
+  $scope.displayBookmarks = function(){
+    var perPage = 20;
+    $scope.checkedStar = {};
+    var last = $scope.displayedBookmarks.length;
+    console.log('more');
+    for (var i = last; i < last + perPage; i++){
+      $scope.displayedBookmarks.push($scope.allBookmarks[i]);
+      $scope.checkedStar[$scope.allBookmarks[i].stars] = true;
+    }
+  };
+  $scope.getAll();
+
+});
+
+/*
+var allBookmarks = [];
+var filters = {};
+var displayed = 0;
+var loaded = true;
+
+//cleanup popup file
+  //add starmarks model
+  //~add recent and most often used tags for quick tagging /otherwise inbox
+
+//move bookmarks model logic to separate file
+  //handle bookmark states (all, current set)
+  //fully wrap chrome.storage
+  //CRUD
+  //save bookmarks to allBookmarks folder in browser bar (or as bar if selected?)
+  //~ option to sync most visited/other view as bookmark bar
+
+//build search UI
+  //searchbar = filter url text, title text, ~tags
+  //~ negative search terms
+  // range selectors - date, visit count, last visit, rating
+  //sort by columns - up and down toggle
+  //move html to angular pages
+  //save searches as tabs
+
+  //organize file tree
+
+$(function() {
   //update ratings on click
   $(document).on('click', 'input[type="radio"]', function(e) {
     var url = $(this).closest('fieldset').attr('name');
@@ -23,7 +102,7 @@ $(function() {
     filters = {
       urlSearch: searchQuery
     };
-    displayBookmarks(starMarks, filters);
+    displayBookmarks(allBookmarks, filters);
 
   });
   //display chrome local storage
@@ -45,7 +124,7 @@ $(function() {
     $(window).scroll(function() {
       if($(window).scrollTop() + $(window).height() > $(document).height() - 1) {
         $(window).unbind('scroll');
-        displayBookmarks(starMarks); 
+        displayBookmarks(allBookmarks); 
       }
     });
   };
@@ -59,9 +138,9 @@ var getBookmarkList = function() {
   chrome.bookmarks.getTree(function(bookmarkTree) {
     console.log('bookmarks', bookmarkTree);
     console.log('size', roughSizeOfObject(bookmarkTree));
-    //get starmarks data
+    //get allBookmarks data
     chrome.storage.local.get(null, function(starData) {
-      console.log('starMarks', starData);
+      console.log('allBookmarks', starData);
       var mergeMarks = function(node) {
         var list = [];
         //base - add bookmark if has url
@@ -101,7 +180,7 @@ var getBookmarkList = function() {
         return list;
       };
       var fullList = mergeMarks(bookmarkTree[0]);
-      var $starMarks = $('.starmarks');
+      var $starMarks = $('.starMarks');
       $starMarks.html('');
       displayBookmarks(fullList);
     });
@@ -117,7 +196,7 @@ var displayBookmarks = function(list, filters) {
     urlSearch = filters.urlSearch;
   }
   console.log('bookmarkList', list);
-  starMarks = list;
+  allBookmarks = list;
   //sort bookmarks
   //http://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value-in-javascript
   function compare(a, b) {
@@ -138,13 +217,13 @@ var displayBookmarks = function(list, filters) {
 
   var perPage = Math.min(40, list.length - 1 - displayed);
   //empty displayed bookmarks
-  var $starMarks = $('.starmarks');
-  console.log('total:',list.length);
+  var $starMarks = $('.starMarks');
+  //console.log('total:',list.length);
   var index = 0;
 
   if (perPage > 0) {
   for (var i = displayed; i <= displayed + perPage; i++) {
-    console.log('count:', i, displayed, perPage);
+    //console.log('count:', i, displayed, perPage);
     //console.log(list[url]);
     var bookmark = list[i];
     var checkedStar = {};
@@ -153,6 +232,7 @@ var displayBookmarks = function(list, filters) {
     //if (bookmark.stars > 0 ){
     //if (urlSearch === undefined || bookmark.url.indexOf(urlSearch) > -1) {
     //starMark = data[url];
+    /*
     $starMarks.append('<li class="starmark"><a class="starmark-link" target="_blank" href="' + bookmark.url +
       '"><div class="title-bar"><span class="star-title"><img class="favicon" src="http://www.google.com/s2/favicons?domain=' + bookmark.url + '">' +
       (bookmark.title || 'untitled') + '</span></div><span class="star-url">' + bookmark.url + '</span>' +
@@ -182,6 +262,8 @@ var displayBookmarks = function(list, filters) {
   }
 
 };
+*/
+
 
 // http://stackoverflow.com/questions/1248302/javascript-object-size
 var roughSizeOfObject = function(object) {

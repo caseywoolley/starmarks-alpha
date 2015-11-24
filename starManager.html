@@ -1,23 +1,80 @@
+<!DOCTYPE html>
 <html>
+
 <head>
   <title>StarMarks</title>
   <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" href="starManager.css">
   <link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="assets/js/angular.min.js"></script>
+  <script src="assets/js/ng-infinite-scroll.min.js"></script>
   <script src="assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="assets/js/underscore-min.js"></script>
   <script src="starManager.js"></script>
+  <script src="starMarks.js"></script>
+  <script src="starSelector.js"></script>
 </head>
 
-<body>
-<header><h1 class="main-logo">StarMarks</h1></header>
+<body ng-app="app" ng-controller="starManager">
+  <header><h1 class="main-logo">StarMarks</h1></header>
 
-    <input type="text" class"search-bar" placeholder="Search"/>
 
-  <div>
-  	<ul class="starmarks"></ul>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+
+      <form class="navbar-form">
+        <div class="form-group" style="display:inline;">
+          <div class="input-group" style="display:table;">
+            <span class="input-group-addon" style="width:1%;"><span class="glyphicon glyphicon-search"></span></span>
+            <input class="form-control" name="search" placeholder="Search Here" autocomplete="off" autofocus="autofocus" type="text">
+          </div>
+        </div>
+      </form>
+
+      <div class="plan-date-selector">
+        <a href="#" class="prev"><i class="fa fa-angle-left"></i></a>
+        <div class="date-input-container">
+          <input type="date" />
+          <a href="#" class="date-submit">
+            <i class="fa fa-calendar"></i>
+          </a>
+        </div>
+        <a href="#" class="next"><i class="fa fa-angle-right"></i></a>
+      </div>
+
+      <div star-selector></div>
+
+      <img class="loader" src="assets/img/loading.gif" ng-show="loading">
+
+      <table class="table starmarks" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance=".5">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Title</th>
+                <th>Visited</th>
+                <th>Visits</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="bookmark in displayedBookmarks">
+                <td><img class="favicon" src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>
+                <td class="title span1"><a class="starmark-link" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'untitled' }}</a></td>
+                <td>3m</td>
+                <td>20</td>
+                <td class="star-rating span1">
+                  <div star-selector data="bookmark"></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    </div>
   </div>
-</body>
 
+
+</body>
 </html>
