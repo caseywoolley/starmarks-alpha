@@ -1,7 +1,13 @@
+var starMarks = [];
+var filters = {};
+var displayed = 0;
+var loaded = true;
 $(function() {
 
+  
+
   //update ratings on click
-  $(document).on('click', 'input', function(e){ 
+  $(document).on('click', 'input[type="radio"]', function(e) {
     var url = $(this).closest('fieldset').attr('name');
     var rating = e.target.value;
     //update rating
@@ -11,16 +17,39 @@ $(function() {
     });
     $(this).prop('checked', true);
   });
-   //display chrome local storage
+
+  $('.search-btn').on('click', function() {
+    searchQuery = $('.search-bar').value();
+    filters = {
+      urlSearch: searchQuery
+    };
+    displayBookmarks(starMarks, filters);
+
+  });
+  //display chrome local storage
+
   chrome.storage.local.get(null, function(items) {
     console.log('local storage: ', items);
   });
   //TODO: get bookmark object from background
-  chrome.runtime.sendMessage({bookmarks: 'all'}, function(response){
+  chrome.runtime.sendMessage({
+    bookmarks: 'all'
+  }, function(response) {
     console.log('background', response);
   });
   getBookmarkList();
 });
+
+//infinite scroll
+  var bindScroll = function(){
+    $(window).scroll(function() {
+      if($(window).scrollTop() + $(window).height() > $(document).height() - 1) {
+        $(window).unbind('scroll');
+        displayBookmarks(starMarks); 
+      }
+    });
+  };
+  bindScroll();
 
 //TODO: search criteria - search by text, date, tag, rating
 
@@ -34,7 +63,7 @@ var getBookmarkList = function() {
     chrome.storage.local.get(null, function(starData) {
       console.log('starMarks', starData);
       var mergeMarks = function(node) {
-        var list = {};
+        var list = [];
         //base - add bookmark if has url
         if (node.url !== undefined) {
           var starMark = starData[node.url];
@@ -53,10 +82,10 @@ var getBookmarkList = function() {
             });
           }
           bookmark = node;
-          delete bookmark.children; //don't need this
+          delete bookmark.children; //bookmarks don't need this
           bookmark = _.extend(bookmark, starMark);
           //list.push(bookmark);
-          list[node.url]= bookmark;
+          list.push(bookmark);
         } else {
           //else add tag if doesn't exist 
         }
@@ -65,14 +94,15 @@ var getBookmarkList = function() {
         if (node.children && node.children.length > 0) {
           for (var i = 0; i < node.children.length; i++) {
             var child = node.children[i];
-            //list = list.concat(mergeMarks(child));
-            list = _.extend(list, mergeMarks(child));
+            list = list.concat(mergeMarks(child));
+            //list = _.extend(list, mergeMarks(child));
           }
         }
         return list;
       };
       var fullList = mergeMarks(bookmarkTree[0]);
-
+      var $starMarks = $('.starmarks');
+      $starMarks.html('');
       displayBookmarks(fullList);
     });
   });
@@ -80,90 +110,104 @@ var getBookmarkList = function() {
 };
 
 
-var displayBookmarks = function(list) {
-
+var displayBookmarks = function(list, filters) {
+  //var urlSearch = 'apple';
+  var urlSearch;
+  if (filters) {
+    urlSearch = filters.urlSearch;
+  }
   console.log('bookmarkList', list);
+  starMarks = list;
   //sort bookmarks
-  var keys = Object.keys(list);
-  console.log(keys);
-
   //http://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value-in-javascript
-  function compare(a,b) {
-  if (a.last_nom < b.last_nom)
-    return -1;
-  if (a.last_nom > b.last_nom)
-    return 1;
-  return 0;
-}
+  function compare(a, b) {
+    if (a.stars < b.stars)
+      return -1;
+    if (a.stars > b.stars)
+      return 1;
+    return 0;
+  }
+  list.sort(compare).reverse();
 
-list.sort(compare);
-  
+  list = _.filter(list, function(bookmark) {
+    if (urlSearch === undefined || bookmark.url.indexOf(urlSearch) > -1) {
+      return true;
+    }
+    return false;
+  });
+
+  var perPage = Math.min(40, list.length - 1 - displayed);
+  //empty displayed bookmarks
   var $starMarks = $('.starmarks');
+  console.log('total:',list.length);
   var index = 0;
-  for (var url in list) {
-    var bookmark = list[url];
+
+  if (perPage > 0) {
+  for (var i = displayed; i <= displayed + perPage; i++) {
+    console.log('count:', i, displayed, perPage);
+    //console.log(list[url]);
+    var bookmark = list[i];
     var checkedStar = {};
     checkedStar[bookmark.stars] = 'checked="checked"';
     //filter options
     //if (bookmark.stars > 0 ){
-      if (url.indexOf("apple") > -1){
-        //starMark = data[url];
-        $starMarks.append('<li class="starmark"><a class="starmark-link" target="_blank" href="' + bookmark.url +
-          '"><div class="title-bar"><span class="star-title"><img class="favicon" src="http://www.google.com/s2/favicons?domain='+ bookmark.url +'">' +
-          (bookmark.title || 'untitled') + '</span></div><span class="star-url">' + bookmark.url + '</span>'+
+    //if (urlSearch === undefined || bookmark.url.indexOf(urlSearch) > -1) {
+    //starMark = data[url];
+    $starMarks.append('<li class="starmark"><a class="starmark-link" target="_blank" href="' + bookmark.url +
+      '"><div class="title-bar"><span class="star-title"><img class="favicon" src="http://www.google.com/s2/favicons?domain=' + bookmark.url + '">' +
+      (bookmark.title || 'untitled') + '</span></div><span class="star-url">' + bookmark.url + '</span>' +
 
 
 
-          '</a><span class="star-rating">' + (bookmark.stars || 0) +
-          ' Stars</span>'+
+      '</a><span class="star-rating">' + (bookmark.stars || 0) +
+      ' Stars</span>' +
 
-          '<span class="star-rating">' +
-          '<fieldset class="rating" name="'+ bookmark.url +'" id="rating' + index + '">' +
-          '<input type="radio" id="star5-'+ index + '" ' + (checkedStar[5] || '' ) + ' name="rating-'+ index + '" value="5" /><label class = "full star" id = "5" for="star5-'+ index + '" title="Awesome - 5 stars"></label>' +
-          '<input type="radio" id="star4-'+ index + '" ' + (checkedStar[4] || '' ) + ' name="rating-'+ index + '" value="4" /><label class = "full star" id = "4" for="star4-'+ index + '" title="Pretty good - 4 stars"></label>' +
-          '<input type="radio" id="star3-'+ index + '" ' + (checkedStar[3] || '' ) + ' name="rating-'+ index + '" value="3" /><label class = "full star" id = "3" for="star3-'+ index + '" title="Meh - 3 stars"></label>' +
-          '<input type="radio" id="star2-'+ index + '" ' + (checkedStar[2] || '' ) + ' name="rating-'+ index + '" value="2" /><label class = "full star" id = "2" for="star2-'+ index + '" title="Kinda bad - 2 stars"></label>' +
-          '<input type="radio" id="star1-'+ index + '" ' + (checkedStar[1] || '' ) + ' name="rating-'+ index + '" value="1" /><label class = "full star" id = "1" for="star1-'+ index + '" title="Sucks big time - 1 star"></label>' +
-          '</fieldset></span>'+
+      '<span class="star-rating">' +
+      '<fieldset class="rating" name="' + bookmark.url + '" id="rating' + i + '">' +
+      '<input type="radio" id="star5-' + i + '" ' + (checkedStar[5] || '') + ' name="rating-' + i + '" value="5" /><label class = "full star" id = "5" for="star5-' + i + '" title="Awesome - 5 stars"></label>' +
+      '<input type="radio" id="star4-' + i + '" ' + (checkedStar[4] || '') + ' name="rating-' + i + '" value="4" /><label class = "full star" id = "4" for="star4-' + i + '" title="Pretty good - 4 stars"></label>' +
+      '<input type="radio" id="star3-' + i + '" ' + (checkedStar[3] || '') + ' name="rating-' + i + '" value="3" /><label class = "full star" id = "3" for="star3-' + i + '" title="Meh - 3 stars"></label>' +
+      '<input type="radio" id="star2-' + i + '" ' + (checkedStar[2] || '') + ' name="rating-' + i + '" value="2" /><label class = "full star" id = "2" for="star2-' + i + '" title="Kinda bad - 2 stars"></label>' +
+      '<input type="radio" id="star1-' + i + '" ' + (checkedStar[1] || '') + ' name="rating-' + i + '" value="1" /><label class = "full star" id = "1" for="star1-' + i + '" title="Sucks big time - 1 star"></label>' +
+      '</fieldset></span>' +
 
-          '</li>');
-        index ++;
-      }
-    //chrome.storage.local.remove(bookmark.url); //reset bookmarks
+      '</li>');
+    index++;
+  }
+
+  //chrome.storage.local.remove(bookmark.url); //reset bookmarks
+  //}
+  displayed += perPage;
+  bindScroll();
   }
 
 };
 
 // http://stackoverflow.com/questions/1248302/javascript-object-size
-var roughSizeOfObject = function( object ) {
+var roughSizeOfObject = function(object) {
 
-    var objectList = [];
-    var stack = [ object ];
-    var bytes = 0;
+  var objectList = [];
+  var stack = [object];
+  var bytes = 0;
 
-    while ( stack.length ) {
-        var value = stack.pop();
+  while (stack.length) {
+    var value = stack.pop();
 
-        if ( typeof value === 'boolean' ) {
-            bytes += 4;
-        }
-        else if ( typeof value === 'string' ) {
-            bytes += value.length * 2;
-        }
-        else if ( typeof value === 'number' ) {
-            bytes += 8;
-        }
-        else if
-        (
-            typeof value === 'object' && objectList.indexOf( value ) === -1
-        )
-        {
-            objectList.push( value );
+    if (typeof value === 'boolean') {
+      bytes += 4;
+    } else if (typeof value === 'string') {
+      bytes += value.length * 2;
+    } else if (typeof value === 'number') {
+      bytes += 8;
+    } else if (
+      typeof value === 'object' && objectList.indexOf(value) === -1
+    ) {
+      objectList.push(value);
 
-            for( var i in value ) {
-                stack.push( value[ i ] );
-            }
-        }
+      for (var i in value) {
+        stack.push(value[i]);
+      }
     }
-    return bytes;
+  }
+  return bytes;
 };

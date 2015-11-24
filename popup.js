@@ -1,6 +1,5 @@
 $(function() {
   //TODO - see if bookmark already exists to display
-
   var clicked = false;
     //get current starMark
     getStarMark(function(starMark){
