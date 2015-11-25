@@ -28,12 +28,12 @@
         <div class="form-group" style="display:inline;">
           <div class="input-group" style="display:table;">
             <span class="input-group-addon" style="width:1%;"><span class="glyphicon glyphicon-search"></span></span>
-            <input class="form-control" name="search" placeholder="Search Here" autocomplete="off" autofocus="autofocus" type="text">
+            <input class="form-control" name="search" placeholder="Search" autocomplete="off" autofocus="autofocus" type="text" ng-model="searchQuery" ng-change="filterBookmarks()">
           </div>
         </div>
       </form>
 
-      <div class="plan-date-selector">
+      <!-- <div class="plan-date-selector">
         <a href="#" class="prev"><i class="fa fa-angle-left"></i></a>
         <div class="date-input-container">
           <input type="date" />
@@ -42,30 +42,33 @@
           </a>
         </div>
         <a href="#" class="next"><i class="fa fa-angle-right"></i></a>
-      </div>
+      </div> -->
 
-      <div star-selector></div>
+      <!-- <div star-selector></div> -->
 
-      <img class="loader" src="assets/img/loading.gif" ng-show="loading">
+      <img class="loader text-center" src="assets/img/loading.gif" ng-show="loading">
 
       <table class="table starmarks" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance=".5">
         <thead>
             <tr>
                 <th></th>
-                <th>Title</th>
-                <th>Visited</th>
-                <th>Visits</th>
-                <th>Rating</th>
+                <th class="table-headers" ng-click="sortBookmarks('title')">Title</th>
+                <th class="table-headers" ng-click="sortBookmarks('dateAdded')">Added</th>
+                <th class="table-headers" ng-click="sortBookmarks('visits')">Visits</th>
+                <th class="table-headers" ng-click="sortBookmarks('lastVisit')">Visited</th>
+                <th class="table-headers" ng-click="sortBookmarks('stars')">Rating</th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="bookmark in displayedBookmarks">
-                <td><img class="favicon" src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>
-                <td class="title span1"><a class="starmark-link" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'untitled' }}</a></td>
-                <td>3m</td>
-                <td>20</td>
-                <td class="star-rating span1">
-                  <div star-selector data="bookmark"></div>
+                <td><img class="favicon" ng-src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>
+                <td class="bm-title" ng-click="bookmarkClicked(bookmark)">
+                <a class="starmark-link" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a></td>
+                <td>{{ timeSince(bookmark.dateAdded) }}</td>
+                <td>{{ bookmark.visits || 0 }}</td>
+                <td>{{ timeSince(bookmark.lastVisit) }}</td>
+                <td class="bm-rating"><div>
+                  <div star-selector data="bookmark"></div></div>
                 </td>
             </tr>
         </tbody>

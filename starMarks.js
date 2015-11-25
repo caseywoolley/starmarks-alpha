@@ -14,13 +14,19 @@ var StarMarks = app.factory('StarMarks', function() {
   var update = function(id, changes){
   	//update rating
     chrome.storage.local.get(id, function(bookmark) {
-    	var newData = bookmark[id];
-    	for (var attribute in changes){
-      	newData[attribute] = changes[attribute];	
+    	if (bookmark){
+	    	var newData = bookmark[id];
+	    	for (var attribute in changes){
+          if (attribute === 'stars'){ 
+            newData[attribute] = parseInt(changes[attribute]);
+          }else {
+	      	  newData[attribute] = changes[attribute];	
+          }
+	    	}
+	    	console.log('update:', bookmark);
+	      chrome.storage.local.set(bookmark);
+	      //TODO: update chrome bookmark metadata (url?, name, ~tag)
     	}
-    	console.log('update:', bookmark);
-      chrome.storage.local.set(bookmark);
-      //TODO: update chrome bookmark metadata (url?, name, ~tag)
     });
   };
 
@@ -35,7 +41,7 @@ var StarMarks = app.factory('StarMarks', function() {
       chrome.storage.local.get(null, function(starData) {
         console.log('allBookmarks', starData);
         var mergeMarks = function(node) {
-          var list = [];
+          var list = {};
           //base - add bookmark if has url
           if (node.url !== undefined) {
             var starMark = starData[node.url];
@@ -57,7 +63,7 @@ var StarMarks = app.factory('StarMarks', function() {
             delete bookmark.children; //bookmarks don't need this
             bookmark = _.extend(bookmark, starMark);
             //list.push(bookmark);
-            list.push(bookmark);
+            list[node.url] = bookmark;
           } else {
             //else add tag if doesn't exist 
           }
@@ -66,8 +72,8 @@ var StarMarks = app.factory('StarMarks', function() {
           if (node.children && node.children.length > 0) {
             for (var i = 0; i < node.children.length; i++) {
               var child = node.children[i];
-              list = list.concat(mergeMarks(child));
-              //list = _.extend(list, mergeMarks(child));
+              //list = list.concat(mergeMarks(child));
+              list = _.extend(list, mergeMarks(child));
             }
           }
           return list;
@@ -76,8 +82,14 @@ var StarMarks = app.factory('StarMarks', function() {
         var $starMarks = $('.starMarks');
         $starMarks.html('');
 
+        var arrList = [];
+        var keys = Object.keys(fullList);
+        for (var i = 0; i < keys.length; i++){
+          arrList.push(fullList[keys[i]]);
+        }
+
         all = fullList;
-        callback(fullList);
+        callback(arrList);
         loading = false;
       });
     });

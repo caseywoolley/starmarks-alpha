@@ -6,7 +6,7 @@ body {
   font-family: 'Open Sans', sans-serif;
   background-color: #F2EDEE;
   color: #313E50;
-  font-size: 16px;
+  font-size: 12px;
   height: 100%;
   
 }
@@ -20,8 +20,13 @@ header {
   color: #F28F3B;
 }
 
-table tr {
-  height:1em;
+
+
+td {
+
+  white-space:nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .main-logo {
@@ -33,6 +38,10 @@ table tr {
 
 }
 
+.table-headers {
+  cursor: pointer;
+}
+
 .search-bar {
   width: 100%;
 }
@@ -40,12 +49,28 @@ table tr {
 .title-bar {
 
 }
+.title-width {
+  max-width: 300px;
+  min-width: 100px;
+}
 
-.star-rating {
-  
+.star-width
+
+.clip-text {
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: no wrap;
+  width: inherit;
+}
+
+
+.bm-rating {
   font-weight: 100;
   font-size: 12px;
-  width:140px;
+  min-width:140px;
+  max-width: 140px;
   color: #F28F3B;
 }
 
@@ -53,9 +78,9 @@ table tr {
   font-size: 10px;
 }
 
-.star-title { 
-  margin-right: 5px;
-  font-size: 15px;
+.bm-title { 
+  max-width: 500px;
+  min-width: 50px;
 }
 
 .titler,
@@ -80,7 +105,7 @@ table tr {
 }
 
 .favicon {
-  width: 16px;
+  width:16px;
   margin-right: 5px;
   display: inline-block;
 }
@@ -94,6 +119,11 @@ table tr {
   margin-top: 0px;
   border-radius: 10px;
 
+}
+
+.loader {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .starmark {
