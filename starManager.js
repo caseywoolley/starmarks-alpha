@@ -47,6 +47,14 @@ app.controller('starManager', function($scope, $timeout, StarMarks) {
     });
   };
 
+  $scope.deleteBookmark = function(bookmark, index){
+    $scope.starMarks.deleteBookmark(bookmark);
+    console.log($scope.displayedBookmarks[index]);
+    
+    $scope.displayedBookmarks.splice(index, 1);
+    $scope.allBookmarks.splice(index, 1);
+  };
+
   $scope.bookmarkClicked = function(bookmark) {
     //update model
     bookmark.visits++;
@@ -58,6 +66,7 @@ app.controller('starManager', function($scope, $timeout, StarMarks) {
   };
 
   $scope.filterBookmarks = function() {
+    $scope.filters = {};
     var searchArr = $scope.searchQuery.split(/\s+/);
     var text = [];
     for (i = 0; i < searchArr.length; i++) {
@@ -72,6 +81,16 @@ app.controller('starManager', function($scope, $timeout, StarMarks) {
     $scope.filters['text'] = text.join(' ');
     console.log($scope.filters);
 
+    //filter results by filter object
+    console.log(StarMarks.filter($scope.filters));
+    $scope.allBookmarks = StarMarks.filter($scope.filters);
+
+    //TODO: switch to using filteredbookmarks as source
+    //if ($scope.allBookmarks.length !== $scope.filteredBookmarks.length){
+
+    $scope.displayedBookmarks = [];
+    $scope.displayBookmarks();
+    //}
   };
 
   $scope.sortBookmarks = function(column) {
@@ -94,13 +113,18 @@ app.controller('starManager', function($scope, $timeout, StarMarks) {
 
 
   $scope.displayBookmarks = function() {
-    var perPage = 20;
-    $scope.checkedStar = {};
-    var last = $scope.displayedBookmarks.length;
-    console.log('more');
-    for (var i = last; i < last + perPage; i++) {
-      $scope.displayedBookmarks.push($scope.allBookmarks[i]);
-      $scope.checkedStar[$scope.allBookmarks[i].stars] = true;
+    if ($scope.displayedBookmarks.length < $scope.allBookmarks.length){
+      var perPage = Math.min(20, $scope.allBookmarks.length);
+      $scope.checkedStar = {};
+      var last = $scope.displayedBookmarks.length;
+      console.log('more');
+      for (var i = last; i < last + perPage; i++) {
+        $scope.displayedBookmarks.push($scope.allBookmarks[i]);
+        if ($scope.allBookmarks[i] && $scope.allBookmarks[i].stars ){
+          //checkmark variable
+          $scope.checkedStar[$scope.allBookmarks[i].stars] = true;
+        }
+      }
     }
   };
 

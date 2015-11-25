@@ -29,7 +29,7 @@
           <div class="input-group" style="display:table;">
             <span class="input-group-addon" style="width:1%;"><span class="glyphicon glyphicon-search"></span></span>
             <input class="form-control" name="search" placeholder="Search" autocomplete="off" autofocus="autofocus" type="text" ng-model="searchQuery" ng-change="filterBookmarks()">
-          </div>
+          </div><div class="bookmark-count">{{allBookmarks.length}} Found</div>
         </div>
       </form>
 
@@ -53,23 +53,31 @@
             <tr>
                 <th></th>
                 <th class="table-headers" ng-click="sortBookmarks('title')">Title</th>
-                <th class="table-headers" ng-click="sortBookmarks('dateAdded')">Added</th>
-                <th class="table-headers" ng-click="sortBookmarks('visits')">Visits</th>
-                <th class="table-headers" ng-click="sortBookmarks('lastVisit')">Visited</th>
                 <th class="table-headers" ng-click="sortBookmarks('stars')">Rating</th>
+                <th class="table-headers" ng-click="sortBookmarks('dateAdded')">Added</th>
+                <th class="table-headers" ng-click="sortBookmarks('lastVisit')">Visited</th>
+                <th class="table-headers" ng-click="sortBookmarks('visits')">Visits</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="bookmark in displayedBookmarks">
+            <tr ng-repeat="bookmark in displayedBookmarks track by $index" >
+                <div ng-hide="displayedBookmarks.length">
                 <td><img class="favicon" ng-src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>
-                <td class="bm-title" ng-click="bookmarkClicked(bookmark)">
-                <a class="starmark-link" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a></td>
-                <td>{{ timeSince(bookmark.dateAdded) }}</td>
-                <td>{{ bookmark.visits || 0 }}</td>
-                <td>{{ timeSince(bookmark.lastVisit) }}</td>
+                <td class="bm-title clip-text" ng-click="bookmarkClicked(bookmark)">
+                <div><a class="starmark-link" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a></div>
+                <div class="tags" ng-repeat="(key, value) in bookmark.tags">
+                  <a class="tag" href="">{{key}}</a>
+                </div>
+                </td>
                 <td class="bm-rating"><div>
                   <div star-selector data="bookmark"></div></div>
                 </td>
+                <td>{{ timeSince(bookmark.dateAdded) }}</td>
+                <td>{{ timeSince(bookmark.lastVisit) }}</td>
+                <td>{{ bookmark.visits || 0 }}</td>
+                <td><button class="btn-info btn-xs" ng-click="deleteBookmark(bookmark, $index)" >
+                Delete</button></td>
+                </div>
             </tr>
         </tbody>
     </table>

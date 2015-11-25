@@ -9,3 +9,10 @@ app.directive('starSelector', function(){
 		templateUrl: 'starSelector.html'
 	};
 });
+
+app.filter('objectKeys', function () {
+    return function (object) {
+        var keys = Object.keys(object);
+        return keys;
+    };
+});

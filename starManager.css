@@ -29,6 +29,10 @@ td {
   text-overflow: ellipsis;
 }
 
+.bookmark-count{
+  text-align: right;
+}
+
 .main-logo {
   font-family: 'Lobster', cursive;
   display: inline-block;
@@ -54,7 +58,6 @@ td {
   min-width: 100px;
 }
 
-.star-width
 
 .clip-text {
   overflow: hidden;
@@ -80,8 +83,21 @@ td {
 
 .bm-title { 
   max-width: 500px;
-  min-width: 50px;
+  min-width: 100px;
 }
+
+.tag {
+  padding-right: 5px;
+}
+
+.tags {
+  font-size: 12px;
+  color: #F28F3B;
+  display: inline-block;
+  text-decoration: none;
+}
+
+
 
 .titler,
 .star-url {
@@ -90,6 +106,7 @@ td {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 
 .starmark-link,
 .starmark-link:link,
