@@ -1,20 +1,30 @@
 <html>
+
 <head>
   <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" href="popup.css">
   <link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+
+  <script src="assets/js/angular.min.js"></script>
+  <script src="assets/js/ng-infinite-scroll.min.js"></script>
+  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+  <script src="assets/js/underscore-min.js"></script>
+  <script src="starManager.js"></script>
+  <script src="starMarks.js"></script>
+  <script src="starSelector.js"></script>
   <script src="popup.js"></script>
 </head>
-<body style="width: 400px">
-<fieldset class="rating" id="rating">
-    <input type="radio" id="star5" name="rating" value="5" /><label class = "full star" id = '5' for="star5" title="Awesome - 5 stars"></label>
-    <input type="radio" id="star4" name="rating" value="4" /><label class = "full star" id = '4' for="star4" title="Pretty good - 4 stars"></label>
-    <input type="radio" id="star3" name="rating" value="3" /><label class = "full star" id = '3' for="star3" title="Meh - 3 stars"></label>
-    <input type="radio" id="star2" name="rating" value="2" /><label class = "full star" id = '2' for="star2" title="Kinda bad - 2 stars"></label>
-    <input type="radio" id="star1" name="rating" value="1" /><label class = "full star" id = '1' for="star1" title="Sucks big time - 1 star"></label>
-</fieldset>
-<button class="managerBtn btn-primary">StarMarks Manager</button>
+
+<body style="width: 400px" ng-app="app" ng-controller="popup">
+  <div star-selector 
+    bookmark="newStarmark" 
+    id="'newStarmark'" 
+    update="addBookmark">
+  </div>
+  <div>{{newStarmark.stars}}</div>
+  <button class="managerBtn btn-primary" ng-click="openManager()">StarMarks Manager</button>
 </body>
+
 </html>

@@ -69,8 +69,13 @@
                   <a class="tag" href="">{{key}}</a>
                 </div>
                 </td>
-                <td class="bm-rating"><div>
-                  <div star-selector data="bookmark"></div></div>
+                <td class="bm-rating">
+                    <div star-selector 
+                        bookmark="bookmark" 
+                        id="$index" 
+                        update="update"
+                        >
+                    </div>
                 </td>
                 <td>{{ timeSince(bookmark.dateAdded) }}</td>
                 <td>{{ timeSince(bookmark.lastVisit) }}</td>

@@ -2,9 +2,7 @@ var app = angular.module('app', ['infinite-scroll']);
 
 app.controller('starManager', function($scope, $timeout, StarMarks) {
 
-  $scope.starMarks = {};
-  _.extend($scope.starMarks, StarMarks);
-
+  $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
   $scope.filteredBookmarks = [];
   $scope.displayedBookmarks = [];
@@ -48,7 +46,7 @@ app.controller('starManager', function($scope, $timeout, StarMarks) {
   };
 
   $scope.deleteBookmark = function(bookmark, index){
-    $scope.starMarks.deleteBookmark(bookmark);
+    StarMarks.deleteBookmark(bookmark);
     console.log($scope.displayedBookmarks[index]);
     
     $scope.displayedBookmarks.splice(index, 1);
@@ -56,13 +54,10 @@ app.controller('starManager', function($scope, $timeout, StarMarks) {
   };
 
   $scope.bookmarkClicked = function(bookmark) {
-    //update model
+    bookmark.visits = bookmark.visits || 0;
     bookmark.visits++;
     bookmark.lastVisit = new Date().getTime();
-    console.log(bookmark.lastVisit);
-    //save change
-    $scope.starMarks.update(bookmark.url, {visits: bookmark.visits, 
-      lastVisit: bookmark.lastVisit });
+    StarMarks.update(bookmark);
   };
 
   $scope.filterBookmarks = function() {

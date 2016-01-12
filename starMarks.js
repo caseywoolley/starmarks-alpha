@@ -11,21 +11,61 @@ var StarMarks = app.factory('StarMarks', function() {
   var loading = false;
   var allBookmarks = [];
 
-  var update = function(id, changes){
-  	//update rating
-    chrome.storage.local.get(id, function(bookmark) {
-    	if (bookmark){
-	    	var newData = bookmark[id];
-	    	for (var attribute in changes){
-          if (attribute === 'stars'){ 
-            newData[attribute] = parseInt(changes[attribute]);
-          }else {
-	      	  newData[attribute] = changes[attribute];	
-          }
-	    	}
+  var add = function(tab, rating) {
+    rating = rating || 0;
+    //get bookmark data
+    var bookmark = {
+      'parentId': '1',
+      'title': tab.title,
+      'url': tab.url
+    };
+
+    //get star data
+    var starData = {
+      title: tab.title,
+      stars: rating,
+      visits: 0,
+      lastVisit: Date.now()
+    };
+
+    //save bookmark if doesn't exist
+    saveBookmark(bookmark);
+    //save star data
+    var key = bookmark.url;
+    saveStarData(bookmark.url, starData);
+  };
+
+  var saveBookmark = function(bookmark) {
+    //if bookmark doesn't exist save bookmark
+    chrome.bookmarks.create(bookmark, function(newBookmark) {
+      console.log('added: ' + newBookmark.title);
+    });
+  };
+
+  var saveStarData = function(key, starObj) {
+    var starData = {};
+    starData[key] = starObj;
+    console.log(starData);
+    chrome.storage.local.set(starData, function() {
+      console.log('starData saved');
+    });
+  };
+
+  var get = function(url, callback) {
+    console.log('get');
+    chrome.storage.local.get(url, function(data){
+      callback(data);
+    });
+  };
+
+  var update = function(bookmark){
+    var id = bookmark.url;
+    chrome.storage.local.get(id, function(data) {
+    	if (data){
+        var updated = {};
+        updated[id] = bookmark;
 	    	console.log('update:', bookmark);
-	      chrome.storage.local.set(bookmark);
-	      //TODO: update chrome bookmark metadata (url?, name, ~tag)
+	      chrome.storage.local.set(updated);
     	}
     });
   };
@@ -302,6 +342,8 @@ var StarMarks = app.factory('StarMarks', function() {
 
   return {
   	getBookmarkList: getBookmarkList,
+    add: add,
+    get: get,
   	update: update,
     deleteBookmark, deleteBookmark,
     filter: filter,
