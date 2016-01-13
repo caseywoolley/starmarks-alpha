@@ -1,4 +1,5 @@
-var StarMarks = app.factory('StarMarks', function() {
+angular.module('app')
+.factory('StarMarks', function() {
 
 	//CRUD
 		//createAll, create
@@ -219,8 +220,6 @@ var StarMarks = app.factory('StarMarks', function() {
           return list;
         };
         var fullList = mergeMarks(bookmarkTree[0]);
-        var $starMarks = $('.starMarks');
-        $starMarks.html('');
 
         var arrList = [];
         var keys = Object.keys(fullList);

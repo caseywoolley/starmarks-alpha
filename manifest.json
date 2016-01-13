@@ -6,18 +6,18 @@
     "bookmarks", "tabs", "storage", "background"
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["app/app.js"]
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["background.js"]
+      "js": ["app/app.js"]
     }
   ],
   "browser_action": {
       "default_title": "starmarks",
-      "default_icon": "icon.png",
-      "default_popup": "popup.html"
+      "default_icon": "app/assets/img/icon.png",
+      "default_popup": "app/popup/popup.html"
 
   },
   "manifest_version": 2,

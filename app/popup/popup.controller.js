@@ -1,4 +1,6 @@
-app.controller('popup', function($scope, StarMarks) {
+
+angular.module('app.popup')
+.controller('popup', function($scope, StarMarks) {
   $scope.newStarmark = {};
 
   $scope.addBookmark = function(){
@@ -44,7 +46,7 @@ app.controller('popup', function($scope, StarMarks) {
 
   $scope.openManager = function(){
     chrome.tabs.create({
-      url: 'starManager.html'
+      url: 'app/main/star-manager.html'
     });
   };
 
