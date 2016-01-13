@@ -8,7 +8,7 @@ angular.module('app')
 			id: "=",
 			update: "="
 		},
-		templateUrl: '../components/starSelector/starSelector.html'
+		templateUrl: '../components/star-selector/star-selector.html'
 	};
 })
 

@@ -46,7 +46,7 @@ angular.module('app.popup')
 
   $scope.openManager = function(){
     chrome.tabs.create({
-      url: 'app/main/starManager.html'
+      url: 'app/main/star-manager.html'
     });
   };
 
