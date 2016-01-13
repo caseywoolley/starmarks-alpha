@@ -5,16 +5,8 @@
   <title>StarMarks</title>
   <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" href="starManager.css">
-  <link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script src="assets/js/angular.min.js"></script>
-  <script src="assets/js/ng-infinite-scroll.min.js"></script>
-  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-  <script src="assets/js/underscore-min.js"></script>
-  <script src="starManager.js"></script>
-  <script src="starMarks.js"></script>
-  <script src="starSelector.js"></script>
+  <link rel="stylesheet" type="text/css" href="../assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="../assets/css/font-awesome.min.css">
 </head>
 
 <body ng-app="app" ng-controller="starManager">
@@ -46,7 +38,7 @@
 
       <!-- <div star-selector></div> -->
 
-      <img class="loader text-center" src="assets/img/loading.gif" ng-show="loading">
+      <img class="loader text-center" src="../assets/img/loading.gif" ng-show="loading">
 
       <table class="table starmarks" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance=".5">
         <thead>
@@ -91,6 +83,15 @@
     </div>
   </div>
 
+  <script src="../assets/js/jquery.min.js"></script>
+  <script src="../assets/js/angular.min.js"></script>
+  <script src="../assets/js/ng-infinite-scroll.min.js"></script>
+  <script src="../assets/js/underscore-min.js"></script>
+
+  <script src="../app.js"></script>
+  <script src="../services/starmarks.service.js"></script>
+  <script src="../components/starSelector/starSelector.js"></script>
+  <script src="starManager.js"></script>
 
 </body>
 </html>

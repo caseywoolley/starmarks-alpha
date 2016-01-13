@@ -1,4 +1,5 @@
-app.directive('starSelector', function(){
+angular.module('app')
+.directive('starSelector', function(){
 	
 	return {
 		restrict: 'EA',
@@ -7,12 +8,11 @@ app.directive('starSelector', function(){
 			id: "=",
 			update: "="
 		},
-		//templateUrl points to an external html template.
-		templateUrl: 'starSelector.html'
+		templateUrl: '../components/starSelector/starSelector.html'
 	};
-});
+})
 
-app.filter('objectKeys', function () {
+.filter('objectKeys', function () {
     return function (object) {
         var keys = Object.keys(object);
         return keys;
