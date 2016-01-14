@@ -6,6 +6,8 @@ angular.module('app.main')
   $scope.filteredBookmarks = [];
   $scope.displayedBookmarks = [];
   $scope.filters = {};
+  $scope.minRating = {};
+  $scope.maxRating = {};
   $scope.searchQuery = '';
   $scope.loading = true;
   var revSort = false;
@@ -14,6 +16,10 @@ angular.module('app.main')
   var sortBy = 'rating';
 
 
+  $scope.ratingSelect = function(){
+    $scope.maxRating.stars = Math.max($scope.minRating.stars, $scope.maxRating.stars);
+    $scope.filterBookmarks();
+  };
 
   $scope.getAll = function() {
     $scope.loading = true;
@@ -54,6 +60,7 @@ angular.module('app.main')
 
   $scope.filterBookmarks = function() {
     $scope.filters = {};
+    $scope.filters.rating = [$scope.minRating.stars, $scope.maxRating.stars];
     var searchArr = $scope.searchQuery.split(/\s+/);
     var text = [];
     for (i = 0; i < searchArr.length; i++) {

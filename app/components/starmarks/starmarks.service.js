@@ -167,10 +167,10 @@ angular.module('app')
             
 
             //if starMark doesn't exist - add default starMark entry
-            if (starMark === undefined) {
+            if (starMark === undefined || starMark.stars === 0) {
               starMark = {
-                stars: 0,
-                visits: 0,
+                stars: 1,
+                visits: 1,
               };
               var url = node.url;
               var saveMark = {};
