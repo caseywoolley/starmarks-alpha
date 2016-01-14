@@ -18,9 +18,16 @@
         <div class="form-group" style="display:inline;">
           <div class="input-group" style="display:table;">
             <span class="input-group-addon" style="width:1%;"><span class="glyphicon glyphicon-search"></span></span>
-            <input class="form-control" name="search" placeholder="Search" autocomplete="off" autofocus="autofocus" type="text" ng-model="searchQuery" ng-change="filterBookmarks()">
+            <input class="form-control" name="search" placeholder="Search" autocomplete="off" autofocus="autofocus" type="text" ng-model="filters.text">
+
+            <span class="input-group-addon" style="width:1%;"><span class="glyphicon glyphicon-search"></span></span>
+            <input class="form-control" name="search" placeholder="Search" autocomplete="off" autofocus="autofocus" type="text" ng-model="filters.exclude">
           </div>
-          <div class="bookmark-count">{{allBookmarks.length}} Found</div>
+
+          <div class="bookmark-count">{{filteredBookmarks.length}} Found</div>
+          <select ng-model="filters.tag"
+            ng-options="tag for tag in getTags()">
+          </select>
         </div>
       </form>
       <!-- <div class="plan-date-selector">
@@ -43,17 +50,17 @@
         <tbody>
           <tr>
             <td>
-              <div star-selector bookmark="minRating" id="'minRating'" update="ratingSelect">
+              <div star-selector bookmark="filters.stars" rating="filters.stars.min" id="'minRating'" update="ratingSelect">
               </div>
             </td>
             <td>
-              <div star-selector bookmark="maxRating" id="'maxRating'" update="ratingSelect">
+              <div star-selector bookmark="filters.stars" rating="filters.stars.max" id="'maxRating'" update="ratingSelect">
               </div>
             </td>
           </tr>
         </tbody>
       </table>
-      {{minRating}} {{maxRating}} {{filters}}
+      filters: {{filters}}
       <img class="loader text-center" src="../assets/img/loading.gif" ng-show="loading">
       <table class="table starmarks" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance=".5">
         <thead>
@@ -67,7 +74,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="bookmark in allBookmarks | limitTo: displayCount track by $index">
+          <tr ng-repeat="bookmark in filteredBookmarks = (
+            allBookmarks 
+            | rangeFilter: filters.stars
+            | filter: filters.text
+            | filter: filters.tag
+            )| limitTo: displayCount 
+            track by $index">
             <div ng-hide="displayedBookmarks.length">
               <td><img class="favicon" ng-src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>
               <td class="bm-title clip-text" ng-click="bookmarkClicked(bookmark)">
@@ -77,7 +90,7 @@
                 </div>
               </td>
               <td class="bm-rating">
-                <div star-selector bookmark="bookmark" id="$index" update="update">
+                <div star-selector bookmark="bookmark" rating="bookmark.stars" id="$index" update="update">
                 </div>
               </td>
               <td>{{ timeSince(bookmark.dateAdded) }}</td>

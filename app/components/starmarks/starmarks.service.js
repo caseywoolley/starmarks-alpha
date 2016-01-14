@@ -11,6 +11,7 @@ angular.module('app')
 
   var loading = false;
   var allBookmarks = [];
+  var allTags = {};
 
   var add = function(tab, rating) {
     rating = rating || 0;
@@ -203,7 +204,7 @@ angular.module('app')
             }
             //push tags to starMark
             if (currentTag !== undefined){
-              starMark.tags[currentTag] = true;
+              starMark.tags[currentTag] = currentTag;
             }
 
 
@@ -217,7 +218,7 @@ angular.module('app')
           } else {
             //else add tag if doesn't exist 
             currentTag = node.title.toLowerCase();
-            tagIds[node.title.toLowerCase()] = node.id;
+            tagIds[node.title.toLowerCase()] = currentTag.split(' ')[0];
           }
 
           //recurse
@@ -241,6 +242,7 @@ angular.module('app')
         allBookmarks = arrList;
         callback(arrList);
         console.log('tags:', tagIds);
+        allTags = tagIds;
         loading = false;
       });
     });
@@ -358,7 +360,9 @@ angular.module('app')
     deleteBookmark, deleteBookmark,
     filter: filter,
   	loading: loading,
-    allBookmarks: allBookmarks
+    allBookmarks: allBookmarks,
+    allTags: allTags,
+    getTags: function(){return allTags; }
   };
 
 });

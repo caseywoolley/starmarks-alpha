@@ -4,6 +4,8 @@ angular.module('app.main')
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
   $scope.filters = {};
+  $scope.filters.stars = {min: 1, max: 5, prop: 'stars'};
+  $scope.starRange = { prop: 'stars'};
   $scope.minRating = {};
   $scope.maxRating = {};
   $scope.searchQuery = '';
@@ -13,11 +15,17 @@ angular.module('app.main')
   $scope.predicate = 'stars';
   $scope.sortColumn = 'dateAdded';
   $scope.displayCount = "0";
+  $scope.getTags = StarMarks.getTags;
 
 
   $scope.ratingSelect = function(){
-    $scope.maxRating.stars = Math.max($scope.minRating.stars, $scope.maxRating.stars);
-    $scope.filterBookmarks();
+    console.log($scope.filters)
+    //TODO: fix display update issue when selecting a max below minimum
+    //$scope.filters.max.stars =  Math.max($scope.filters.min.stars, $scope.filters.max.stars);
+    //$scope.starRange.min = $scope.filters.min.stars;
+    //$scope.starRange.max = $scope.filters.max.stars;
+    //$scope.updateFilter();
+    $scope.resetDisplay();
   };
 
   $scope.getAll = function() {
@@ -45,9 +53,29 @@ angular.module('app.main')
     StarMarks.update(bookmark);
   };
 
+  $scope.applyFilters = function(bookmarks, filters){
+    var filtered = bookmarks;
+    filters.stars.prop = 'stars';
+    filtered = $filter('rangeFilter')(filtered, filters.stars);
+    return filtered;
+  };
+
+  $scope.updateFilter = function(){
+    $scope.allBookmarks = $filter('orderBy')($scope.allBookmarks, $scope.sortColumn);
+  };
+
+  $scope.filterBookmarks = function() {
+
+  };
+
+  $scope.resetDisplay = function(){
+    $scope.displayCount = '0';
+    $scope.displayBookmarks();
+  };
+
   $scope.filterBookmarks = function() {
     $scope.filters = {};
-    $scope.filters.rating = [$scope.minRating.stars, $scope.maxRating.stars];
+    //$scope.filters.rating = [$scope.minRating.stars, $scope.maxRating.stars];
     var searchArr = $scope.searchQuery.split(/\s+/);
     var text = [];
     for (i = 0; i < searchArr.length; i++) {
@@ -65,10 +93,7 @@ angular.module('app.main')
     //filter results by filter object
     console.log(StarMarks.filter($scope.filters));
     $scope.allBookmarks = StarMarks.filter($scope.filters);
-
-    //reset displayed
-    $scope.displayCount = '0';
-    $scope.displayBookmarks();
+    $scope.resetDisplay();
   };
 
   $scope.sortBookmarks = function(column){
@@ -76,9 +101,7 @@ angular.module('app.main')
     if ($scope.sortColumn === desc + column){ desc = ''; }
     $scope.sortColumn = desc + column;
     $scope.allBookmarks = $filter('orderBy')($scope.allBookmarks, $scope.sortColumn);
-    //reset displayed
-    $scope.displayCount = '0';
-    $scope.displayBookmarks();
+    $scope.resetDisplay();
   };
 
   $scope.displayBookmarks = function() {
@@ -127,13 +150,11 @@ angular.module('app.main')
     }
   };
 
-  $scope.$watchGroup('allBookmarks', debounceSaveUpdates);
+  //$scope.$watchGroup('allBookmarks', debounceSaveUpdates);
 
 
 
   $scope.getAll();
-
-
 
 
 // http://stackoverflow.com/questions/1248302/javascript-object-size
@@ -164,7 +185,6 @@ var roughSizeOfObject = function(object) {
   }
   return bytes;
 };
-
   // $scope.getFavicon = function(url){
   //   return 'http://' + new URL(url).hostname + '/favicon.ico';
   // };

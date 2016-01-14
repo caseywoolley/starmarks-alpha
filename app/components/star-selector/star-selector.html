@@ -1,12 +1,12 @@
 <fieldset class="rating" name="{{ bookmark.url }}" id="rating{{ id }}">
-	<input type="radio" id="star5-{{ id }}" ng-model="bookmark.stars" ng-change="update(bookmark)" ng-checked="{{bookmark.stars == 5}}" name="rating-{{ id }}" value="5" integer />
+	<input type="radio" id="star5-{{ id }}" ng-model="rating" ng-change="update(bookmark)" ng-checked="{{rating == 5}}" name="rating-{{ id }}" value="5" integer />
 	<label class = "full star" id = "5" for="star5-{{ id }}" title="Awesome - 5 stars"></label>
-	<input type="radio" id="star4-{{ id }}" ng-model="bookmark.stars" ng-change="update(bookmark)" ng-checked="{{bookmark.stars == 4}}" name="rating-{{ id }}" value="4" integer />
+	<input type="radio" id="star4-{{ id }}" ng-model="rating" ng-change="update(bookmark)" ng-checked="{{rating == 4}}" name="rating-{{ id }}" value="4" integer />
 	<label class = "full star" id = "4" for="star4-{{ id }}" title="Pretty good - 4 stars"></label>
-	<input type="radio" id="star3-{{ id }}" ng-model="bookmark.stars" ng-change="update(bookmark)" ng-checked="{{bookmark.stars == 3}}" name="rating-{{ id }}" value="3" integer />
+	<input type="radio" id="star3-{{ id }}" ng-model="rating" ng-change="update(bookmark)" ng-checked="{{rating == 3}}" name="rating-{{ id }}" value="3" integer />
 	<label class = "full star" id = "3" for="star3-{{ id }}" title="Meh - 3 stars"></label>
-	<input type="radio" id="star2-{{ id }}" ng-model="bookmark.stars" ng-change="update(bookmark)" ng-checked="{{bookmark.stars == 2}}" name="rating-{{ id }}" value="2" integer />
+	<input type="radio" id="star2-{{ id }}" ng-model="rating" ng-change="update(bookmark)" ng-checked="{{rating == 2}}" name="rating-{{ id }}" value="2" integer />
 	<label class = "full star" id = "2" for="star2-{{ id }}" title="Kinda bad - 2 stars"></label>
-	<input type="radio" id="star1-{{ id }}" ng-model="bookmark.stars" ng-change="update(bookmark)" ng-checked="{{bookmark.stars == 1}}" name="rating-{{ id }}" value="1" integer />
+	<input type="radio" id="star1-{{ id }}" ng-model="rating" ng-change="update(bookmark)" ng-checked="{{rating == 1}}" name="rating-{{ id }}" value="1" integer />
 	<label class = "full star" id = "1" for="star1-{{ id }}" title="Sucks big time - 1 star"></label>
 </fieldset>
