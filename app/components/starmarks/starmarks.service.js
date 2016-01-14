@@ -164,13 +164,13 @@ angular.module('app')
           //base - add bookmark if has url
           if (node.url !== undefined) {
             var starMark = starData[node.url];
-            
 
             //if starMark doesn't exist - add default starMark entry
             if (starMark === undefined || starMark.stars === 0) {
               starMark = {
                 stars: 1,
                 visits: 1,
+                lastVisit: node.dateAdded
               };
               var url = node.url;
               var saveMark = {};
@@ -181,6 +181,17 @@ angular.module('app')
               });
             }
 
+            //temporary - fix inconsistent values
+            if (starMark.visits === 0){
+              starMark.visits = 1;
+            }
+            if (typeof starMark.stars === 'string'){
+              starMark.stars = parseInt(starMark.stars);
+            }
+
+            if (starMark.lastVisit === undefined){
+              starMark.lastVisit = node.dateAdded;
+            }
 
             //temporary - add tags object
             if (starMark.tags === undefined || Array.isArray(starMark.tags)){

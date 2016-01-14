@@ -1,5 +1,5 @@
 angular.module('app.main')
-  .controller('starManager', function($scope, $timeout, StarMarks) {
+  .controller('starManager', function($scope, $timeout, $filter, StarMarks) {
 
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
@@ -13,7 +13,7 @@ angular.module('app.main')
   var revSort = false;
   $scope.reverse = true;
   $scope.predicate = 'stars';
-  var sortBy = 'rating';
+  $scope.sortColumn = '-dateAdded';
 
 
   $scope.ratingSelect = function(){
@@ -87,24 +87,17 @@ angular.module('app.main')
     //}
   };
 
-  $scope.sortBookmarks = function(column) {
-    if (sortBy !== column) {
-      sortBy = column;
-      var compare = function(a, b) {
-        //console.log(parseInt(a[column]), parseInt(b[column]));
-        if (a[column] < b[column])
-          return -1;
-        if (a[column] > b[column])
-          return 1;
-        return 0;
-      };
-      $scope.allBookmarks.sort(compare);
-    }
-    $scope.allBookmarks.reverse();
+  $scope.sortBookmarks = function(column){
+    var desc = '-';
+    if ($scope.sortColumn === desc + column){ desc = ''; }
+    $scope.sortColumn = desc + column;
+    console.log($scope.sortColumn)
+    $scope.allBookmarks = $filter('orderBy')($scope.allBookmarks, $scope.sortColumn);
+
+    //redisplay
     $scope.displayedBookmarks = [];
     $scope.displayBookmarks();
   };
-
 
   $scope.displayBookmarks = function() {
     if ($scope.displayedBookmarks.length < $scope.allBookmarks.length){
