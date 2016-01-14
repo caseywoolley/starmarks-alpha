@@ -3,7 +3,6 @@ angular.module('app.main')
 
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
-  $scope.displayedBookmarks = [];
   $scope.filters = {};
   $scope.minRating = {};
   $scope.maxRating = {};
@@ -13,6 +12,7 @@ angular.module('app.main')
   $scope.reverse = true;
   $scope.predicate = 'stars';
   $scope.sortColumn = 'dateAdded';
+  $scope.displayCount = "0";
 
 
   $scope.ratingSelect = function(){
@@ -34,9 +34,7 @@ angular.module('app.main')
 
   $scope.deleteBookmark = function(bookmark, index){
     StarMarks.deleteBookmark(bookmark);
-    console.log($scope.displayedBookmarks[index]);
-    
-    $scope.displayedBookmarks.splice(index, 1);
+    console.log('deleted',$scope.allBookmarks[index]);
     $scope.allBookmarks.splice(index, 1);
   };
 
@@ -68,8 +66,8 @@ angular.module('app.main')
     console.log(StarMarks.filter($scope.filters));
     $scope.allBookmarks = StarMarks.filter($scope.filters);
 
-
-    $scope.displayedBookmarks = [];
+    //reset displayed
+    $scope.displayCount = '0';
     $scope.displayBookmarks();
   };
 
@@ -78,25 +76,17 @@ angular.module('app.main')
     if ($scope.sortColumn === desc + column){ desc = ''; }
     $scope.sortColumn = desc + column;
     $scope.allBookmarks = $filter('orderBy')($scope.allBookmarks, $scope.sortColumn);
-    //redisplay
-    $scope.displayedBookmarks = [];
+    //reset displayed
+    $scope.displayCount = '0';
     $scope.displayBookmarks();
   };
 
   $scope.displayBookmarks = function() {
-    if ($scope.displayedBookmarks.length < $scope.allBookmarks.length){
-      var perPage = Math.min(20, $scope.allBookmarks.length);
-      $scope.checkedStar = {};
-      var last = $scope.displayedBookmarks.length;
-      console.log('more');
-      for (var i = last; i < last + perPage; i++) {
-        $scope.displayedBookmarks.push($scope.allBookmarks[i]);
-        if ($scope.allBookmarks[i] && $scope.allBookmarks[i].stars ){
-          //checkmark variable
-          $scope.checkedStar[$scope.allBookmarks[i].stars] = true;
-        }
-      }
+    var perPage = 20;
+    if ($scope.displayCount < $scope.allBookmarks.length){
+      $scope.displayCount = '' + (parseInt($scope.displayCount) + perPage);
     }
+    console.log($scope.displayCount)
   };
 
   //TODO: convert to filter

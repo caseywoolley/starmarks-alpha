@@ -67,7 +67,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="bookmark in displayedBookmarks track by $index">
+          <tr ng-repeat="bookmark in allBookmarks | limitTo: displayCount track by $index">
             <div ng-hide="displayedBookmarks.length">
               <td><img class="favicon" ng-src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>
               <td class="bm-title clip-text" ng-click="bookmarkClicked(bookmark)">
