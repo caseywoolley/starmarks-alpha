@@ -3,7 +3,6 @@ angular.module('app.main')
 
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
-  $scope.filteredBookmarks = [];
   $scope.displayedBookmarks = [];
   $scope.filters = {};
   $scope.minRating = {};
@@ -13,7 +12,7 @@ angular.module('app.main')
   var revSort = false;
   $scope.reverse = true;
   $scope.predicate = 'stars';
-  $scope.sortColumn = '-dateAdded';
+  $scope.sortColumn = 'dateAdded';
 
 
   $scope.ratingSelect = function(){
@@ -27,17 +26,7 @@ angular.module('app.main')
 
     StarMarks.getBookmarkList(function(bookmarks) {
       $scope.allBookmarks = bookmarks;
-      //make a filter function for this
-      //http://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value-in-javascript
-      function compare(a, b) {
-        if (a.stars < b.stars)
-          return -1;
-        if (a.stars > b.stars)
-          return 1;
-        return 0;
-      }
-      $scope.allBookmarks.sort(compare).reverse();
-
+      $scope.sortBookmarks($scope.sortColumn);
       $scope.loading = false;
       $scope.$apply();
     });
@@ -79,21 +68,16 @@ angular.module('app.main')
     console.log(StarMarks.filter($scope.filters));
     $scope.allBookmarks = StarMarks.filter($scope.filters);
 
-    //TODO: switch to using filteredbookmarks as source
-    //if ($scope.allBookmarks.length !== $scope.filteredBookmarks.length){
 
     $scope.displayedBookmarks = [];
     $scope.displayBookmarks();
-    //}
   };
 
   $scope.sortBookmarks = function(column){
     var desc = '-';
     if ($scope.sortColumn === desc + column){ desc = ''; }
     $scope.sortColumn = desc + column;
-    console.log($scope.sortColumn)
     $scope.allBookmarks = $filter('orderBy')($scope.allBookmarks, $scope.sortColumn);
-
     //redisplay
     $scope.displayedBookmarks = [];
     $scope.displayBookmarks();
@@ -115,6 +99,7 @@ angular.module('app.main')
     }
   };
 
+  //TODO: convert to filter
   $scope.timeSince = function(timeStamp) {
     var now = new Date();
     timeStamp = new Date(timeStamp);
