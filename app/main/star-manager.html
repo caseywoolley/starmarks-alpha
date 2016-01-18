@@ -7,6 +7,7 @@
   <link rel="stylesheet" type="text/css" href="star-manager.css">
   <link rel="stylesheet" type="text/css" href="../assets/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="../assets/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="../assets/css/angular-advanced-searchbox.min.css">
 </head>
 
 <body ng-app="app" ng-controller="starManager">
@@ -14,7 +15,7 @@
     <h1 class="main-logo">StarMarks</h1></header>
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
-      <form class="navbar-form" ng-submit="addFilter(search.text)">
+      <!-- <form class="navbar-form" ng-submit="addFilter(search.text)">
         <div class="form-group" style="display:inline;">
           <div class="input-group" style="display:table;">
             <span  class="input-group-addon" style="width:1%;"><button type="submit" class="glyphicon glyphicon-search"></button></span>
@@ -30,6 +31,19 @@
           </select>
         </div>
       </form>
+    Search Box -->
+
+      <nit-advanced-searchbox
+    ng-model="search"
+    parameters="availableSearchParams"
+    parameters-label="Advanced Search"
+    placeholder="Search..."
+    search-throttle-time="1">
+
+    </nit-advanced-searchbox>
+    <div class="bookmark-count">{{filteredBookmarks.length}} Found</div>
+    {{search}}
+    {{getMax('stars')}}
       <!-- <div class="plan-date-selector">
         <a href="#" class="prev"><i class="fa fa-angle-left"></i></a>
         <div class="date-input-container">
@@ -40,7 +54,7 @@
         </div>
         <a href="#" class="next"><i class="fa fa-angle-right"></i></a>
       </div> -->
-      <table class="table starmarks">
+      <!-- <table class="table starmarks">
         <thead>
           <tr>
             <th>Min</th>
@@ -60,7 +74,8 @@
           </tr>
         </tbody>
       </table>
-      filters: {{filters}}
+      filters: {{filters}} -->
+
       <img class="loader text-center" src="../assets/img/loading.gif" ng-show="loading">
       <table class="table starmarks" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance=".5">
         <thead>
@@ -78,7 +93,14 @@
              -->
           <tr ng-repeat="bookmark in filteredBookmarks = (
             allBookmarks 
-            | filter: search.text
+            | filter: search.query
+            | filter: {title: search.title}
+            | arrayFilter: {tags: search.tags}
+            | rangeFilter: {stars: search.stars}
+            | rangeFilter: {visits: search.visits}
+            | rangeFilter: {dateAdded: search.dateAdded} : 'date'
+            | rangeFilter: {lastVisit: search.lastVisit} : 'date'
+
             )| limitTo: displayCount 
             track by $index">
             <div ng-hide="displayedBookmarks.length">
@@ -112,6 +134,7 @@
   <script src="../assets/js/underscore-min.js"></script>
   <script src="../app.js"></script>
   <script src="../components/starmarks/starmarks.service.js"></script>
+  <script src="../components/searchbox/angular-advanced-searchbox.directive.js"></script>
   <script src="../components/star-selector/star-selector.directive.js"></script>
   <script src="star-manager.controller.js"></script>
 </body>

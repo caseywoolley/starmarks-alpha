@@ -27,7 +27,7 @@ angular.module('app')
 
 .filter('applyFilters', function($filter) {
   return function(items, filters) {
-    if (filters.length === 0){
+    if (filters.length === 0) {
       return items;
     }
     var filtered = [];
@@ -48,7 +48,7 @@ angular.module('app')
         filtered = filtered.concat($filter('filter')(items, filterObj));
       } else if (type === 'tag') {
         //console.log(filterObj)
-          //filter for tags object
+        //filter for tags object
       } else {
         //build filter object for ranges
         //TODO: handle non ranges and +/- markers
@@ -72,17 +72,76 @@ angular.module('app')
   };
 })
 
-.filter('rangeFilter', function() {
-  return function(items, range) {
-    var filtered = [];
-    angular.forEach(items, function(item) {
-      if (item[range.prop] >= range.min && item[range.prop] <= range.max) {
-        filtered.push(item);
+.filter('arrayFilter', function() {
+  return function(items, tags) {
+    var prop = Object.keys(tags)[0];
+    tags = tags[prop];
+    if (tags === undefined || tags.length === 0) {
+      return items;
+    }
+    return items.filter(function(item) {
+      var itemTags = Object.keys(item[prop]);
+      //console.log(itemTags)
+      for (var i = 0; i < itemTags.length; i++){
+        var tag = itemTags[i];
+        if (tag.indexOf(tags) !== -1 || tags.indexOf(tag) !== -1) {return true;}
       }
+      return false;
     });
-    return filtered;
   };
 })
+
+.filter('rangeFilter', function() {
+  return function(items, range, type) {
+    var prop = Object.keys(range)[0];
+    var noMax = false;
+    if (range[prop] === undefined) {
+      return items;
+    }
+    var values = range[prop].split(/\s*-\s*/);
+    var min = values[0];
+    var max = values[1];
+    if (!max) {
+      max = min;
+    }
+    if (min.indexOf('+') !== -1) {
+      min = min.substring(0, min.length - 1);
+      noMax = true;
+    }
+    //handle dates
+    if (type === 'date'){
+      min = new Date(min).getTime();
+      max = new Date(max).getTime();
+
+      //TODO: handle invalid, year only, days, hours, months
+      if ( ('' + values[0]).length < 4){
+        return items;
+      }
+      if (('' + values[0]).length === 4 && min === max) {
+        max = min + (1000 * 60 * 60 * 24 * 365);
+        max = new Date(max).getTime();
+      }
+      console.log(new Date(min));
+      console.log(new Date(max));
+      console.log(max);
+    }
+
+    return items.filter(function(item) {
+      if (noMax){
+        return (item[prop] >= min);
+      }
+      return (item[prop] >= min && item[prop] <= max);
+    });
+  };
+})
+
+// .filter('rangeFilter', function() {
+//   return function(items, range) {
+//     return items.filter(function(item){
+//       return (item[range.prop] >= range.min && item[range.prop] <= range.max);
+//     });
+//   };
+// })
 
 .filter('objectKeys', function() {
   return function(object) {

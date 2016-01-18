@@ -3,7 +3,7 @@ angular.module('app.main')
 
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
-  $scope.search = {text: 'text:'};
+  $scope.search = {};
   //'text: web', 'text: casey', 'text: bob', 'stars: 3-5'
   $scope.filters = [];
   //$scope.filters.stars = {min: 1, max: 5, prop: 'stars'};
@@ -19,6 +19,28 @@ angular.module('app.main')
   $scope.displayCount = "0";
   $scope.getTags = StarMarks.getTags;
 
+  $scope.availableSearchParams = [
+          { key: "stars", name: "Rating", placeholder: "2-4, 5..." },
+          { key: "visits", name: "Visits", placeholder: "Visits..." },
+          { key: "dateAdded", name: "Date Added", placeholder: "Date Added..." },
+          { key: "lastVisit", name: "Last Visited", placeholder: "Last Visited..." },
+          { key: "tags", name: "Tags", suggestedValues: ['tag','tag2'], placeholder: "tag1, tag2" },
+          { key: "title", name: "Title", placeholder: "Title..." },
+        ];
+
+  $scope.searchData = function(data){
+    var search = data;
+    var range;
+    if (search.stars){
+      range = search.stars.split(/\s*-\s*/);
+      search.starsRange = {prop: 'stars', min: range[0], max: range[1] };
+    }
+  };
+
+  $scope.getMax = function(field){
+    var max = _.max($scope.allBookmarks, _.property(field));
+    return max[field];
+  };
 
   $scope.allFilters = function(){
     if ($scope.search.text.split(':')[1] !== '') {
