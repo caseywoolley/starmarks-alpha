@@ -14,13 +14,13 @@
     <h1 class="main-logo">StarMarks</h1></header>
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
-      <form class="navbar-form">
+      <form class="navbar-form" ng-submit="addFilter(search.text)">
         <div class="form-group" style="display:inline;">
           <div class="input-group" style="display:table;">
-            <span class="input-group-addon" style="width:1%;"><span class="glyphicon glyphicon-search"></span></span>
-            <input class="form-control" name="search" placeholder="Search" autocomplete="off" autofocus="autofocus" type="text" ng-model="filters.text">
+            <span  class="input-group-addon" style="width:1%;"><button type="submit" class="glyphicon glyphicon-search"></button></span>
+            <input class="form-control" name="search" placeholder="Search" autocomplete="off" autofocus="autofocus" type="text" ng-model="search.text">
 
-            <span class="input-group-addon" style="width:1%;"><span class="glyphicon glyphicon-search"></span></span>
+            <span class="input-group-addon" style="width:1%;"><span type="submit" class="glyphicon glyphicon-search"></span></span>
             <input class="form-control" name="search" placeholder="Search" autocomplete="off" autofocus="autofocus" type="text" ng-model="filters.exclude">
           </div>
 
@@ -74,11 +74,11 @@
           </tr>
         </thead>
         <tbody>
+            <!--| applyFilters: allFilters() 
+             -->
           <tr ng-repeat="bookmark in filteredBookmarks = (
             allBookmarks 
-            | rangeFilter: filters.stars
-            | filter: filters.text
-            | filter: filters.tag
+            | filter: search.text
             )| limitTo: displayCount 
             track by $index">
             <div ng-hide="displayedBookmarks.length">

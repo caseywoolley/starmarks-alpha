@@ -3,8 +3,10 @@ angular.module('app.main')
 
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
-  $scope.filters = {};
-  $scope.filters.stars = {min: 1, max: 5, prop: 'stars'};
+  $scope.search = {text: 'text:'};
+  //'text: web', 'text: casey', 'text: bob', 'stars: 3-5'
+  $scope.filters = [];
+  //$scope.filters.stars = {min: 1, max: 5, prop: 'stars'};
   $scope.starRange = { prop: 'stars'};
   $scope.minRating = {};
   $scope.maxRating = {};
@@ -17,6 +19,20 @@ angular.module('app.main')
   $scope.displayCount = "0";
   $scope.getTags = StarMarks.getTags;
 
+
+  $scope.allFilters = function(){
+    if ($scope.search.text.split(':')[1] !== '') {
+      return $scope.filters.concat([$scope.search.text]);
+    } else {
+      return $scope.filters;
+    }
+  };
+
+  $scope.addFilter = function(filter){
+    console.log('add')
+    $scope.filters.push(filter);
+    $scope.search.text = 'text:';
+  };
 
   $scope.ratingSelect = function(){
     console.log($scope.filters)
