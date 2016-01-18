@@ -1,19 +1,70 @@
 angular.module('app.main')
-  .controller('starManager', function($scope, $timeout, StarMarks) {
+  .controller('starManager', function($scope, $timeout, $filter, StarMarks) {
 
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
-  $scope.filteredBookmarks = [];
-  $scope.displayedBookmarks = [];
-  $scope.filters = {};
+  $scope.search = {};
+  //'text: web', 'text: casey', 'text: bob', 'stars: 3-5'
+  $scope.filters = [];
+  //$scope.filters.stars = {min: 1, max: 5, prop: 'stars'};
+  $scope.starRange = { prop: 'stars'};
+  $scope.minRating = {};
+  $scope.maxRating = {};
   $scope.searchQuery = '';
   $scope.loading = true;
   var revSort = false;
   $scope.reverse = true;
   $scope.predicate = 'stars';
-  var sortBy = 'rating';
+  $scope.sortColumn = 'dateAdded';
+  $scope.displayCount = "0";
+  $scope.getTags = StarMarks.getTags;
 
+  $scope.availableSearchParams = [
+          { key: "stars", name: "Rating", placeholder: "2-4, 5..." },
+          { key: "visits", name: "Visits", placeholder: "Visits..." },
+          { key: "dateAdded", name: "Date Added", placeholder: "Date Added..." },
+          { key: "lastVisit", name: "Last Visited", placeholder: "Last Visited..." },
+          { key: "tags", name: "Tags", suggestedValues: ['tag','tag2'], placeholder: "tag1, tag2" },
+          { key: "title", name: "Title", placeholder: "Title..." },
+        ];
 
+  $scope.searchData = function(data){
+    var search = data;
+    var range;
+    if (search.stars){
+      range = search.stars.split(/\s*-\s*/);
+      search.starsRange = {prop: 'stars', min: range[0], max: range[1] };
+    }
+  };
+
+  $scope.getMax = function(field){
+    var max = _.max($scope.allBookmarks, _.property(field));
+    return max[field];
+  };
+
+  $scope.allFilters = function(){
+    if ($scope.search.text.split(':')[1] !== '') {
+      return $scope.filters.concat([$scope.search.text]);
+    } else {
+      return $scope.filters;
+    }
+  };
+
+  $scope.addFilter = function(filter){
+    console.log('add')
+    $scope.filters.push(filter);
+    $scope.search.text = 'text:';
+  };
+
+  $scope.ratingSelect = function(){
+    console.log($scope.filters)
+    //TODO: fix display update issue when selecting a max below minimum
+    //$scope.filters.max.stars =  Math.max($scope.filters.min.stars, $scope.filters.max.stars);
+    //$scope.starRange.min = $scope.filters.min.stars;
+    //$scope.starRange.max = $scope.filters.max.stars;
+    //$scope.updateFilter();
+    $scope.resetDisplay();
+  };
 
   $scope.getAll = function() {
     $scope.loading = true;
@@ -21,17 +72,7 @@ angular.module('app.main')
 
     StarMarks.getBookmarkList(function(bookmarks) {
       $scope.allBookmarks = bookmarks;
-      //make a filter function for this
-      //http://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value-in-javascript
-      function compare(a, b) {
-        if (a.stars < b.stars)
-          return -1;
-        if (a.stars > b.stars)
-          return 1;
-        return 0;
-      }
-      $scope.allBookmarks.sort(compare).reverse();
-
+      $scope.sortBookmarks($scope.sortColumn);
       $scope.loading = false;
       $scope.$apply();
     });
@@ -39,9 +80,7 @@ angular.module('app.main')
 
   $scope.deleteBookmark = function(bookmark, index){
     StarMarks.deleteBookmark(bookmark);
-    console.log($scope.displayedBookmarks[index]);
-    
-    $scope.displayedBookmarks.splice(index, 1);
+    console.log('deleted',$scope.allBookmarks[index]);
     $scope.allBookmarks.splice(index, 1);
   };
 
@@ -52,8 +91,29 @@ angular.module('app.main')
     StarMarks.update(bookmark);
   };
 
+  $scope.applyFilters = function(bookmarks, filters){
+    var filtered = bookmarks;
+    filters.stars.prop = 'stars';
+    filtered = $filter('rangeFilter')(filtered, filters.stars);
+    return filtered;
+  };
+
+  $scope.updateFilter = function(){
+    $scope.allBookmarks = $filter('orderBy')($scope.allBookmarks, $scope.sortColumn);
+  };
+
+  $scope.filterBookmarks = function() {
+
+  };
+
+  $scope.resetDisplay = function(){
+    $scope.displayCount = '0';
+    $scope.displayBookmarks();
+  };
+
   $scope.filterBookmarks = function() {
     $scope.filters = {};
+    //$scope.filters.rating = [$scope.minRating.stars, $scope.maxRating.stars];
     var searchArr = $scope.searchQuery.split(/\s+/);
     var text = [];
     for (i = 0; i < searchArr.length; i++) {
@@ -71,50 +131,26 @@ angular.module('app.main')
     //filter results by filter object
     console.log(StarMarks.filter($scope.filters));
     $scope.allBookmarks = StarMarks.filter($scope.filters);
-
-    //TODO: switch to using filteredbookmarks as source
-    //if ($scope.allBookmarks.length !== $scope.filteredBookmarks.length){
-
-    $scope.displayedBookmarks = [];
-    $scope.displayBookmarks();
-    //}
+    $scope.resetDisplay();
   };
 
-  $scope.sortBookmarks = function(column) {
-    if (sortBy !== column) {
-      sortBy = column;
-      var compare = function(a, b) {
-        //console.log(parseInt(a[column]), parseInt(b[column]));
-        if (a[column] < b[column])
-          return -1;
-        if (a[column] > b[column])
-          return 1;
-        return 0;
-      };
-      $scope.allBookmarks.sort(compare);
-    }
-    $scope.allBookmarks.reverse();
-    $scope.displayedBookmarks = [];
-    $scope.displayBookmarks();
+  $scope.sortBookmarks = function(column){
+    var desc = '-';
+    if ($scope.sortColumn === desc + column){ desc = ''; }
+    $scope.sortColumn = desc + column;
+    $scope.allBookmarks = $filter('orderBy')($scope.allBookmarks, $scope.sortColumn);
+    $scope.resetDisplay();
   };
-
 
   $scope.displayBookmarks = function() {
-    if ($scope.displayedBookmarks.length < $scope.allBookmarks.length){
-      var perPage = Math.min(20, $scope.allBookmarks.length);
-      $scope.checkedStar = {};
-      var last = $scope.displayedBookmarks.length;
-      console.log('more');
-      for (var i = last; i < last + perPage; i++) {
-        $scope.displayedBookmarks.push($scope.allBookmarks[i]);
-        if ($scope.allBookmarks[i] && $scope.allBookmarks[i].stars ){
-          //checkmark variable
-          $scope.checkedStar[$scope.allBookmarks[i].stars] = true;
-        }
-      }
+    var perPage = 20;
+    if ($scope.displayCount < $scope.allBookmarks.length){
+      $scope.displayCount = '' + (parseInt($scope.displayCount) + perPage);
     }
+    console.log($scope.displayCount)
   };
 
+  //TODO: convert to filter
   $scope.timeSince = function(timeStamp) {
     var now = new Date();
     timeStamp = new Date(timeStamp);
@@ -152,13 +188,11 @@ angular.module('app.main')
     }
   };
 
-  $scope.$watchGroup('allBookmarks', debounceSaveUpdates);
+  //$scope.$watchGroup('allBookmarks', debounceSaveUpdates);
 
 
 
   $scope.getAll();
-
-
 
 
 // http://stackoverflow.com/questions/1248302/javascript-object-size
@@ -189,7 +223,6 @@ var roughSizeOfObject = function(object) {
   }
   return bytes;
 };
-
   // $scope.getFavicon = function(url){
   //   return 'http://' + new URL(url).hostname + '/favicon.ico';
   // };

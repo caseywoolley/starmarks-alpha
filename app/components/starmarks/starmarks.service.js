@@ -11,6 +11,7 @@ angular.module('app')
 
   var loading = false;
   var allBookmarks = [];
+  var allTags = {};
 
   var add = function(tab, rating) {
     rating = rating || 0;
@@ -164,13 +165,13 @@ angular.module('app')
           //base - add bookmark if has url
           if (node.url !== undefined) {
             var starMark = starData[node.url];
-            
 
             //if starMark doesn't exist - add default starMark entry
-            if (starMark === undefined) {
+            if (starMark === undefined || starMark.stars === 0) {
               starMark = {
-                stars: 0,
-                visits: 0,
+                stars: 1,
+                visits: 1,
+                lastVisit: node.dateAdded
               };
               var url = node.url;
               var saveMark = {};
@@ -181,6 +182,17 @@ angular.module('app')
               });
             }
 
+            //temporary - fix inconsistent values
+            if (starMark.visits === 0){
+              starMark.visits = 1;
+            }
+            if (typeof starMark.stars === 'string'){
+              starMark.stars = parseInt(starMark.stars);
+            }
+
+            if (starMark.lastVisit === undefined){
+              starMark.lastVisit = node.dateAdded;
+            }
 
             //temporary - add tags object
             if (starMark.tags === undefined || Array.isArray(starMark.tags)){
@@ -192,7 +204,7 @@ angular.module('app')
             }
             //push tags to starMark
             if (currentTag !== undefined){
-              starMark.tags[currentTag] = true;
+              starMark.tags[currentTag] = currentTag;
             }
 
 
@@ -206,7 +218,7 @@ angular.module('app')
           } else {
             //else add tag if doesn't exist 
             currentTag = node.title.toLowerCase();
-            tagIds[node.title.toLowerCase()] = node.id;
+            tagIds[node.title.toLowerCase()] = currentTag.split(' ')[0];
           }
 
           //recurse
@@ -230,6 +242,7 @@ angular.module('app')
         allBookmarks = arrList;
         callback(arrList);
         console.log('tags:', tagIds);
+        allTags = tagIds;
         loading = false;
       });
     });
@@ -347,7 +360,9 @@ angular.module('app')
     deleteBookmark, deleteBookmark,
     filter: filter,
   	loading: loading,
-    allBookmarks: allBookmarks
+    allBookmarks: allBookmarks,
+    allTags: allTags,
+    getTags: function(){return allTags; }
   };
 
 });
