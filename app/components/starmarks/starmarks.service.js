@@ -1,74 +1,56 @@
 angular.module('app')
 .factory('StarMarks', function() {
 
-	//CRUD
-		//createAll, create
-		//getAll
-		//get(url, filter(title, url, ~tag, range(date, stars, last visit, visit count)))
-		//update(url, id, ~group)
-		//delete(url/id)
-  //recurse chrome bookmark tree
-
+  //TODO: convert to a background page service
   var loading = false;
   var allBookmarks = [];
   var allTags = {};
 
-  var add = function(tab, rating) {
-    rating = rating || 0;
-    //get bookmark data
+  var add = function(tab, rating, callback) {
+    rating = rating || 1;
+    //set default bookmark data
     var bookmark = {
       'parentId': '1',
       'title': tab.title,
       'url': tab.url
     };
-
-    //get star data
-    var starData = {
-      title: tab.title,
-      stars: rating,
-      visits: 0,
-      lastVisit: Date.now()
-    };
-
-    //save bookmark if doesn't exist
-    saveBookmark(bookmark);
-    //save star data
-    var key = bookmark.url;
-    saveStarData(bookmark.url, starData);
-  };
-
-  var saveBookmark = function(bookmark) {
-    //if bookmark doesn't exist save bookmark
+    //save chrome bookmark
     chrome.bookmarks.create(bookmark, function(newBookmark) {
-      console.log('added: ' + newBookmark.title);
-    });
-  };
-
-  var saveStarData = function(key, starObj) {
-    var starData = {};
-    starData[key] = starObj;
-    console.log(starData);
-    chrome.storage.local.set(starData, function() {
-      console.log('starData saved');
-    });
+      //build starmark data on returned chrome bookmark
+      var starData = newBookmark;
+      starData.stars = rating;
+      starData.visits = 1;
+      starData.lastVisit = Date.now();
+      
+      var saveObj = {};
+      saveObj[starData.url] = starData;
+      //save starmark data
+      chrome.storage.local.set(saveObj, function(data) {
+        callback(starData);
+        console.log('added:', starData);
+      });
+    });    
   };
 
   var get = function(url, callback) {
-    console.log('get');
     chrome.storage.local.get(url, function(data){
-      callback(data);
+      var url = Object.keys(data)[0];
+      console.log('got:', data[url]);
+      callback(data[url]);
     });
   };
 
-  var update = function(bookmark){
-    var id = bookmark.url;
-    chrome.storage.local.get(id, function(data) {
-    	if (data){
-        var updated = {};
-        updated[id] = bookmark;
-	    	console.log('update:', bookmark);
-	      chrome.storage.local.set(updated);
-    	}
+  var update = function(bookmark, callback){
+    //check if bookmark exists then update
+    get(bookmark.url, function(data) {
+      if (data){
+        var saveObj = {};
+        saveObj[bookmark.url] = bookmark;
+        chrome.storage.local.set(saveObj, function(){
+  	    	console.log('updated:', bookmark);
+          if (callback) { callback(bookmark); }
+        });
+      }
     });
   };
 
@@ -76,73 +58,10 @@ angular.module('app')
     var ids = bookmark.ids;
     for (var i = 0; i < ids.length; i++){
       chrome.bookmarks.remove(ids[i]);
-      console.log(ids[i]);
     }
-    console.log(bookmark.url);
+    console.log('deleted bookmark ids:', ids);
     chrome.storage.local.remove(bookmark.url);
-  };
-
-  var filter = function(filterObject){
-    var filterResults = [];
-    var compare = {};
-    //modify names
-    
-    //split object ranges
-    for (var filter in filterObject){
-      if (typeof filterObject[filter] === 'string'){
-
-      var range = filterObject[filter].split('-');
-      filterObject[filter] = range;
-      }
-    }
-
-    //pass on bookmarks that pass
-    for (var i = 0; i < allBookmarks.length; i++){
-      var bookmark = allBookmarks[i];
-      var addBookmark = true;
-      //run filter guantlet
-      if(passFilter(bookmark, filterObject)){
-        filterResults.push(bookmark);
-      }
-    }
-    return filterResults;
-  };
-
-  var passFilter = function(bookmark, filterObject){
-      //bookmark.url.indexOf(text) === -1
-      if (filterObject['text'] !== undefined){
-        var text = filterObject['text'][0].toLowerCase();
-        var title = bookmark.title.toLowerCase();
-        if (title.indexOf(text) === -1) {
-
-          //check tags
-          var found = false;
-          for (var key in bookmark.tags){
-            if (key.indexOf(text) > -1){
-              found = true;
-            }
-          }
-          //all text searches failed?
-          if (!found){
-            return false;
-          }
-        }
-      }
-      if (filterObject['rating'] !== undefined && filterObject['rating'][0] !== ''){
-        var rating = filterObject['rating'];
-        if(rating.length === 2){
-          if(bookmark.stars < parseInt(rating[0]) || bookmark.stars > parseInt(rating[1])){
-            return false;
-          }
-        }else{
-          if(bookmark.stars !== parseInt(rating[0])){
-            return false;
-          }
-        }
-      }
-      //return true if passes all filters
-      return true;
-
+    console.log('removed:', bookmark);
   };
 
   var getBookmarkList = function(callback) {
@@ -249,6 +168,111 @@ angular.module('app')
 
   };
 
+    var roughSizeOfObject = function(object) {
+
+    var objectList = [];
+    var stack = [object];
+    var bytes = 0;
+
+    while (stack.length) {
+      var value = stack.pop();
+
+      if (typeof value === 'boolean') {
+        bytes += 4;
+      } else if (typeof value === 'string') {
+        bytes += value.length * 2;
+      } else if (typeof value === 'number') {
+        bytes += 8;
+      } else if (
+        typeof value === 'object' && objectList.indexOf(value) === -1
+      ) {
+        objectList.push(value);
+
+        for (var i in value) {
+          stack.push(value[i]);
+        }
+      }
+    }
+    return bytes;
+  };
+
+  return {
+    getBookmarkList: getBookmarkList,
+    add: add,
+    get: get,
+    update: update,
+    deleteBookmark, deleteBookmark,
+    loading: loading,
+    allBookmarks: allBookmarks,
+    allTags: allTags,
+    getTags: function(){return allTags; }
+  };
+
+});
+
+    // var filter = function(filterObject){
+  //   var filterResults = [];
+  //   var compare = {};
+  //   //modify names
+    
+  //   //split object ranges
+  //   for (var filter in filterObject){
+  //     if (typeof filterObject[filter] === 'string'){
+
+  //     var range = filterObject[filter].split('-');
+  //     filterObject[filter] = range;
+  //     }
+  //   }
+
+  //   //pass on bookmarks that pass
+  //   for (var i = 0; i < allBookmarks.length; i++){
+  //     var bookmark = allBookmarks[i];
+  //     var addBookmark = true;
+  //     //run filter guantlet
+  //     if(passFilter(bookmark, filterObject)){
+  //       filterResults.push(bookmark);
+  //     }
+  //   }
+  //   return filterResults;
+  // };
+
+  // var passFilter = function(bookmark, filterObject){
+  //     //bookmark.url.indexOf(text) === -1
+  //     if (filterObject['text'] !== undefined){
+  //       var text = filterObject['text'][0].toLowerCase();
+  //       var title = bookmark.title.toLowerCase();
+  //       if (title.indexOf(text) === -1) {
+
+  //         //check tags
+  //         var found = false;
+  //         for (var key in bookmark.tags){
+  //           if (key.indexOf(text) > -1){
+  //             found = true;
+  //           }
+  //         }
+  //         //all text searches failed?
+  //         if (!found){
+  //           return false;
+  //         }
+  //       }
+  //     }
+  //     if (filterObject['rating'] !== undefined && filterObject['rating'][0] !== ''){
+  //       var rating = filterObject['rating'];
+  //       if(rating.length === 2){
+  //         if(bookmark.stars < parseInt(rating[0]) || bookmark.stars > parseInt(rating[1])){
+  //           return false;
+  //         }
+  //       }else{
+  //         if(bookmark.stars !== parseInt(rating[0])){
+  //           return false;
+  //         }
+  //       }
+  //     }
+  //     //return true if passes all filters
+  //     return true;
+
+  // };
+
 
   // var displayBookmarks = function(list, filters) {
   //   //var urlSearch = 'apple';
@@ -324,45 +348,4 @@ angular.module('app')
   // };
 
   // http://stackoverflow.com/questions/1248302/javascript-object-size
-  var roughSizeOfObject = function(object) {
 
-    var objectList = [];
-    var stack = [object];
-    var bytes = 0;
-
-    while (stack.length) {
-      var value = stack.pop();
-
-      if (typeof value === 'boolean') {
-        bytes += 4;
-      } else if (typeof value === 'string') {
-        bytes += value.length * 2;
-      } else if (typeof value === 'number') {
-        bytes += 8;
-      } else if (
-        typeof value === 'object' && objectList.indexOf(value) === -1
-      ) {
-        objectList.push(value);
-
-        for (var i in value) {
-          stack.push(value[i]);
-        }
-      }
-    }
-    return bytes;
-  };
-
-  return {
-  	getBookmarkList: getBookmarkList,
-    add: add,
-    get: get,
-  	update: update,
-    deleteBookmark, deleteBookmark,
-    filter: filter,
-  	loading: loading,
-    allBookmarks: allBookmarks,
-    allTags: allTags,
-    getTags: function(){return allTags; }
-  };
-
-});

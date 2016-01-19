@@ -1,55 +1,63 @@
-
 angular.module('app.popup')
-.controller('popup', function($scope, StarMarks) {
-  $scope.newStarmark = {};
+  .controller('popup', function($scope, StarMarks) {
+    $scope.newStarmark = {};
+    $scope.currentTab = {};
 
-  $scope.addBookmark = function(){
-    var rating = $scope.newStarmark.stars;
-    $scope.setBadge(rating);
-    $scope.getCurrentTab( function(tab) {
-      if ($scope.newStarmark.id){
-        StarMarks.update($scope.newStarmark);
+    $scope.addBookmark = function(bookmark) {
+      var tab = $scope.currentTab;
+      $scope.setBadge(bookmark.stars);
+
+      //update or add bookmark
+      if (bookmark.id) {
+        StarMarks.update(bookmark, function(updatedBookmark) {
+          $scope.newStarmark = updatedBookmark;
+        });
       } else {
-        StarMarks.add(tab, rating, function(newBookmark){
+        StarMarks.add(tab, bookmark.stars, function(newBookmark) {
           $scope.newStarmark = newBookmark;
-        });   
+        });
       }
-    });
-    window.close();
-  };
+      window.close();
+    };
 
-  $scope.setBadge = function(rating){
-    chrome.browserAction.setBadgeText({
-      text: rating
-    });
-  };
+    $scope.setBadge = function(rating) {
+      rating = '' + rating;
+      chrome.browserAction.setBadgeText({
+        text: rating
+      });
+    };
 
-  $scope.getBookmark = function(){
-    $scope.getCurrentTab(function(tab){
-      StarMarks.get(tab.url, function(data){
-        $scope.$evalAsync(function(){ 
-          $scope.newStarmark = data[tab.url] || {};
-          if (data[tab.url]) {
-            $scope.setBadge(data[tab.url].stars);
-          }
+    $scope.getBookmark = function() {
+      $scope.getCurrentTab(function(tab) {
+        StarMarks.get(tab.url, function(bookmark) {
+          $scope.$evalAsync(function() {
+            $scope.setBadge(0);
+            if (bookmark) {
+              $scope.newStarmark = bookmark;
+              $scope.setBadge(bookmark.stars);
+            }
+          });
         });
       });
-    });
-  };
+    };
 
-  $scope.getCurrentTab = function(callback){
-    var currentTab = { 'active': true, 'lastFocusedWindow': true };
-    chrome.tabs.query(currentTab, function(tab) {
-      callback(tab[0]);
-    });
-  };
+    $scope.getCurrentTab = function(callback) {
+      var currentTab = {
+        'active': true,
+        currentWindow: true
+      };
+      chrome.tabs.query(currentTab, function(tab) {
+        $scope.currentTab = tab[0];
+        callback(tab[0]);
+      });
+    };
 
-  $scope.openManager = function(){
-    chrome.tabs.create({
-      url: 'app/main/star-manager.html'
-    });
-  };
+    $scope.openManager = function() {
+      chrome.tabs.create({
+        url: 'app/main/star-manager.html'
+      });
+    };
 
-  //initialize with current bookmark
-  $scope.getBookmark();
-});
+    //initialize with current bookmark if exists
+    $scope.getBookmark();
+  });
