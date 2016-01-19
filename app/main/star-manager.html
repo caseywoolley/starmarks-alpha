@@ -15,67 +15,17 @@
     <h1 class="main-logo">StarMarks</h1></header>
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
-      <!-- <form class="navbar-form" ng-submit="addFilter(search.text)">
-        <div class="form-group" style="display:inline;">
-          <div class="input-group" style="display:table;">
-            <span  class="input-group-addon" style="width:1%;"><button type="submit" class="glyphicon glyphicon-search"></button></span>
-            <input class="form-control" name="search" placeholder="Search" autocomplete="off" autofocus="autofocus" type="text" ng-model="search.text">
 
-            <span class="input-group-addon" style="width:1%;"><span type="submit" class="glyphicon glyphicon-search"></span></span>
-            <input class="form-control" name="search" placeholder="Search" autocomplete="off" autofocus="autofocus" type="text" ng-model="filters.exclude">
-          </div>
+      <nit-advanced-searchbox 
+      ng-model="search" 
+      parameters="availableSearchParams" 
+      parameters-label="Advanced Search" 
+      placeholder="Search..." 
+      search-throttle-time="1">
+      </nit-advanced-searchbox>
 
-          <div class="bookmark-count">{{filteredBookmarks.length}} Found</div>
-          <select ng-model="filters.tag"
-            ng-options="tag for tag in getTags()">
-          </select>
-        </div>
-      </form>
-    Search Box -->
-
-      <nit-advanced-searchbox
-    ng-model="search"
-    parameters="availableSearchParams"
-    parameters-label="Advanced Search"
-    placeholder="Search..."
-    search-throttle-time="1">
-
-    </nit-advanced-searchbox>
-    <div class="bookmark-count">{{filteredBookmarks.length}} Found</div>
-    {{search}}
-    {{getMax('stars')}}
-      <!-- <div class="plan-date-selector">
-        <a href="#" class="prev"><i class="fa fa-angle-left"></i></a>
-        <div class="date-input-container">
-          <input type="date" />
-          <a href="#" class="date-submit">
-            <i class="fa fa-calendar"></i>
-          </a>
-        </div>
-        <a href="#" class="next"><i class="fa fa-angle-right"></i></a>
-      </div> -->
-      <!-- <table class="table starmarks">
-        <thead>
-          <tr>
-            <th>Min</th>
-            <th>Max</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <div star-selector bookmark="filters.stars" rating="filters.stars.min" id="'minRating'" update="ratingSelect">
-              </div>
-            </td>
-            <td>
-              <div star-selector bookmark="filters.stars" rating="filters.stars.max" id="'maxRating'" update="ratingSelect">
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      filters: {{filters}} -->
-
+      <div class="bookmark-count">{{filteredBookmarks.length}} Found</div>
+      {{search}} {{getMax('stars')}}
       <img class="loader text-center" src="../assets/img/loading.gif" ng-show="loading">
       <table class="table starmarks" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance=".5">
         <thead>
@@ -89,8 +39,6 @@
           </tr>
         </thead>
         <tbody>
-            <!--| applyFilters: allFilters() 
-             -->
           <tr ng-repeat="bookmark in filteredBookmarks = (
             allBookmarks 
             | filter: search.query
@@ -100,29 +48,27 @@
             | rangeFilter: {visits: search.visits}
             | rangeFilter: {dateAdded: search.dateAdded} : 'date'
             | rangeFilter: {lastVisit: search.lastVisit} : 'date'
-
             )| limitTo: displayCount 
             track by $index">
-            <div ng-hide="displayedBookmarks.length">
-              <td><img class="favicon" ng-src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>
-              <td class="bm-title clip-text" ng-click="bookmarkClicked(bookmark)">
-                <div><a class="starmark-link" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a></div>
-                <div class="tags" ng-repeat="(key, value) in bookmark.tags">
-                  <a class="tag" href="">{{key}}</a>
-                </div>
-              </td>
-              <td class="bm-rating">
-                <div star-selector bookmark="bookmark" rating="bookmark.stars" id="$index" update="update">
-                </div>
-              </td>
-              <td>{{ timeSince(bookmark.dateAdded) }}</td>
-              <td>{{ timeSince(bookmark.lastVisit) }}</td>
-              <td>{{ bookmark.visits || 0 }}</td>
-              <td>
-                <button class="btn-info btn-xs" ng-click="deleteBookmark(bookmark, $index)">
-                  Delete</button>
-              </td>
-            </div>
+
+            <td><img class="favicon" ng-src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>
+            <td class="bm-title clip-text" ng-click="bookmarkClicked(bookmark)">
+              <div><a class="starmark-link" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a></div>
+              <div class="tags" ng-repeat="(key, value) in bookmark.tags">
+                <a class="tag" ng-click="addSearchTag(key)" href="">{{key}}</a>
+              </div>
+            </td>
+            <td class="bm-rating">
+              <div star-selector bookmark="bookmark" rating="bookmark.stars" id="$index" update="update">
+              </div>
+            </td>
+            <td>{{ timeSince(bookmark.dateAdded) }}</td>
+            <td>{{ timeSince(bookmark.lastVisit) }}</td>
+            <td>{{ bookmark.visits || 0 }}</td>
+            <td>
+              <button class="btn-info btn-xs" ng-click="deleteBookmark(bookmark, $index)">
+                Delete</button>
+            </td>
           </tr>
         </tbody>
       </table>

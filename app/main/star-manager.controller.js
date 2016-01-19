@@ -1,26 +1,17 @@
 angular.module('app.main')
-  .controller('starManager', function($scope, $timeout, $filter, StarMarks) {
+  .controller('starManager', function($scope, $filter, StarMarks) {
 
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
   $scope.search = {};
-  //'text: web', 'text: casey', 'text: bob', 'stars: 3-5'
-  $scope.filters = [];
-  //$scope.filters.stars = {min: 1, max: 5, prop: 'stars'};
-  $scope.starRange = { prop: 'stars'};
-  $scope.minRating = {};
-  $scope.maxRating = {};
-  $scope.searchQuery = '';
   $scope.loading = true;
-  var revSort = false;
-  $scope.reverse = true;
-  $scope.predicate = 'stars';
   $scope.sortColumn = 'dateAdded';
   $scope.displayCount = "0";
   $scope.getTags = StarMarks.getTags;
 
+  //Docs - https://github.com/dnauck/angular-advanced-searchbox
   $scope.availableSearchParams = [
-          { key: "stars", name: "Rating", placeholder: "2-4, 5..." },
+          { key: "stars", name: "Rating", placeholder: "number, range, etc. ( 5, 2-4, 3+ )" },
           { key: "visits", name: "Visits", placeholder: "Visits..." },
           { key: "dateAdded", name: "Date Added", placeholder: "Date Added..." },
           { key: "lastVisit", name: "Last Visited", placeholder: "Last Visited..." },
@@ -28,42 +19,13 @@ angular.module('app.main')
           { key: "title", name: "Title", placeholder: "Title..." },
         ];
 
-  $scope.searchData = function(data){
-    var search = data;
-    var range;
-    if (search.stars){
-      range = search.stars.split(/\s*-\s*/);
-      search.starsRange = {prop: 'stars', min: range[0], max: range[1] };
-    }
+  $scope.addSearchTag = function(tag){
+    $scope.search.tags = tag;
   };
 
   $scope.getMax = function(field){
     var max = _.max($scope.allBookmarks, _.property(field));
     return max[field];
-  };
-
-  $scope.allFilters = function(){
-    if ($scope.search.text.split(':')[1] !== '') {
-      return $scope.filters.concat([$scope.search.text]);
-    } else {
-      return $scope.filters;
-    }
-  };
-
-  $scope.addFilter = function(filter){
-    console.log('add')
-    $scope.filters.push(filter);
-    $scope.search.text = 'text:';
-  };
-
-  $scope.ratingSelect = function(){
-    console.log($scope.filters)
-    //TODO: fix display update issue when selecting a max below minimum
-    //$scope.filters.max.stars =  Math.max($scope.filters.min.stars, $scope.filters.max.stars);
-    //$scope.starRange.min = $scope.filters.min.stars;
-    //$scope.starRange.max = $scope.filters.max.stars;
-    //$scope.updateFilter();
-    $scope.resetDisplay();
   };
 
   $scope.getAll = function() {
@@ -111,29 +73,6 @@ angular.module('app.main')
     $scope.displayBookmarks();
   };
 
-  $scope.filterBookmarks = function() {
-    $scope.filters = {};
-    //$scope.filters.rating = [$scope.minRating.stars, $scope.maxRating.stars];
-    var searchArr = $scope.searchQuery.split(/\s+/);
-    var text = [];
-    for (i = 0; i < searchArr.length; i++) {
-      pair = searchArr[i].split(/:/g);
-
-      if (pair.length === 1) {
-        text.push(pair[0]);
-      } else {
-        $scope.filters[pair[0]] = pair[1];
-      }
-    }
-    $scope.filters.text = text.join(' ');
-    console.log($scope.filters);
-
-    //filter results by filter object
-    console.log(StarMarks.filter($scope.filters));
-    $scope.allBookmarks = StarMarks.filter($scope.filters);
-    $scope.resetDisplay();
-  };
-
   $scope.sortBookmarks = function(column){
     var desc = '-';
     if ($scope.sortColumn === desc + column){ desc = ''; }
@@ -144,10 +83,9 @@ angular.module('app.main')
 
   $scope.displayBookmarks = function() {
     var perPage = 20;
-    if ($scope.displayCount < $scope.allBookmarks.length){
+    if ($scope.displayCount <= $scope.filteredBookmarks.length){
       $scope.displayCount = '' + (parseInt($scope.displayCount) + perPage);
     }
-    console.log($scope.displayCount)
   };
 
   //TODO: convert to filter
@@ -172,26 +110,7 @@ angular.module('app.main')
     }
   };
 
-  //auto update storage
-  var timeout = null;
-
-  var saveUpdates = function() {
-    console.log('save local');
-  };
-
-  var debounceSaveUpdates = function(newVal, oldVal) {
-    if (newVal != oldVal) {
-      if (timeout) {
-        $timeout.cancel(timeout);
-      }
-      timeout = $timeout(saveUpdates, 1000); // 1000 = 1 second
-    }
-  };
-
-  //$scope.$watchGroup('allBookmarks', debounceSaveUpdates);
-
-
-
+  //initialize bookmarks
   $scope.getAll();
 
 
@@ -223,6 +142,83 @@ var roughSizeOfObject = function(object) {
   }
   return bytes;
 };
+
+});
+
+  //auto update storage
+  // var timeout = null;
+
+  // var saveUpdates = function() {
+  //   console.log('save local');
+  // };
+
+  // var debounceSaveUpdates = function(newVal, oldVal) {
+  //   if (newVal != oldVal) {
+  //     if (timeout) {
+  //       $timeout.cancel(timeout);
+  //     }
+  //     timeout = $timeout(saveUpdates, 1000); // 1000 = 1 second
+  //   }
+  // };
+
+  //$scope.$watchGroup('allBookmarks', debounceSaveUpdates);
+
+    // $scope.searchData = function(data){
+  //   var search = data;
+  //   var range;
+  //   if (search.stars){
+  //     range = search.stars.split(/\s*-\s*/);
+  //     search.starsRange = {prop: 'stars', min: range[0], max: range[1] };
+  //   }
+  // };
+
+  // $scope.allFilters = function(){
+  //   if ($scope.search.text.split(':')[1] !== '') {
+  //     return $scope.filters.concat([$scope.search.text]);
+  //   } else {
+  //     return $scope.filters;
+  //   }
+  // };
+
+  // $scope.addFilter = function(filter){
+  //   console.log('add')
+  //   $scope.filters.push(filter);
+  //   $scope.search.text = 'text:';
+  // };
+
+  // $scope.ratingSelect = function(){
+  //   console.log($scope.filters)
+  //   //TODO: fix display update issue when selecting a max below minimum
+  //   //$scope.filters.max.stars =  Math.max($scope.filters.min.stars, $scope.filters.max.stars);
+  //   //$scope.starRange.min = $scope.filters.min.stars;
+  //   //$scope.starRange.max = $scope.filters.max.stars;
+  //   //$scope.updateFilter();
+  //   $scope.resetDisplay();
+  // };
+
+  // $scope.filterBookmarks = function() {
+  //   $scope.filters = {};
+  //   //$scope.filters.rating = [$scope.minRating.stars, $scope.maxRating.stars];
+  //   var searchArr = $scope.searchQuery.split(/\s+/);
+  //   var text = [];
+  //   for (i = 0; i < searchArr.length; i++) {
+  //     pair = searchArr[i].split(/:/g);
+
+  //     if (pair.length === 1) {
+  //       text.push(pair[0]);
+  //     } else {
+  //       $scope.filters[pair[0]] = pair[1];
+  //     }
+  //   }
+  //   $scope.filters.text = text.join(' ');
+  //   console.log($scope.filters);
+
+  //   //filter results by filter object
+  //   console.log(StarMarks.filter($scope.filters));
+  //   $scope.allBookmarks = StarMarks.filter($scope.filters);
+  //   $scope.resetDisplay();
+  // };
+
   // $scope.getFavicon = function(url){
   //   return 'http://' + new URL(url).hostname + '/favicon.ico';
   // };
@@ -231,4 +227,4 @@ var roughSizeOfObject = function(object) {
   //   $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
   //   $scope.predicate = predicate;
   // };
-});
+

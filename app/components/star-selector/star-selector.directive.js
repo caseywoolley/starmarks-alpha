@@ -73,9 +73,6 @@ angular.module('app')
         max = min + (1000 * 60 * 60 * 24 * 365);
         max = new Date(max).getTime();
       }
-      console.log(new Date(min));
-      console.log(new Date(max));
-      console.log(max);
     }
 
     return items.filter(function(item) {
