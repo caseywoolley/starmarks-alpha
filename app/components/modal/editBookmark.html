@@ -1,5 +1,3 @@
-
-
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -8,17 +6,28 @@
         <h4 class="modal-title" id="myModalLabel">{{bookmark.title}}</h4>
       </div>
       <div class="modal-body">
-      <div>
-        <div star-selector 
-			    bookmark="bookmark" 
-			    id="'edit-bookmark'"
-			    update="updateBookmark">
-			  </div>
-      </div>
-        
+        <form novalidate class="simple-form">
+          <div class="form-group">
+            <label for="rating">Rating</label>
+            <div id="rating" star-selector 
+              bookmark="bookmark" 
+              id="'edit-bookmark'"  
+              update="updateBookmark">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" ng-model="bookmark.title" id="title">
+          </div>
+          <input type="text" ng-repeat="(key, value) in bookmark.tags">
+          {{key }}</input>
+
+        </form>
+
         <div>{{ bookmark.dateAdded | timeSince }}</div>
         <div>{{ timeSince(bookmark.lastVisit) }}</div>
-        <div>{{ bookmark.visits || 0 }}</div>
+        <div>{{ bookmark.visits || 1 }}</div>
+        <pre>{{ bookmark.url }}</pre>
         <pre>{{ bookmark }}</pre>
       </div>
       <div class="modal-footer">

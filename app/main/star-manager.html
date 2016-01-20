@@ -4,10 +4,11 @@
 <head>
   <title>StarMarks</title>
   <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
-  <link rel="stylesheet" type="text/css" href="star-manager.css">
   <link rel="stylesheet" type="text/css" href="../assets/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="../assets/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="../assets/css/angular-advanced-searchbox.min.css">
+  <link rel="stylesheet" type="text/css" href="../app.css">
+  <link rel="stylesheet" type="text/css" href="star-manager.css">
 </head>
 
 <body ng-app="app" ng-controller="starManager">
@@ -34,7 +35,7 @@
               <tr>
                 <th></th>
                 <th class="clickable" ng-click="sortBookmarks('title')">Title</th>
-                <th class="clickable fixed-col-120" ng-click="sortBookmarks('stars')">Rating</th>
+                <th class="clickable fixed-col-rating" ng-click="sortBookmarks('stars')">Rating</th>
                 <th class="clickable fixed-col-100" ng-click="sortBookmarks('dateAdded')">Added</th>
                 <th class="clickable fixed-col-100" ng-click="sortBookmarks('lastVisit')">Visited</th>
                 <th class="clickable fixed-col-60" ng-click="sortBookmarks('visits')">Visits</th>
