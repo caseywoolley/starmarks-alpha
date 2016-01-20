@@ -1,5 +1,5 @@
 angular.module('app.main')
-  .controller('starManager', function($scope, $filter, StarMarks) {
+  .controller('starManager', function($scope, $filter, $httpParamSerializer, ModalService, StarMarks) {
 
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
@@ -17,7 +17,36 @@ angular.module('app.main')
           { key: "lastVisit", name: "Last Visited", placeholder: "Last Visited..." },
           { key: "tags", name: "Tags", suggestedValues: ['tag','tag2'], placeholder: "tag1, tag2" },
           { key: "title", name: "Title", placeholder: "Title..." },
+          { key: "searchName", name: "Save As", placeholder: "Save search as..." },
         ];
+
+  $scope.makeUrl = function(){
+    return $httpParamSerializer($scope.search);
+  };
+
+  $scope.editBookmark = function(bookmark){
+    console.log('edit this',bookmark);
+    $scope.showAModal();
+  };
+
+  $scope.showAModal = function() {
+
+    // Just provide a template url, a controller and call 'showModal'.
+    ModalService.showModal({
+      templateUrl: "../components/modal/editBookmark.html",
+      controller: "editBookmark"
+    }).then(function(modal) {
+      console.log(modal)
+      // The modal object has the element built, if this is a bootstrap modal
+      // you can call 'modal' to show it, if it's a custom modal just show or hide
+      // it as you need to.
+      modal.element.modal();
+      modal.close.then(function(result) {
+        $scope.message = result ? "You said Yes" : "You said No";
+      });
+    });
+
+  };
 
   $scope.addSearchTag = function(tag){
     $scope.search.tags = tag;

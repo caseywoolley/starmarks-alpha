@@ -23,9 +23,10 @@
       placeholder="Search..." 
       search-throttle-time="1">
       </nit-advanced-searchbox>
+     <!--  <button class="btn">Save Search</button> -->
 
       <div class="bookmark-count">{{filteredBookmarks.length}} Found</div>
-      {{search}} {{getMax('stars')}}
+      {{search}} {{getMax('stars')}} {{makeUrl()}}
       <img class="loader text-center" src="../assets/img/loading.gif" ng-show="loading">
       <table class="table starmarks" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance=".5">
         <thead>
@@ -52,8 +53,8 @@
             track by $index">
 
             <td><img class="favicon" ng-src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>
-            <td class="bm-title clip-text" ng-click="bookmarkClicked(bookmark)">
-              <div><a class="starmark-link" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a></div>
+            <td class="bm-title clip-text">
+              <div><a class="starmark-link" ng-click="bookmarkClicked(bookmark)" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a></div>
               <div class="tags" ng-repeat="(key, value) in bookmark.tags">
                 <a class="tag" ng-click="addSearchTag(key)" href="">{{key}}</a>
               </div>
@@ -62,12 +63,11 @@
               <div star-selector bookmark="bookmark" rating="bookmark.stars" id="$index" update="update">
               </div>
             </td>
-            <td>{{ timeSince(bookmark.dateAdded) }}</td>
+            <td style="width:300px">{{ timeSince(bookmark.dateAdded) }}</td>
             <td>{{ timeSince(bookmark.lastVisit) }}</td>
             <td>{{ bookmark.visits || 0 }}</td>
             <td>
-              <button class="btn-info btn-xs" ng-click="deleteBookmark(bookmark, $index)">
-                Delete</button>
+              <button class="btn-info btn-xs" ng-click="editBookmark(bookmark)">Edit</button>
             </td>
           </tr>
         </tbody>
@@ -75,13 +75,16 @@
     </div>
   </div>
   <script src="../assets/js/jquery.min.js"></script>
+  <script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="../assets/js/angular.min.js"></script>
   <script src="../assets/js/ng-infinite-scroll.min.js"></script>
   <script src="../assets/js/underscore-min.js"></script>
+  <script src="../../bower_components/angular-modal-service/dst/angular-modal-service.min.js"></script>
   <script src="../app.js"></script>
   <script src="../components/starmarks/starmarks.service.js"></script>
   <script src="../components/searchbox/angular-advanced-searchbox.directive.js"></script>
   <script src="../components/star-selector/star-selector.directive.js"></script>
+  <script src="../components/modal/edit-bookmark.controller.js"></script>
   <script src="star-manager.controller.js"></script>
 </body>
 

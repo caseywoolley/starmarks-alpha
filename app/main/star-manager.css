@@ -20,10 +20,7 @@ header {
   color: #F28F3B;
 }
 
-
-
 td {
-
   white-space:nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -39,7 +36,6 @@ td {
   padding-left: 20px;
   padding-top: 10px;
   margin:auto;
-
 }
 
 .table-headers {
@@ -50,14 +46,10 @@ td {
   width: 100%;
 }
 
-.title-bar {
-
-}
 .title-width {
   max-width: 300px;
   min-width: 100px;
 }
-
 
 .clip-text {
   overflow: hidden;
@@ -67,7 +59,6 @@ td {
   white-space: no wrap;
   width: inherit;
 }
-
 
 .bm-rating {
   font-weight: 100;
@@ -97,16 +88,12 @@ td {
   text-decoration: none;
 }
 
-
-
-.titler,
 .star-url {
   width: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 
 .starmark-link,
 .starmark-link:link,
@@ -127,23 +114,14 @@ td {
   display: inline-block;
 }
 
-.starmarks {
-  margin-top: 15px;
-
-}
-
-.starmark {
-  margin-top: 0px;
-  border-radius: 10px;
-
-}
-
 .loader {
   margin-left: auto;
   margin-right: auto;
 }
 
 .starmark {
+  margin-top: 0px;
+  border-radius: 10px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -153,10 +131,18 @@ td {
   word-wrap: break-word;
 }
 
+/*.date-col {
+  width: 500px;
+}*/
+
+/*.starmarks {
+  margin-top: 15px;
+
+}*/
 
 /****** Date Selector *****/
 
-.plan-date-selector {
+/*.plan-date-selector {
   margin: 1em auto;
   color: #aaa;
   -webkit-font-smoothing: antialiased;
@@ -210,7 +196,7 @@ td {
   background: -webkit-linear-gradient(#fcfcfc, #f7f7f7);
   background: linear-gradient(#fcfcfc, #f7f7f7);
   border: 1px solid #cdcdcd;
-}
+}*/
 
 
 /****** Style Star Rating Widget *****/
