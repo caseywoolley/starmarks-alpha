@@ -26,6 +26,14 @@ td {
   text-overflow: ellipsis;
 }
 
+.edit-btn {
+    display: none;
+}
+    
+.starmark-row:hover .edit-btn {
+    display: block;
+}
+
 .bookmark-count{
   text-align: right;
 }

@@ -40,7 +40,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="bookmark in filteredBookmarks = (
+          <tr class="starmark-row" ng-repeat="bookmark in filteredBookmarks = (
             allBookmarks 
             | filter: search.query
             | filter: {title: search.title}
@@ -67,7 +67,7 @@
             <td>{{ timeSince(bookmark.lastVisit) }}</td>
             <td>{{ bookmark.visits || 0 }}</td>
             <td>
-              <button class="btn-info btn-xs" ng-click="editBookmark(bookmark)">Edit</button>
+              <button class="btn-info btn-xs edit-btn" ng-click="editBookmark(bookmark)">Edit</button>
             </td>
           </tr>
         </tbody>
