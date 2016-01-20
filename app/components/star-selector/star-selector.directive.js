@@ -5,6 +5,7 @@ angular.module('app')
       scope: {
         bookmark: "=",
         id: "=",
+        size: "=",
         update: "="
       },
       templateUrl: '../components/star-selector/star-selector.html'
@@ -23,6 +24,29 @@ angular.module('app')
       }
     };
   })
+
+.filter('timeSince', function() {
+  return function(timeStamp) {
+    var now = new Date();
+    timeStamp = new Date(timeStamp);
+    secondsPast = (now.getTime() - timeStamp.getTime()) / 1000;
+    if (secondsPast < 60) {
+      return parseInt(secondsPast) + 's ago';
+    }
+    if (secondsPast < 3600) {
+      return parseInt(secondsPast / 60) + 'm ago';
+    }
+    if (secondsPast <= 86400) {
+      return parseInt(secondsPast / 3600) + 'h ago';
+    }
+    if (secondsPast > 86400) {
+      day = timeStamp.getDate();
+      month = timeStamp.toDateString().match(/ [a-zA-Z]*/)[0].replace(" ", "");
+      year = timeStamp.getFullYear() == now.getFullYear() ? "" : " " + timeStamp.getFullYear();
+      return day + " " + month + year;
+    }
+  };
+})
 
 .filter('arrayFilter', function() {
   return function(items, tags) {
@@ -73,9 +97,6 @@ angular.module('app')
         max = min + (1000 * 60 * 60 * 24 * 365);
         max = new Date(max).getTime();
       }
-      console.log(new Date(min));
-      console.log(new Date(max));
-      console.log(max);
     }
 
     return items.filter(function(item) {
