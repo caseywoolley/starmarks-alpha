@@ -7,8 +7,7 @@ body {
   background-color: #F2EDEE;
   color: #313E50;
   font-size: 12px;
-  height: 100%;
-  
+  height: 100%;  
 }
 
 header {
@@ -20,14 +19,16 @@ header {
   color: #F28F3B;
 }
 
-td {
-  white-space:nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.main-logo {
+  font-family: 'Lobster', cursive;
+  display: inline-block;
+  padding-left: 20px;
+  padding-top: 10px;
+  margin:auto;
 }
 
 .edit-btn {
-    display: none;
+  display: none;
 }
     
 .starmark-row:hover .edit-btn {
@@ -38,15 +39,7 @@ td {
   text-align: right;
 }
 
-.main-logo {
-  font-family: 'Lobster', cursive;
-  display: inline-block;
-  padding-left: 20px;
-  padding-top: 10px;
-  margin:auto;
-}
-
-.table-headers {
+.clickable {
   cursor: pointer;
 }
 
@@ -55,34 +48,39 @@ td {
 }
 
 .title-width {
-  max-width: 300px;
-  min-width: 100px;
+  min-width: 20px;
+  max-width: 350px;
 }
 
+/*TODO: fix mobile size table overflow*/
 .clip-text {
+  white-space:nowrap;
   overflow: hidden;
   -ms-text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
-  white-space: no wrap;
   width: inherit;
 }
 
 .bm-rating {
   font-weight: 100;
   font-size: 12px;
-  min-width:140px;
-  max-width: 140px;
   color: #F28F3B;
 }
 
-.star-url {
-  font-size: 10px;
+.fixed-col-120 {
+  min-width:120px;
+  max-width: 120px;
 }
 
-.bm-title { 
-  max-width: 500px;
-  min-width: 100px;
+.fixed-col-100 {
+  min-width:100px;
+  max-width: 100px;
+}
+
+.fixed-col-60 {
+  min-width:60px;
+  max-width:60px;
 }
 
 .tag {
@@ -94,13 +92,6 @@ td {
   color: #F28F3B;
   display: inline-block;
   text-decoration: none;
-}
-
-.star-url {
-  width: 10px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .starmark-link,
@@ -126,86 +117,6 @@ td {
   margin-left: auto;
   margin-right: auto;
 }
-
-.starmark {
-  margin-top: 0px;
-  border-radius: 10px;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  background-color: #E3E6EF;
-  padding: 0px;
-  border: solid 1px #CED3DC;
-  word-wrap: break-word;
-}
-
-/*.date-col {
-  width: 500px;
-}*/
-
-/*.starmarks {
-  margin-top: 15px;
-
-}*/
-
-/****** Date Selector *****/
-
-/*.plan-date-selector {
-  margin: 1em auto;
-  color: #aaa;
-  -webkit-font-smoothing: antialiased;
-}
-.plan-date-selector a {
-  color: #aaa;
-}
-.plan-date-selector a:hover {
-  color: #559DB7;
-}
-.plan-date-selector .prev, .plan-date-selector .next, .plan-date-selector .date-input-container {
-  display: inline-block;
-  vertical-align: top;
-  float: left;
-}
-.plan-date-selector .prev, .plan-date-selector .next {
-  margin: 0 0.5em;
-}
-.plan-date-selector .prev i, .plan-date-selector .next i {
-  font-size: 3em;
-  line-height: 0.75em;
-}
-.plan-date-selector .date-input-container {
-  position: relative;
-}
-.plan-date-selector input[type="date"] {
-  width: 240px;
-  margin: 0;
-  margin-right: 36px;
-  color: #aaa;
-  font-size: 16px;
-  font-weight: bold;
-  font-family: "Asap", sans-serif;
-  border-color: #d8d8d8;
-  border-radius: 3px;
-  box-shadow: none;
-}
-.plan-date-selector input[type="date"]:focus {
-  color: #559DB7;
-}
-.plan-date-selector .date-submit {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  line-height: 2em;
-  width: 40px;
-  font-size: 18px;
-  border-radius: 0 3px 3px 0;
-  text-align: center;
-  background: -webkit-linear-gradient(#fcfcfc, #f7f7f7);
-  background: linear-gradient(#fcfcfc, #f7f7f7);
-  border: 1px solid #cdcdcd;
-}*/
-
 
 /****** Style Star Rating Widget *****/
 
