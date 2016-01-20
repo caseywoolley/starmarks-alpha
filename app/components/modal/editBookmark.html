@@ -8,12 +8,18 @@
         <h4 class="modal-title" id="myModalLabel">{{bookmark.title}}</h4>
       </div>
       <div class="modal-body">
+      <div>
         <div star-selector 
-			    bookmark="newStarmark" 
-			    id="'newStarmark'"
-			    update="addBookmark">
+			    bookmark="bookmark" 
+			    id="'edit-bookmark'"
+			    update="updateBookmark">
 			  </div>
-			  <button class="managerBtn btn-primary" ng-click="dismissModal()">StarMarks Manager</button>
+      </div>
+        
+        <div>{{ bookmark.dateAdded | timeSince }}</div>
+        <div>{{ timeSince(bookmark.lastVisit) }}</div>
+        <div>{{ bookmark.visits || 0 }}</div>
+        <pre>{{ bookmark }}</pre>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" ng-click="dismissModal()" data-dismiss="modal">Close</button>

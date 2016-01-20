@@ -65,8 +65,8 @@
                   <div star-selector bookmark="bookmark" rating="bookmark.stars" id="$index" update="update">
                   </div>
                 </td>
-                <td>{{ timeSince(bookmark.dateAdded) }}</td>
-                <td>{{ timeSince(bookmark.lastVisit) }}</td>
+                <td>{{ bookmark.dateAdded | timeSince }}</td>
+                <td>{{ bookmark.lastVisit | timeSince }}</td>
                 <td>{{ bookmark.visits || 0 }}</td>
                 <td>
                   <div class="btn-info btn-xs edit-btn clickable" ng-click="editBookmark(bookmark)">Edit</div>

@@ -26,15 +26,18 @@ angular.module('app.main')
 
   $scope.editBookmark = function(bookmark){
     console.log('edit this',bookmark);
-    $scope.showAModal();
+    $scope.showAModal(bookmark);
   };
 
-  $scope.showAModal = function() {
+  $scope.showAModal = function(bookmark) {
 
     // Just provide a template url, a controller and call 'showModal'.
     ModalService.showModal({
       templateUrl: "../components/modal/editBookmark.html",
-      controller: "editBookmark"
+      controller: "editBookmark",
+      inputs: {
+        bookmark: bookmark
+      }
     }).then(function(modal) {
       console.log(modal)
       // The modal object has the element built, if this is a bootstrap modal
@@ -117,27 +120,27 @@ angular.module('app.main')
     }
   };
 
-  //TODO: convert to filter
-  $scope.timeSince = function(timeStamp) {
-    var now = new Date();
-    timeStamp = new Date(timeStamp);
-    secondsPast = (now.getTime() - timeStamp.getTime()) / 1000;
-    if (secondsPast < 60) {
-      return parseInt(secondsPast) + 's';
-    }
-    if (secondsPast < 3600) {
-      return parseInt(secondsPast / 60) + 'm';
-    }
-    if (secondsPast <= 86400) {
-      return parseInt(secondsPast / 3600) + 'h';
-    }
-    if (secondsPast > 86400) {
-      day = timeStamp.getDate();
-      month = timeStamp.toDateString().match(/ [a-zA-Z]*/)[0].replace(" ", "");
-      year = timeStamp.getFullYear() == now.getFullYear() ? "" : " " + timeStamp.getFullYear();
-      return day + " " + month + year;
-    }
-  };
+  // //TODO: convert to filter
+  // $scope.timeSince = function(timeStamp) {
+  //   var now = new Date();
+  //   timeStamp = new Date(timeStamp);
+  //   secondsPast = (now.getTime() - timeStamp.getTime()) / 1000;
+  //   if (secondsPast < 60) {
+  //     return parseInt(secondsPast) + 's';
+  //   }
+  //   if (secondsPast < 3600) {
+  //     return parseInt(secondsPast / 60) + 'm';
+  //   }
+  //   if (secondsPast <= 86400) {
+  //     return parseInt(secondsPast / 3600) + 'h';
+  //   }
+  //   if (secondsPast > 86400) {
+  //     day = timeStamp.getDate();
+  //     month = timeStamp.toDateString().match(/ [a-zA-Z]*/)[0].replace(" ", "");
+  //     year = timeStamp.getFullYear() == now.getFullYear() ? "" : " " + timeStamp.getFullYear();
+  //     return day + " " + month + year;
+  //   }
+  // };
 
   //initialize bookmarks
   $scope.getAll();

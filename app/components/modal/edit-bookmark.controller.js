@@ -1,10 +1,9 @@
 angular.module('app')
-  .controller('editBookmark', function($scope, close, StarMarks) {
-    $scope.newStarmark = {};
+  .controller('editBookmark', function($scope, close, bookmark, StarMarks) {
+    $scope.bookmark = bookmark;
     $scope.currentTab = {};
 
     $scope.dismissModal = function(result) {
-      console.log(close)
       close(result, 20000); // close, but give 200ms for bootstrap to animate
     };
 
@@ -64,5 +63,5 @@ angular.module('app')
     };
 
     //initialize with current bookmark if exists
-    $scope.getBookmark();
+    //$scope.getBookmark();
   });
