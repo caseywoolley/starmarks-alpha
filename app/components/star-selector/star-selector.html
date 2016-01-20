@@ -1,4 +1,4 @@
-<fieldset class="rating" name="{{ bookmark.url }}" id="rating{{ id }}">
+<fieldset class="rating" ng-style="{'font-size':'{{size}}px'}" name="{{ bookmark.url }}" id="rating{{ id }}">
 	<input type="radio" id="star5-{{ id }}" ng-model="bookmark.stars" ng-change="update(bookmark)" ng-checked="{{bookmark.stars == 5}}" name="rating-{{ id }}" value="5" integer />
 	<label class = "full star" id = "5" for="star5-{{ id }}" title="5 stars"></label>
 	<input type="radio" id="star4-{{ id }}" ng-model="bookmark.stars" ng-change="update(bookmark)" ng-checked="{{bookmark.stars == 4}}" name="rating-{{ id }}" value="4" integer />

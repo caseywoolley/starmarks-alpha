@@ -1,0 +1,8 @@
+.rating > label:before { 
+  font-size: 75px;
+  margin: 5px;
+}
+
+.rating {
+	display: block;
+}

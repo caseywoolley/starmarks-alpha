@@ -52,7 +52,7 @@
                 | rangeFilter: {visits: search.visits}
                 | rangeFilter: {dateAdded: search.dateAdded} : 'date'
                 | rangeFilter: {lastVisit: search.lastVisit} : 'date'
-                )| limitTo: displayCount 
+                )| orderBy: sortColumn | limitTo: displayCount 
                 track by $index">
 
                 <td><img class="favicon" ng-src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>
@@ -70,7 +70,7 @@
                 <td>{{ bookmark.lastVisit | timeSince }}</td>
                 <td>{{ bookmark.visits || 0 }}</td>
                 <td>
-                  <div class="btn-info btn-xs edit-btn clickable" ng-click="editBookmark(bookmark)">Edit</div>
+                  <div class="btn-info btn-xs edit-btn clickable" ng-click="editBookmark(bookmark, allBookmarks.indexOf(bookmark))">Edit</div>
                 </td>
               </tr>
             </tbody>

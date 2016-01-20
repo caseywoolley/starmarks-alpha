@@ -1,10 +1,22 @@
 angular.module('app')
   .controller('editBookmark', function($scope, close, bookmark, StarMarks) {
     $scope.bookmark = bookmark;
+    $scope.tags = Object.keys(bookmark.tags).join(', ');
     $scope.currentTab = {};
+    $scope.starSize = 70;
 
-    $scope.dismissModal = function(result) {
-      close(result, 20000); // close, but give 200ms for bootstrap to animate
+    $scope.saveChanges = function(bookmark) {
+      $scope.tags = $scope.tags.split(/\s*,\s*/);
+      bookmark.tags = $scope.tags.reduce(function(o, v) {
+        o[v] = true;
+        return o;
+      }, {});
+      console.log(bookmark)  
+      close(bookmark, 200);
+    };
+
+    $scope.dismissModal = function() {
+      close(null, 200);
     };
 
     $scope.addBookmark = function(bookmark) {

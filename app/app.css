@@ -19,7 +19,7 @@ body {
 
 .rating > input { display: none; } 
 .rating > label:before { 
-  margin: 1px;
+  margin: .05em;
   font-size: 1.5em;
   font-family: FontAwesome;
   display: inline-block;

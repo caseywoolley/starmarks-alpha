@@ -5,14 +5,13 @@ angular.module('app')
       scope: {
         bookmark: "=",
         id: "=",
+        size: "=",
         update: "="
       },
       templateUrl: '../components/star-selector/star-selector.html'
     };
   })
   //TODO: find a home for these filters and directives
-
-
 
   //convert html input values to integers
   .directive('integer', function() {
@@ -32,13 +31,13 @@ angular.module('app')
     timeStamp = new Date(timeStamp);
     secondsPast = (now.getTime() - timeStamp.getTime()) / 1000;
     if (secondsPast < 60) {
-      return parseInt(secondsPast) + 's';
+      return parseInt(secondsPast) + 's ago';
     }
     if (secondsPast < 3600) {
-      return parseInt(secondsPast / 60) + 'm';
+      return parseInt(secondsPast / 60) + 'm ago';
     }
     if (secondsPast <= 86400) {
-      return parseInt(secondsPast / 3600) + 'h';
+      return parseInt(secondsPast / 3600) + 'h ago';
     }
     if (secondsPast > 86400) {
       day = timeStamp.getDate();
