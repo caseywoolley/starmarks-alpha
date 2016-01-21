@@ -17,7 +17,7 @@ angular.module('app.main')
     { key: "lastVisit", name: "Last Visited", placeholder: "Last Visited..." },
     { key: "tags", name: "Tags", suggestedValues: ['tag','tag2'], placeholder: "tag1, tag2" },
     { key: "title", name: "Title", placeholder: "Title..." },
-    { key: "searchName", name: "Save As", placeholder: "Save search as..." },
+    { key: "limit", name: "Limit Results", placeholder: "Results to return" },
   ];
 
   $scope.getLocation = function(){
@@ -72,9 +72,12 @@ angular.module('app.main')
   };
 
   $scope.deleteBookmark = function(bookmark, index){
-    StarMarks.deleteBookmark(bookmark);
-    console.log('deleted',$scope.allBookmarks[index]);
-    $scope.allBookmarks.splice(index, 1);
+    var ok = window.confirm('Are you sure?');
+    if (ok){
+      StarMarks.deleteBookmark(bookmark);
+      console.log('deleted',$scope.allBookmarks[index]);
+      $scope.allBookmarks.splice(index, 1);
+    }
   };
 
   $scope.bookmarkClicked = function(bookmark) {
@@ -97,6 +100,12 @@ angular.module('app.main')
     $scope.resetDisplay();
   };
 
+  $scope.searchLimit = function(){
+    if ($scope.search.limit > 0){
+      return $scope.search.limit;
+    }
+  };
+
   $scope.displayBookmarks = function() {
     var perPage = 20;
     if ($scope.displayCount <= $scope.filteredBookmarks.length){
@@ -104,7 +113,6 @@ angular.module('app.main')
     }
   };
 
-  //initialize bookmarks
   $scope.getAll();
 
 });
