@@ -7,6 +7,6 @@ h1 { font-size: 1.5em; margin: 10px; }
 }
 
 .rating > label:before { 
-  font-size: 75px;
+  font-size: 1em;
   margin: 5px;
 }

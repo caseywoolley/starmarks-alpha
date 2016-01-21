@@ -1,9 +1,9 @@
 angular.module('app.main')
-  .controller('starManager', function($scope, $filter, $httpParamSerializer, ModalService, StarMarks) {
+  .controller('starManager', function($rootElement, $scope, $filter, $location, $httpParamSerializer, ModalService, StarMarks) {
 
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
-  $scope.search = {};
+  $scope.search = $location.search();
   $scope.loading = true;
   $scope.sortColumn = 'dateAdded';
   $scope.displayCount = "0";
@@ -20,7 +20,15 @@ angular.module('app.main')
     { key: "searchName", name: "Save As", placeholder: "Save search as..." },
   ];
 
+  $scope.getLocation = function(){
+    //return window.location;
+    return $location.url();
+  };
+
+
+
   $scope.makeUrl = function(){
+    $location.search($httpParamSerializer($scope.search));
     return $httpParamSerializer($scope.search);
   };
 

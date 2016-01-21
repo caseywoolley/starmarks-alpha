@@ -6,7 +6,7 @@
         <h4 class="modal-title" id="myModalLabel">{{bookmark.title}}</h4>
       </div>
       <div class="modal-body">
-        <form novalidate class="simple-form">
+        <!-- <form novalidate class="simple-form">
           
           <div star-selector 
           bookmark="bookmark" 
@@ -35,6 +35,12 @@
           <span class="col-md-4">Added: {{ bookmark.dateAdded | timeSince }}</span>
           <span class="col-md-4">Last Visit: {{ bookmark.lastVisit | timeSince }}</span>
           <span class="col-md-4">Visits: {{ bookmark.visits || 1 }}</span>
+        </div> -->
+        <div edit-bookmark 
+          bookmark="bookmark" 
+          id="'edit-bookmark'"
+          star-size="starSize"
+          update="updateBookmark">
         </div>
       </div>
       <div class="modal-footer">

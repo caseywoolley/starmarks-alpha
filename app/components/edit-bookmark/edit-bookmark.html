@@ -1,0 +1,26 @@
+<form novalidate class="simple-form">
+  <div star-selector 
+  bookmark="bookmark" 
+  id="'edit-bookmark'" 
+  size="starSize" 
+  update="update">
+  </div>
+  <div class="form-group-lg">
+    <label for="title">Title</label>
+    <input type="text" class="form-control" ng-model="bookmark.title" id="title">
+  </div>
+  <div class="form-group">
+    <label for="tags">Tags</label>
+    <input type="text" class="form-control" ng-model="bookmark.tagField" id="tags">
+  </div>
+  <div class="form-group">
+    <label for="notes">Notes</label>
+    <textarea rows="3" class="form-control" ng-model="bookmark.notes" id="notes"></textarea>
+  </div>
+</form>
+<pre>{{ bookmark.url }}</pre>
+<div class="row" ng-show="bookmark.dateAdded">
+  <span class="col-md-4">Added: {{ bookmark.dateAdded | timeSince }}</span>
+  <span class="col-md-4">Last Visit: {{ bookmark.lastVisit | timeSince }}</span>
+  <span class="col-md-4">Visits: {{ bookmark.visits || 1 }}</span>
+</div>

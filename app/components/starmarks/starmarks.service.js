@@ -6,19 +6,18 @@ angular.module('app')
   var allBookmarks = [];
   var allTags = {};
 
-  var add = function(tab, rating, callback) {
-    rating = rating || 1;
-    //set default bookmark data
-    var bookmark = {
-      'parentId': '1',
-      'title': tab.title,
-      'url': tab.url
-    };
+  var add = function(rating, bookmark, callback) {
+    //TODO: chrome  
+    bookmark.stars = rating;
+    var save = {};
+    angular.copy(bookmark, save);
+    save.stars = rating;
     //save chrome bookmark
-    chrome.bookmarks.create(bookmark, function(newBookmark) {
+    console.log(save.stars)
+    chrome.bookmarks.create(save, function(newBookmark) {
       //build starmark data on returned chrome bookmark
       var starData = newBookmark;
-      starData.stars = rating;
+      // starData.stars = rating;
       starData.visits = 1;
       starData.lastVisit = Date.now();
       

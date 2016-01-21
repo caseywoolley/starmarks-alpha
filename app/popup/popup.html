@@ -9,12 +9,14 @@
 </head>
 
 <body style="width: 400px" ng-app="app" ng-controller="popup">
-  <div star-selector 
+  <div edit-bookmark 
     bookmark="newStarmark" 
     id="'newStarmark'"
+    star-size="starSize"
     update="addBookmark">
   </div>
-  <button class="managerBtn btn-primary" ng-click="openManager()">StarMarks Manager</button>
+ <!--  {{newStarmark}}
+  {{currentTab}} -->
 
   <script src="../assets/js/angular.min.js"></script>
   <script src="../assets/js/ng-infinite-scroll.min.js"></script>
@@ -23,6 +25,7 @@
   <script src="../app.js"></script>
   <script src="../components/starmarks/starmarks.service.js"></script>
   <script src="../components/star-selector/star-selector.directive.js"></script>
+  <script src="../components/edit-bookmark/edit-bookmark.directive.js"></script>
   <script src="popup.controller.js"></script>
 </body>
 
