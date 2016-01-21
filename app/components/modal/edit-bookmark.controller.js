@@ -8,7 +8,7 @@ angular.module('app')
     $scope.saveChanges = function(bookmark) {
       $scope.tags = $scope.tags.split(/\s*,\s*/);
       bookmark.tags = $scope.tags.reduce(function(o, v) {
-        o[v] = true;
+        o[v] = v;
         return o;
       }, {});
       console.log(bookmark)  
