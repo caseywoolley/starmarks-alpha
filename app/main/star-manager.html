@@ -52,7 +52,7 @@
                 | rangeFilter: {visits: search.visits}
                 | rangeFilter: {dateAdded: search.dateAdded} : 'date'
                 | rangeFilter: {lastVisit: search.lastVisit} : 'date'
-                )| orderBy: sortColumn | limitTo: displayCount 
+                )| limitTo: displayCount 
                 track by $index">
 
                 <td><img class="favicon" ng-src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>

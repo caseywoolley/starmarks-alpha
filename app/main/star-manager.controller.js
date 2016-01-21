@@ -1,5 +1,5 @@
 angular.module('app.main')
-  .controller('starManager', function($scope, $httpParamSerializer, ModalService, StarMarks) {
+  .controller('starManager', function($scope, $filter, $httpParamSerializer, ModalService, StarMarks) {
 
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
@@ -85,6 +85,7 @@ angular.module('app.main')
     var desc = '-';
     if ($scope.sortColumn === desc + column){ desc = ''; }
     $scope.sortColumn = desc + column;
+    $scope.allBookmarks = $filter('orderBy')($scope.allBookmarks, $scope.sortColumn);
     $scope.resetDisplay();
   };
 
