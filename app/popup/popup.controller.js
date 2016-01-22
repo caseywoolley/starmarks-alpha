@@ -4,6 +4,7 @@ angular.module('app.popup')
     $scope.currentTab = {};
     $scope.starSize = 75;
     $scope.tags = '';
+    $scope.exiting = false;
 
     $scope.parseTags = function(tagText) {
       if (tagText === undefined){ return {}; }
@@ -22,16 +23,16 @@ angular.module('app.popup')
       //update or add bookmark
       if (bookmark.id) {
         StarMarks.update(bookmark, function(updatedBookmark) {
-          //returned object is original object
-          //angular.copy(updatedBookmark, $scope.newStarmark);
+          $scope.newStarmark = updatedBookmark;
+          if ($scope.exiting){
+            window.close();
+          }
         });
       } else {
-        StarMarks.add(bookmark.stars, bookmark, function(newBookmark) {
-          //$scope.newStarmark = newBookmark;
-          angular.copy(newBookmark, $scope.newStarmark);
+        StarMarks.add(bookmark, function(newBookmark) {
+          $scope.newStarmark = newBookmark;
         });
       }
-      //window.close();
     };
 
     $scope.setBadge = function(rating) {
@@ -44,28 +45,27 @@ angular.module('app.popup')
     $scope.getBookmark = function() {
       $scope.getCurrentTab(function(tab) {
         StarMarks.get(tab.url, function(bookmark) {
-
           $scope.$evalAsync(function() {
             $scope.setBadge(1);
             if (bookmark) {
-              //angular.copy(bookmark, $scope.newStarmark);
-              bookmark.tagField = Object.keys(bookmark.tags).join(', ');
+              if (!bookmark.tagField){
+                bookmark.tagField = Object.keys(bookmark.tags).join(', ');
+              }
               $scope.setBadge(bookmark.stars);
             } else {
               bookmark = {
                 title: tab.title,
                 url: tab.url,
+                favIconUrl: tab.favIconUrl,
                 stars: 1
               };
             }
-            //copy bookmark to maintain directive scopes
+            //copy to preserve directive scoping
             angular.copy(bookmark, $scope.newStarmark);
-            //TODO: auto create bookmark first thing
-            //$scope.addBookmark(bookmark);
+            $scope.addBookmark(bookmark);
           });
         });
       });
-
     };
 
     $scope.getCurrentTab = function(callback) {
@@ -83,6 +83,11 @@ angular.module('app.popup')
       chrome.tabs.create({
         url: 'app/main/star-manager.html'
       });
+    };
+
+    $scope.close = function(bookmark) {
+      $scope.exiting = true;
+      $scope.addBookmark(bookmark);
     };
 
     //initialize with current bookmark if exists

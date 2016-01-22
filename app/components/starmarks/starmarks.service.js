@@ -6,27 +6,25 @@ angular.module('app')
   var allBookmarks = [];
   var allTags = {};
 
-  var add = function(rating, bookmark, callback) {
-    //TODO: chrome  
-    bookmark.stars = rating;
-    var save = {};
-    angular.copy(bookmark, save);
-    save.stars = rating;
+  var add = function(bookmark, callback) {
+    var chromeMark = {
+      parentId: '1',
+      title: bookmark.title,
+      url: bookmark.url
+    };
     //save chrome bookmark
-    console.log(save.stars)
-    chrome.bookmarks.create(save, function(newBookmark) {
-      //build starmark data on returned chrome bookmark
-      var starData = newBookmark;
-      // starData.stars = rating;
-      starData.visits = 1;
-      starData.lastVisit = Date.now();
+    chrome.bookmarks.create(chromeMark, function(newBookmark) {
+      //build starmark on returned chrome bookmark
+      var starMark = angular.extend(bookmark, newBookmark);
+      starMark.visits = 1;
+      starMark.lastVisit = Date.now();
       
       var saveObj = {};
-      saveObj[starData.url] = starData;
-      //save starmark data
+      saveObj[starMark.url] = starMark;
+      //save starmark
       chrome.storage.local.set(saveObj, function(data) {
-        callback(starData);
-        console.log('added:', starData);
+        callback(starMark);
+        console.log('added:', starMark);
       });
     });    
   };

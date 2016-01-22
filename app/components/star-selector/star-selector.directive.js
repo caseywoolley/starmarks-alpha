@@ -12,7 +12,17 @@ angular.module('app')
     };
   })
   //TODO: find a home for these filters and directives
-
+  .directive('lowercase', function() {
+    return {
+      require: 'ngModel',
+      link: function(scope, element, attrs, modelCtrl) {
+        modelCtrl.$parsers.push(function(input) {
+          return input ? input.toLowerCase() : "";
+        });
+        element.css("text-transform", "lowercase");
+      }
+    };
+  })
   //convert html input values to integers
   .directive('integer', function() {
     return {
@@ -58,9 +68,11 @@ angular.module('app')
     return items.filter(function(item) {
       var itemTags = Object.keys(item[prop]);
       //console.log(itemTags)
-      for (var i = 0; i < itemTags.length; i++){
+      for (var i = 0; i < itemTags.length; i++) {
         var tag = itemTags[i];
-        if (tag.indexOf(tags) !== -1 || tags.indexOf(tag) !== -1) {return true;}
+        if (tag.indexOf(tags) !== -1 || tags.indexOf(tag) !== -1) {
+          return true;
+        }
       }
       return false;
     });
@@ -85,12 +97,12 @@ angular.module('app')
       noMax = true;
     }
     //handle dates
-    if (type === 'date'){
+    if (type === 'date') {
       min = new Date(min).getTime();
       max = new Date(max).getTime();
 
       //TODO: handle invalid, year only, days, hours, months
-      if ( ('' + values[0]).length < 4){
+      if (('' + values[0]).length < 4) {
         return items;
       }
       if (('' + values[0]).length === 4 && min === max) {
@@ -100,7 +112,7 @@ angular.module('app')
     }
 
     return items.filter(function(item) {
-      if (noMax){
+      if (noMax) {
         return (item[prop] >= min);
       }
       return (item[prop] >= min && item[prop] <= max);

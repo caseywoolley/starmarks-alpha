@@ -9,14 +9,16 @@
 </head>
 
 <body style="width: 400px" ng-app="app" ng-controller="popup">
+<form>
   <div edit-bookmark 
     bookmark="newStarmark" 
     id="'newStarmark'"
     star-size="starSize"
-    update="addBookmark">
+    update="close">
   </div>
- <!--  {{newStarmark}}
-  {{currentTab}} -->
+  <input type="submit" value="Update" class="btn btn-primary btn-block" ng-click="close(newStarmark)"></input>
+  <button class="btn btn-default btn-block" ng-click="openManager()">Bookmark Manager</button>
+  </form>
 
   <script src="../assets/js/angular.min.js"></script>
   <script src="../assets/js/ng-infinite-scroll.min.js"></script>
