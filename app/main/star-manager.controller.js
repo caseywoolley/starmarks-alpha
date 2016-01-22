@@ -23,6 +23,10 @@ angular.module('app.main')
     { key: "limit", name: "Limit Results", placeholder: "Results to return" },
   ];
 
+  $scope.currentCollection = function(){
+
+  };
+
   $scope.isCollection = function(bookmark){
     var extensionUrl = chrome.extension.getURL('/');
     return bookmark.url.indexOf(extensionUrl) !== -1;
@@ -43,11 +47,20 @@ angular.module('app.main')
     return $location.url();
   };
 
-  $scope.makeUrl = function(searchParams){
-    var searchString = searchParams || $httpParamSerializer($scope.search);
-    $location.search(searchString);
+  $scope.$on('advanced-searchbox:modelUpdated', function (event, model) {
+    console.log(event, model)
+    $scope.setUrl($scope.search);
+    //$scope.search = $location.search();
+  });
+
+  $scope.setUrl = function(searchParams){
+    $location.search($httpParamSerializer(searchParams));
     return $httpParamSerializer($scope.search);
   };
+
+  // $scope.onSearchChange = function(){
+  //   console.log('changed');
+  // };
 
   $scope.editBookmark = function(bookmark, index){
     ModalService.showModal({
