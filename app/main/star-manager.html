@@ -12,7 +12,10 @@
 </head>
 
 <body ng-app="app" ng-controller="starManager">
-  <header><h1 class="main-logo">StarMarks</h1></header>
+  <header>
+    <h1 class="main-logo clickable" ng-click="goHome()">StarMarks</h1>
+    <span ng-show="collection">  {{collection.title}}</span>
+  </header>
   <div class="container">
     <div class="row">
       <div class="col-md-10 col-md-offset-1 max">
@@ -25,12 +28,13 @@
         onChangeHook="onSearchChange"
         search-throttle-time="1">
         </nit-advanced-searchbox>
-       <!--  <button class="btn">Save Search</button> -->
+
        <div>
          <button class="btn btn-default" ng-click="showCollections()">Collections</button>
          <span class="bookmark-count">{{ (searchLimit() || filteredBookmarks.length) }} Found</span>
        </div>
-        {{search}} {{getMax('stars')}}  {{getLocation()}}
+       {{getCollection()}}
+        <!-- {{search}} {{getMax('stars')}}  {{getLocation()}} -->
         <!-- {{makeUrl()}} -->
         <img class="loader text-center" src="../assets/img/loading.gif" ng-show="loading">
         <div class="table-responsive">

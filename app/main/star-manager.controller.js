@@ -4,7 +4,7 @@ angular.module('app.main')
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
   $scope.search = $location.search();
-  $scope.collection = {};
+  
   $scope.loading = true;
   $scope.sortColumn = 'dateAdded';
   $scope.displayCount = "0";
@@ -23,8 +23,18 @@ angular.module('app.main')
     { key: "limit", name: "Limit Results", placeholder: "Results to return" },
   ];
 
-  $scope.currentCollection = function(){
+  $scope.goHome = function(){
+    $scope.clearSearch();
+    $location.search($scope.search);
+  };
 
+  $scope.getCollection = function(){
+    console.log($location.absUrl())
+    StarMarks.get($location.absUrl(), function(collection){
+      if (collection){
+        $scope.collection = collection;
+      }
+    });
   };
 
   $scope.isCollection = function(bookmark){
@@ -32,13 +42,17 @@ angular.module('app.main')
     return bookmark.url.indexOf(extensionUrl) !== -1;
   };
 
-  $scope.showCollections = function(){
+  $scope.clearSearch = function(){
     //clear all search properties, preserve scope
     for (var k in $scope.search){
       if ($scope.search.hasOwnProperty(k)){
         $scope.search[k] = undefined;
       }
     }
+  };
+
+  $scope.showCollections = function(){
+    $scope.clearSearch();
     console.log($scope.search);
     $scope.search.url = chrome.extension.getURL('/');
   };
@@ -48,19 +62,15 @@ angular.module('app.main')
   };
 
   $scope.$on('advanced-searchbox:modelUpdated', function (event, model) {
-    console.log(event, model)
     $scope.setUrl($scope.search);
-    //$scope.search = $location.search();
+    //is this a collection view?
+    $scope.getCollection();
   });
 
   $scope.setUrl = function(searchParams){
     $location.search($httpParamSerializer(searchParams));
     return $httpParamSerializer($scope.search);
   };
-
-  // $scope.onSearchChange = function(){
-  //   console.log('changed');
-  // };
 
   $scope.editBookmark = function(bookmark, index){
     ModalService.showModal({
@@ -99,6 +109,8 @@ angular.module('app.main')
       $scope.loading = false;
       $scope.$apply();
     });
+    //is this a collection view?
+    $scope.getCollection();
   };
 
   $scope.deleteBookmark = function(bookmark, index){
