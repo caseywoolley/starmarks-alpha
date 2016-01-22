@@ -4,7 +4,6 @@ angular.module('app.main')
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
   $scope.search = $location.search();
-  
   $scope.loading = true;
   $scope.sortColumn = 'dateAdded';
   $scope.displayCount = "0";
@@ -24,15 +23,18 @@ angular.module('app.main')
   ];
 
   $scope.goHome = function(){
-    $scope.clearSearch();
+    $scope.search = {};
     $location.search($scope.search);
+    $scope.setUrl($scope.search);
   };
 
-  $scope.getCollection = function(){
-    console.log($location.absUrl())
+  $scope.getCollection = function(prop, callback){
     StarMarks.get($location.absUrl(), function(collection){
-      if (collection){
-        $scope.collection = collection;
+      if (collection && callback){
+          callback(collection[prop]);
+          $scope.$apply();
+      } else if (callback){
+        callback();
       }
     });
   };
@@ -42,19 +44,10 @@ angular.module('app.main')
     return bookmark.url.indexOf(extensionUrl) !== -1;
   };
 
-  $scope.clearSearch = function(){
-    //clear all search properties, preserve scope
-    for (var k in $scope.search){
-      if ($scope.search.hasOwnProperty(k)){
-        $scope.search[k] = undefined;
-      }
-    }
-  };
-
   $scope.showCollections = function(){
-    $scope.clearSearch();
-    console.log($scope.search);
+    $scope.search = {};
     $scope.search.url = chrome.extension.getURL('/');
+    $scope.setUrl($scope.search);
   };
 
   $scope.getLocation = function(){
@@ -63,12 +56,15 @@ angular.module('app.main')
 
   $scope.$on('advanced-searchbox:modelUpdated', function (event, model) {
     $scope.setUrl($scope.search);
-    //is this a collection view?
-    $scope.getCollection();
+    console.log('change')
   });
 
   $scope.setUrl = function(searchParams){
     $location.search($httpParamSerializer(searchParams));
+    $scope.getCollection('title', function(title){
+      console.log('change on type', title)
+      $scope.collectionTitle = title;
+    });
     return $httpParamSerializer($scope.search);
   };
 
@@ -109,8 +105,7 @@ angular.module('app.main')
       $scope.loading = false;
       $scope.$apply();
     });
-    //is this a collection view?
-    $scope.getCollection();
+    $scope.setUrl($scope.search);
   };
 
   $scope.deleteBookmark = function(bookmark, index){
@@ -135,11 +130,14 @@ angular.module('app.main')
     console.log(urlParams)
     $location.search(urlParams.substring(1));
     $scope.search = $location.search();
+
+    $scope.setUrl($scope.search);
   };
 
   $scope.resetDisplay = function(){
     $scope.displayCount = '0';
     $scope.displayBookmarks();
+    $scope.setUrl($scope.search);
   };
 
   $scope.sortBookmarks = function(column){

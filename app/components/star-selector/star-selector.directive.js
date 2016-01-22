@@ -12,6 +12,19 @@ angular.module('app')
     };
   })
   //TODO: find a home for these filters and directives
+
+  .filter('matchFilter', function() {
+    return function(items, match, prop) {
+      return items.filter(function(item) {
+        if (match && item[prop] === match[prop]) {
+          //console.log('match', item[prop], match[prop])
+          return item[prop] !== match[prop];
+        }
+        return true;
+      });
+    };
+  })
+
   .directive('lowercase', function() {
     return {
       require: 'ngModel',

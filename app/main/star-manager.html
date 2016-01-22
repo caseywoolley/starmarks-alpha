@@ -14,7 +14,7 @@
 <body ng-app="app" ng-controller="starManager">
   <header>
     <h1 class="main-logo clickable" ng-click="goHome()">StarMarks</h1>
-    <span ng-show="collection">  {{collection.title}}</span>
+    <span ng-show="collectionTitle">  {{collectionTitle}}</span>
   </header>
   <div class="container">
     <div class="row">
@@ -33,7 +33,6 @@
          <button class="btn btn-default" ng-click="showCollections()">Collections</button>
          <span class="bookmark-count">{{ (searchLimit() || filteredBookmarks.length) }} Found</span>
        </div>
-       {{getCollection()}}
         <!-- {{search}} {{getMax('stars')}}  {{getLocation()}} -->
         <!-- {{makeUrl()}} -->
         <img class="loader text-center" src="../assets/img/loading.gif" ng-show="loading">
@@ -57,6 +56,7 @@
                 | filter: search.query
                 | filter: {title: search.title}
                 | filter: {url: search.url}
+                | matchFilter: { title: collectionTitle } : 'title'
                 | arrayFilter: {tags: search.tags}
                 | rangeFilter: {stars: search.stars}
                 | rangeFilter: {visits: search.visits}
