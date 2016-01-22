@@ -48,6 +48,7 @@
                 allBookmarks 
                 | filter: search.query
                 | filter: {title: search.title}
+                | filter: {url: search.url}
                 | arrayFilter: {tags: search.tags}
                 | rangeFilter: {stars: search.stars}
                 | rangeFilter: {visits: search.visits}

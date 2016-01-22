@@ -17,6 +17,7 @@ angular.module('app.main')
     { key: "lastVisit", name: "Last Visited", placeholder: "Last Visited..." },
     { key: "tags", name: "Tags", suggestedValues: ['tag','tag2'], placeholder: "tag1, tag2" },
     { key: "title", name: "Title", placeholder: "Title..." },
+    { key: "url", name: "Url", placeholder: "Url..." },
     { key: "limit", name: "Limit Results", placeholder: "Results to return" },
   ];
 
