@@ -12,7 +12,10 @@
 </head>
 
 <body ng-app="app" ng-controller="starManager">
-  <header><h1 class="main-logo">StarMarks</h1></header>
+  <header>
+    <h1 class="main-logo clickable" ng-click="goHome()">StarMarks</h1>
+    <span ng-show="collectionTitle">  {{collectionTitle}}</span>
+  </header>
   <div class="container">
     <div class="row">
       <div class="col-md-10 col-md-offset-1 max">
@@ -22,17 +25,22 @@
         parameters="availableSearchParams" 
         parameters-label="Advanced Search" 
         placeholder="Search..." 
+        onChangeHook="onSearchChange"
         search-throttle-time="1">
         </nit-advanced-searchbox>
-       <!--  <button class="btn">Save Search</button> -->
 
-        <div class="bookmark-count">{{filteredBookmarks.length}} Found</div>
-        {{search}} {{getMax('stars')}} {{makeUrl()}}
+       <div>
+         <button class="btn btn-default" ng-click="showCollections()">Collections</button>
+         <span class="bookmark-count">{{ (searchLimit() || filteredBookmarks.length) }} Found</span>
+       </div>
+        <!-- {{search}} {{getMax('stars')}}  {{getLocation()}} -->
+        <!-- {{makeUrl()}} -->
         <img class="loader text-center" src="../assets/img/loading.gif" ng-show="loading">
         <div class="table-responsive">
           <table class="table table-striped" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance=".5">
             <thead>
               <tr>
+                <th class="fixed-col-60"></th>
                 <th></th>
                 <th class="clickable" ng-click="sortBookmarks('title')">Title</th>
                 <th class="clickable fixed-col-rating" ng-click="sortBookmarks('stars')">Rating</th>
@@ -47,19 +55,33 @@
                 allBookmarks 
                 | filter: search.query
                 | filter: {title: search.title}
+                | filter: {url: search.url}
+                | matchFilter: { title: collectionTitle } : 'title'
                 | arrayFilter: {tags: search.tags}
                 | rangeFilter: {stars: search.stars}
                 | rangeFilter: {visits: search.visits}
                 | rangeFilter: {dateAdded: search.dateAdded} : 'date'
                 | rangeFilter: {lastVisit: search.lastVisit} : 'date'
-                )| limitTo: displayCount 
+                )| limitTo: ( searchLimit() || displayCount )
                 track by $index">
+                
+                <td>
+                  <div class="btn-default btn-xs edit-btn clickable" ng-click="deleteBookmark(bookmark, allBookmarks.indexOf(bookmark))">Delete</div> 
+                </td>
 
-                <td><img class="favicon" ng-src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>
-                <td class="">
-                  <div class="title-width clip-text"><a class="starmark-link" ng-click="bookmarkClicked(bookmark)" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a></div>
-                  <div class="tags" ng-repeat="(key, value) in bookmark.tags">
-                    <a class="tag" ng-click="addSearchTag(key)" href="">{{key}}</a>
+                <td><img class="favicon" ng-src="{{ (bookmark.favIconUrl || 'http://www.google.com/s2/favicons?domain=' + bookmark.url) }}">
+                </td>
+                <td>
+                  <div ng-show="!isCollection(bookmark)" class="title-width clip-text"><a class="starmark-link" ng-click="bookmarkClicked(bookmark)" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a>
+                  </div>
+                  <div ng-show="isCollection(bookmark)" class="title-width clip-text clickable"><span class="starmark-link" ng-click="collectionClicked(bookmark)">{{ bookmark.title || 'Untitled' }}</span>
+                  </div>
+
+                  <div>
+                    <span class="label label-info clickable" ng-show="isCollection(bookmark)" ng-click="showCollections()">Collection</span>
+                    <span class="tags" ng-repeat="(key, value) in bookmark.tags">
+                      <a class="tag" ng-click="addSearchTag(key)" href="">{{key}}</a>
+                    </span>
                   </div>
                 </td>
                 <td class="bm-rating">
@@ -68,7 +90,7 @@
                 </td>
                 <td>{{ bookmark.dateAdded | timeSince }}</td>
                 <td>{{ bookmark.lastVisit | timeSince }}</td>
-                <td>{{ bookmark.visits || 0 }}</td>
+                <td>{{ bookmark.visits || 1 }}</td>
                 <td>
                   <div class="btn-info btn-xs edit-btn clickable" ng-click="editBookmark(bookmark, allBookmarks.indexOf(bookmark))">Edit</div>
                 </td>
@@ -88,7 +110,9 @@
   <script src="../app.js"></script>
   <script src="../components/starmarks/starmarks.service.js"></script>
   <script src="../components/searchbox/angular-advanced-searchbox.directive.js"></script>
+  <script src="../components/edit-bookmark/edit-bookmark.directive.js"></script>
   <script src="../components/star-selector/star-selector.directive.js"></script>
+
   <script src="../components/modal/edit-bookmark.controller.js"></script>
   <script src="star-manager.controller.js"></script>
 </body>

@@ -153,6 +153,7 @@ angular.module('app')
                         $scope.searchQuery = '';
                         
                         $scope.model = {};
+                        updateModel('change');
                     };
 
                     $scope.editPrevious = function(currentIndex) {

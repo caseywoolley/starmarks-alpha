@@ -1,23 +1,46 @@
 angular.module('app.popup')
   .controller('popup', function($scope, StarMarks) {
-    $scope.newStarmark = {};
+    $scope.newStarmark = { stars: 1 };
     $scope.currentTab = {};
+    $scope.starSize = 75;
+    $scope.tags = '';
+    $scope.exiting = false;
+
+
+    $scope.collection = function(){
+      var extensionUrl = chrome.extension.getURL('/');
+      if ($scope.currentTab.url.indexOf(extensionUrl) != -1){
+        return chrome.extension.getURL('/');
+      }
+    };
+
+    $scope.parseTags = function(tagText) {
+      if (tagText === undefined){ return {}; }
+      return tagText.split(/\s*,\s*/)
+      .reduce(function(o, v) {
+        o[v] = v;
+        return o;
+      }, {});
+    };
 
     $scope.addBookmark = function(bookmark) {
       var tab = $scope.currentTab;
       $scope.setBadge(bookmark.stars);
 
+      bookmark.tags = $scope.parseTags(bookmark.tagField);
       //update or add bookmark
       if (bookmark.id) {
         StarMarks.update(bookmark, function(updatedBookmark) {
           $scope.newStarmark = updatedBookmark;
+          if ($scope.exiting){
+            window.close();
+          }
         });
       } else {
-        StarMarks.add(tab, bookmark.stars, function(newBookmark) {
+        StarMarks.add(bookmark, function(newBookmark) {
           $scope.newStarmark = newBookmark;
         });
       }
-      window.close();
     };
 
     $scope.setBadge = function(rating) {
@@ -31,11 +54,23 @@ angular.module('app.popup')
       $scope.getCurrentTab(function(tab) {
         StarMarks.get(tab.url, function(bookmark) {
           $scope.$evalAsync(function() {
-            $scope.setBadge(0);
+            $scope.setBadge(1);
             if (bookmark) {
-              $scope.newStarmark = bookmark;
+              if (!bookmark.tagField){
+                bookmark.tagField = Object.keys(bookmark.tags).join(', ');
+              }
               $scope.setBadge(bookmark.stars);
+            } else {
+              bookmark = {
+                title: tab.title,
+                url: tab.url,
+                favIconUrl: tab.favIconUrl,
+                stars: 1
+              };
             }
+            //copy to preserve directive scoping
+            angular.copy(bookmark, $scope.newStarmark);
+            $scope.addBookmark(bookmark);
           });
         });
       });
@@ -56,6 +91,11 @@ angular.module('app.popup')
       chrome.tabs.create({
         url: 'app/main/star-manager.html'
       });
+    };
+
+    $scope.close = function(bookmark) {
+      $scope.exiting = true;
+      $scope.addBookmark(bookmark);
     };
 
     //initialize with current bookmark if exists
