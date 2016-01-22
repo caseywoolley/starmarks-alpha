@@ -6,6 +6,14 @@ angular.module('app.popup')
     $scope.tags = '';
     $scope.exiting = false;
 
+
+    $scope.collection = function(){
+      var extensionUrl = chrome.extension.getURL('/');
+      if ($scope.currentTab.url.indexOf(extensionUrl) != -1){
+        return chrome.extension.getURL('/');
+      }
+    };
+
     $scope.parseTags = function(tagText) {
       if (tagText === undefined){ return {}; }
       return tagText.split(/\s*,\s*/)

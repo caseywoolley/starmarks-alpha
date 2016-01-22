@@ -25,9 +25,12 @@
         search-throttle-time="1">
         </nit-advanced-searchbox>
        <!--  <button class="btn">Save Search</button> -->
-
-        <div class="bookmark-count">{{ (searchLimit() || filteredBookmarks.length) }} Found</div>
-        {{search}} {{getMax('stars')}} {{makeUrl()}} {{getLocation()}}
+       <div>
+         <button class="btn btn-default" ng-click="showCollections()">Collections</button>
+         <span class="bookmark-count">{{ (searchLimit() || filteredBookmarks.length) }} Found</span>
+       </div>
+        {{search}} {{getMax('stars')}}  {{getLocation()}}
+        <!-- {{makeUrl()}} -->
         <img class="loader text-center" src="../assets/img/loading.gif" ng-show="loading">
         <div class="table-responsive">
           <table class="table table-striped" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance=".5">
@@ -63,11 +66,17 @@
 
                 <td><img class="favicon" ng-src="{{ (bookmark.favIconUrl || 'http://www.google.com/s2/favicons?domain=' + bookmark.url) }}">
                 </td>
-                <td class="">
-                  <div class="title-width clip-text"><a class="starmark-link" ng-click="bookmarkClicked(bookmark)" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a>
+                <td>
+                  <div ng-show="!isCollection(bookmark)" class="title-width clip-text"><a class="starmark-link" ng-click="bookmarkClicked(bookmark)" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a>
                   </div>
-                  <div class="tags" ng-repeat="(key, value) in bookmark.tags">
-                    <a class="tag" ng-click="addSearchTag(key)" href="">{{key}}</a>
+                  <div ng-show="isCollection(bookmark)" class="title-width clip-text clickable"><span class="starmark-link" ng-click="collectionClicked(bookmark)">{{ bookmark.title || 'Untitled' }}</span>
+                  </div>
+
+                  <div>
+                    <span class="label label-info clickable" ng-show="isCollection(bookmark)" ng-click="showCollections()">Collection</span>
+                    <span class="tags" ng-repeat="(key, value) in bookmark.tags">
+                      <a class="tag" ng-click="addSearchTag(key)" href="">{{key}}</a>
+                    </span>
                   </div>
                 </td>
                 <td class="bm-rating">

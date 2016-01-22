@@ -4,10 +4,12 @@ angular.module('app.main')
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
   $scope.search = $location.search();
+  $scope.collection = {};
   $scope.loading = true;
   $scope.sortColumn = 'dateAdded';
   $scope.displayCount = "0";
   $scope.getTags = StarMarks.getTags;
+  $scope.urlParser = document.createElement('a');
 
   //Docs - https://github.com/dnauck/angular-advanced-searchbox
   $scope.availableSearchParams = [
@@ -21,15 +23,29 @@ angular.module('app.main')
     { key: "limit", name: "Limit Results", placeholder: "Results to return" },
   ];
 
+  $scope.isCollection = function(bookmark){
+    var extensionUrl = chrome.extension.getURL('/');
+    return bookmark.url.indexOf(extensionUrl) !== -1;
+  };
+
+  $scope.showCollections = function(){
+    //clear all search properties, preserve scope
+    for (var k in $scope.search){
+      if ($scope.search.hasOwnProperty(k)){
+        $scope.search[k] = undefined;
+      }
+    }
+    console.log($scope.search);
+    $scope.search.url = chrome.extension.getURL('/');
+  };
+
   $scope.getLocation = function(){
-    //return window.location;
     return $location.url();
   };
 
-
-
-  $scope.makeUrl = function(){
-    $location.search($httpParamSerializer($scope.search));
+  $scope.makeUrl = function(searchParams){
+    var searchString = searchParams || $httpParamSerializer($scope.search);
+    $location.search(searchString);
     return $httpParamSerializer($scope.search);
   };
 
@@ -73,12 +89,12 @@ angular.module('app.main')
   };
 
   $scope.deleteBookmark = function(bookmark, index){
-    var ok = window.confirm('Are you sure?');
-    if (ok){
+    // var ok = window.confirm('Are you sure?');
+    // if (ok){
       StarMarks.deleteBookmark(bookmark);
       console.log('deleted',$scope.allBookmarks[index]);
       $scope.allBookmarks.splice(index, 1);
-    }
+    // }
   };
 
   $scope.bookmarkClicked = function(bookmark) {
@@ -86,6 +102,14 @@ angular.module('app.main')
     bookmark.visits++;
     bookmark.lastVisit = new Date().getTime();
     StarMarks.update(bookmark);
+  };
+
+  $scope.collectionClicked = function(bookmark) {
+    $scope.urlParser.href = bookmark.url;
+    var urlParams = $scope.urlParser.search;
+    console.log(urlParams)
+    $location.search(urlParams.substring(1));
+    $scope.search = $location.search();
   };
 
   $scope.resetDisplay = function(){

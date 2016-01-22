@@ -5,6 +5,13 @@ angular.module('app')
     $scope.starSize = 70;
     $scope.bookmark.tagField = Object.keys(bookmark.tags).join(', ');
 
+    $scope.collection = function(){
+      var extensionUrl = chrome.extension.getURL('/');
+      if ($scope.bookmark.url.indexOf(extensionUrl) != -1){
+        return chrome.extension.getURL('/');
+      }
+    };
+
     $scope.parseTags = function(tagText) {
       return tagText.split(/\s*,\s*/)
       .reduce(function(o, v) {

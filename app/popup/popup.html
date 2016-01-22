@@ -11,13 +11,14 @@
 <body style="width: 400px" ng-app="app" ng-controller="popup">
 <form>
   <div edit-bookmark 
-    bookmark="newStarmark" 
+    bookmark="newStarmark"
+    collection="collection"
     id="'newStarmark'"
     star-size="starSize"
     update="close">
   </div>
-  <input type="submit" value="Update" class="btn btn-primary btn-block" ng-click="close(newStarmark)"></input>
-  <button class="btn btn-default btn-block" ng-click="openManager()">Bookmark Manager</button>
+  <button type="submit" value="Update" class="btn btn-primary btn-block" ng-click="close(newStarmark)">Update</button>
+  <button class="btn btn-xs btn-default btn-block" ng-click="openManager()">Manage Bookmarks</button>
   </form>
 
   <script src="../assets/js/angular.min.js"></script>

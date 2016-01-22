@@ -4,6 +4,7 @@ angular.module('app')
       restrict: 'EA',
       scope: {
         bookmark: "=",
+        collection: "=",
         id: "=",
         starSize: "=",
         update: "="

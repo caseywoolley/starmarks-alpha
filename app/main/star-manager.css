@@ -25,6 +25,7 @@ header {
 
 .bookmark-count{
   text-align: right;
+  float: right;
 }
 
 .clickable {
