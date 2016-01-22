@@ -60,7 +60,9 @@
                 <td>
                   <div class="btn-default btn-xs edit-btn clickable" ng-click="deleteBookmark(bookmark, allBookmarks.indexOf(bookmark))">Delete</div> 
                 </td>
-                <td><img class="favicon" ng-src="http://www.google.com/s2/favicons?domain={{ bookmark.url }}"></td>
+
+                <td><img class="favicon" ng-src="{{ (bookmark.favIconUrl || 'http://www.google.com/s2/favicons?domain=' + bookmark.url) }}">
+                </td>
                 <td class="">
                   <div class="title-width clip-text"><a class="starmark-link" ng-click="bookmarkClicked(bookmark)" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a>
                   </div>
