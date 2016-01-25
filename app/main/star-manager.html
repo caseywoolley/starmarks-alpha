@@ -10,7 +10,7 @@
   <link rel="stylesheet" type="text/css" href="star-manager.css">
 </head>
 
-<body ng-app="app" ng-controller="starManager">
+<body ng-app="app" ng-controller="starManager" multiple-selection-zone>
   <header>
     <h1 class="main-logo clickable" ng-click="goHome()">StarMarks</h1>
     <span ng-show="{{collections.length === 1}}" ng-repeat="collection in collections = ( allBookmarks | filter: {url: getLocation()} : true )">
@@ -35,6 +35,7 @@
          <span class="bookmark-count">{{ (searchLimit() || filteredBookmarks.length) }} Found</span>
        </div>
         <img class="loader text-center" src="../assets/img/loading.gif" ng-show="loading">
+
         <div class="table-responsive">
           <table class="table table-striped" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance="1">
             <thead>
@@ -50,7 +51,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="starmark-row" ng-repeat="bookmark in filteredBookmarks = (
+              <tr multiple-selection-item class="starmark-row" ng-class="{'selecting': isSelecting ,'selected': isSelected}" ng-repeat="bookmark in filteredBookmarks = (
                 allBookmarks 
                 | filter: {url: '!' + getLocation()} : true
                 | filter: search.query
@@ -111,6 +112,7 @@
   <script src="../assets/js/ng-infinite-scroll.min.js"></script>
   <script src="../assets/js/underscore-min.js"></script>
   <script src="../../bower_components/angular-modal-service/dst/angular-modal-service.min.js"></script>
+  <script src="../../bower_components/angular-multiple-selection/multiple-selection.min.js"></script>
   <script src="../app.js"></script>
   <script src="../components/starmarks/starmarks.service.js"></script>
   <script src="../../bower_components/angular-advanced-searchbox/dist/angular-advanced-searchbox-tpls.min.js"></script>

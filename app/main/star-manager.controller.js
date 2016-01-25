@@ -140,8 +140,10 @@ angular.module('app.main')
 
   $scope.displayBookmarks = function() {
     var perPage = 20;
-    if ($scope.displayCount <= $scope.filteredBookmarks.length){
-      $scope.displayCount = '' + (parseInt($scope.displayCount) + perPage);
+    if ($scope.filteredBookmarks) {
+      if ($scope.displayCount <= $scope.filteredBookmarks.length){
+        $scope.displayCount = '' + (parseInt($scope.displayCount) + perPage);
+      }
     }
   };
 
