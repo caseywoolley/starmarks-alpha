@@ -48,6 +48,10 @@ angular.module('app.main')
     $scope.setUrl($scope.search);
   });
 
+  $scope.$watch('search', function(){
+    $scope.setUrl($scope.search);
+  });
+
   $scope.setUrl = function(searchParams){
     $location.search($httpParamSerializer(searchParams));
     return $httpParamSerializer($scope.search);

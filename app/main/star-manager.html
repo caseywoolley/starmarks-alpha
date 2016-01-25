@@ -3,10 +3,9 @@
 
 <head>
   <title>StarMarks</title>
-  <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
-  <link rel="stylesheet" type="text/css" href="../assets/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="../assets/css/font-awesome.min.css">
-  <link rel="stylesheet" type="text/css" href="../assets/css/angular-advanced-searchbox.min.css">
+    <link rel="stylesheet" href="../../bower_components/angular-advanced-searchbox/dist/angular-advanced-searchbox.min.css">
+    <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="../app.css">
   <link rel="stylesheet" type="text/css" href="star-manager.css">
 </head>
@@ -28,15 +27,13 @@
         parameters-label="Advanced Search" 
         placeholder="Search..." 
         onChangeHook="onSearchChange"
-        search-throttle-time="1">
+        search-throttle-time="100">
         </nit-advanced-searchbox>
 
        <div>
          <button class="btn btn-default" ng-click="showCollections()">Collections</button>
          <span class="bookmark-count">{{ (searchLimit() || filteredBookmarks.length) }} Found</span>
        </div>
-        <!-- {{search}} {{getMax('stars')}}  {{getLocation()}} -->
-        <!-- {{makeUrl()}} -->
         <img class="loader text-center" src="../assets/img/loading.gif" ng-show="loading">
         <div class="table-responsive">
           <table class="table table-striped" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance="1">
@@ -71,8 +68,13 @@
                   <div class="btn-default btn-xs edit-btn clickable" ng-click="deleteBookmark(bookmark, allBookmarks.indexOf(bookmark))">Delete</div> 
                 </td>
 
-                <td><img class="favicon" ng-src="{{ (bookmark.favIconUrl || 'http://www.google.com/s2/favicons?domain=' + bookmark.url) }}">
+                <td>
+                <img ng-show="!isCollection(bookmark)" class="favicon" ng-src="{{ (bookmark.favIconUrl || 'http://www.google.com/s2/favicons?domain=' + bookmark.url) }}">
+                
+                <img ng-show="isCollection(bookmark)" class="favicon" src="http://www.iconj.com/ico/t/1/t1ggonzzko.ico">
                 </td>
+
+                
                 <td>
                   <div ng-show="!isCollection(bookmark)" class="title-width clip-text"><a class="starmark-link" ng-click="bookmarkClicked(bookmark)" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a>
                   </div>
@@ -111,7 +113,7 @@
   <script src="../../bower_components/angular-modal-service/dst/angular-modal-service.min.js"></script>
   <script src="../app.js"></script>
   <script src="../components/starmarks/starmarks.service.js"></script>
-  <script src="../components/searchbox/angular-advanced-searchbox.directive.js"></script>
+  <script src="../../bower_components/angular-advanced-searchbox/dist/angular-advanced-searchbox-tpls.min.js"></script>
   <script src="../components/edit-bookmark/edit-bookmark.directive.js"></script>
   <script src="../components/star-selector/star-selector.directive.js"></script>
 
