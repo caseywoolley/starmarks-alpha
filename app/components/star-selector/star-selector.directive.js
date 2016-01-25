@@ -13,6 +13,7 @@ angular.module('app')
   })
   //TODO: find a home for these filters and directives
 
+  
   .filter('matchFilter', function() {
     return function(items, match, prop) {
       return items.filter(function(item) {

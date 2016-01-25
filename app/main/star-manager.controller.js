@@ -23,20 +23,14 @@ angular.module('app.main')
   ];
 
   $scope.goHome = function(){
+    $scope.search.query = '';
     $scope.search = {};
     $location.search($scope.search);
-    $scope.setUrl($scope.search);
   };
 
-  $scope.getCollection = function(prop, callback){
-    StarMarks.get($location.absUrl(), function(collection){
-      if (collection && callback){
-          callback(collection[prop]);
-          $scope.$apply();
-      } else if (callback){
-        callback();
-      }
-    });
+  $scope.showCollections = function(){
+    $scope.search = {};
+    $scope.search.url = chrome.extension.getURL('/');
   };
 
   $scope.isCollection = function(bookmark){
@@ -44,27 +38,20 @@ angular.module('app.main')
     return bookmark.url.indexOf(extensionUrl) !== -1;
   };
 
-  $scope.showCollections = function(){
-    $scope.search = {};
-    $scope.search.url = chrome.extension.getURL('/');
-    $scope.setUrl($scope.search);
-  };
-
   $scope.getLocation = function(){
-    return $location.url();
+    return $location.absUrl();
   };
 
   $scope.$on('advanced-searchbox:modelUpdated', function (event, model) {
     $scope.setUrl($scope.search);
-    console.log('change')
+  });
+
+  $scope.$watch('search', function(){
+    $scope.setUrl($scope.search);
   });
 
   $scope.setUrl = function(searchParams){
     $location.search($httpParamSerializer(searchParams));
-    $scope.getCollection('title', function(title){
-      console.log('change on type', title)
-      $scope.collectionTitle = title;
-    });
     return $httpParamSerializer($scope.search);
   };
 
@@ -105,7 +92,6 @@ angular.module('app.main')
       $scope.loading = false;
       $scope.$apply();
     });
-    $scope.setUrl($scope.search);
   };
 
   $scope.deleteBookmark = function(bookmark, index){
@@ -127,17 +113,15 @@ angular.module('app.main')
   $scope.collectionClicked = function(bookmark) {
     $scope.urlParser.href = bookmark.url;
     var urlParams = $scope.urlParser.search;
-    console.log(urlParams)
     $location.search(urlParams.substring(1));
     $scope.search = $location.search();
-
-    $scope.setUrl($scope.search);
+    //increment bookmark visits
+    $scope.bookmarkClicked(bookmark);
   };
 
   $scope.resetDisplay = function(){
     $scope.displayCount = '0';
     $scope.displayBookmarks();
-    $scope.setUrl($scope.search);
   };
 
   $scope.sortBookmarks = function(column){
