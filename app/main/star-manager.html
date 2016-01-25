@@ -14,7 +14,9 @@
 <body ng-app="app" ng-controller="starManager">
   <header>
     <h1 class="main-logo clickable" ng-click="goHome()">StarMarks</h1>
-    <span ng-show="collectionTitle">  {{collectionTitle}}</span>
+    <span ng-show="{{collections.length === 1}}" ng-repeat="collection in collections = ( allBookmarks | filter: {url: getLocation()} : true )">
+      {{collection.title}}
+    </span>
   </header>
   <div class="container">
     <div class="row">
@@ -37,7 +39,7 @@
         <!-- {{makeUrl()}} -->
         <img class="loader text-center" src="../assets/img/loading.gif" ng-show="loading">
         <div class="table-responsive">
-          <table class="table table-striped" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance=".5">
+          <table class="table table-striped" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance="1">
             <thead>
               <tr>
                 <th class="fixed-col-60"></th>
@@ -53,10 +55,10 @@
             <tbody>
               <tr class="starmark-row" ng-repeat="bookmark in filteredBookmarks = (
                 allBookmarks 
+                | filter: {url: '!' + getLocation()} : true
                 | filter: search.query
                 | filter: {title: search.title}
                 | filter: {url: search.url}
-                | matchFilter: { title: collectionTitle } : 'title'
                 | arrayFilter: {tags: search.tags}
                 | rangeFilter: {stars: search.stars}
                 | rangeFilter: {visits: search.visits}

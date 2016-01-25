@@ -23,25 +23,10 @@ angular.module('app.main')
   ];
 
   $scope.goHome = function(){
+    $scope.search.query = '';
     $scope.search = {};
     $location.search($scope.search);
     $scope.setUrl($scope.search);
-  };
-
-  $scope.getCollection = function(prop, callback){
-    StarMarks.get($location.absUrl(), function(collection){
-      if (collection && callback){
-          callback(collection[prop]);
-          $scope.$apply();
-      } else if (callback){
-        callback();
-      }
-    });
-  };
-
-  $scope.isCollection = function(bookmark){
-    var extensionUrl = chrome.extension.getURL('/');
-    return bookmark.url.indexOf(extensionUrl) !== -1;
   };
 
   $scope.showCollections = function(){
@@ -50,21 +35,21 @@ angular.module('app.main')
     $scope.setUrl($scope.search);
   };
 
+  $scope.isCollection = function(bookmark){
+    var extensionUrl = chrome.extension.getURL('/');
+    return bookmark.url.indexOf(extensionUrl) !== -1;
+  };
+
   $scope.getLocation = function(){
-    return $location.url();
+    return $location.absUrl();
   };
 
   $scope.$on('advanced-searchbox:modelUpdated', function (event, model) {
     $scope.setUrl($scope.search);
-    console.log('change')
   });
 
   $scope.setUrl = function(searchParams){
     $location.search($httpParamSerializer(searchParams));
-    $scope.getCollection('title', function(title){
-      console.log('change on type', title)
-      $scope.collectionTitle = title;
-    });
     return $httpParamSerializer($scope.search);
   };
 
@@ -130,8 +115,9 @@ angular.module('app.main')
     console.log(urlParams)
     $location.search(urlParams.substring(1));
     $scope.search = $location.search();
-
     $scope.setUrl($scope.search);
+    //increment bookmark visits
+    $scope.bookmarkClicked(bookmark);
   };
 
   $scope.resetDisplay = function(){
