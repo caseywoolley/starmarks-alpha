@@ -26,13 +26,11 @@ angular.module('app.main')
     $scope.search.query = '';
     $scope.search = {};
     $location.search($scope.search);
-    $scope.setUrl($scope.search);
   };
 
   $scope.showCollections = function(){
     $scope.search = {};
     $scope.search.url = chrome.extension.getURL('/');
-    $scope.setUrl($scope.search);
   };
 
   $scope.isCollection = function(bookmark){
@@ -94,7 +92,6 @@ angular.module('app.main')
       $scope.loading = false;
       $scope.$apply();
     });
-    $scope.setUrl($scope.search);
   };
 
   $scope.deleteBookmark = function(bookmark, index){
@@ -116,10 +113,8 @@ angular.module('app.main')
   $scope.collectionClicked = function(bookmark) {
     $scope.urlParser.href = bookmark.url;
     var urlParams = $scope.urlParser.search;
-    console.log(urlParams)
     $location.search(urlParams.substring(1));
     $scope.search = $location.search();
-    $scope.setUrl($scope.search);
     //increment bookmark visits
     $scope.bookmarkClicked(bookmark);
   };
@@ -127,7 +122,6 @@ angular.module('app.main')
   $scope.resetDisplay = function(){
     $scope.displayCount = '0';
     $scope.displayBookmarks();
-    $scope.setUrl($scope.search);
   };
 
   $scope.sortBookmarks = function(column){
