@@ -5,10 +5,11 @@ angular.module('app.main')
   $scope.allBookmarks = [];
   $scope.search = $location.search();
   $scope.loading = true;
-  $scope.sortColumn = 'dateAdded';
+  $scope.sortColumn = 'lastVisit';
   $scope.displayCount = "0";
   $scope.getTags = StarMarks.getTags;
   $scope.urlParser = document.createElement('a');
+  $scope.selectedBookmarks = [];
 
   //Docs - https://github.com/dnauck/angular-advanced-searchbox
   $scope.availableSearchParams = [
@@ -21,6 +22,61 @@ angular.module('app.main')
     { key: "url", name: "Url", placeholder: "Url..." },
     { key: "limit", name: "Limit Results", placeholder: "Results to return" },
   ];
+
+  //watch DOM for selection changes
+  $scope.$watch(function() { return document.body.innerHTML; }, function(){
+    $scope.getSelected();
+  });
+
+  $scope.getSelected = function(){
+    $scope.selectedBookmarks = $filter('filter')($scope.filteredBookmarks, {selected: true}, true);
+    //console.log($scope.selectedBookmarks)
+  };
+
+  $scope.clearSelection = function(){
+    if(!$scope.$$phase) {
+      angular.element(document.body).triggerHandler('mousedown');
+    }
+  };
+
+   $scope.stopProp = function(event){
+    event.stopPropagation();
+    event.preventDefault();
+  };
+
+  $scope.editBookmarks = function(bookmarks){
+    console.log(bookmarks)
+    var tags = _.reduce(bookmarks, function(allTags, bookmark){
+      return _.extend(allTags, bookmark.tags);
+    }, {});
+    console.log('tags',tags);
+    //iterate bookmarks
+      //build massbookmark where data is the same
+      //put 'mixed' placeholder when data vaires
+    //send massbookmark to modal
+      //apply massbookmark data to each bookmark in selection
+    $scope.clearSelection();
+  };
+
+  $scope.editBookmark = function(bookmark){
+    var index = $scope.allBookmarks.indexOf(bookmark);
+    ModalService.showModal({
+      templateUrl: "../components/modal/editBookmark.html",
+      controller: "editBookmark",
+      inputs: {
+        bookmark: angular.copy(bookmark)
+      }
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(bookmark) {
+        if (bookmark !== null){
+          StarMarks.update(bookmark);
+          $scope.allBookmarks[index] = bookmark;
+        }
+      });
+    });
+  };
+
 
   $scope.goHome = function(){
     $scope.search.query = '';
@@ -52,25 +108,8 @@ angular.module('app.main')
 
   $scope.setUrl = function(searchParams){
     $location.search($httpParamSerializer(searchParams));
+    $scope.clearSelection();
     return $httpParamSerializer($scope.search);
-  };
-
-  $scope.editBookmark = function(bookmark, index){
-    ModalService.showModal({
-      templateUrl: "../components/modal/editBookmark.html",
-      controller: "editBookmark",
-      inputs: {
-        bookmark: angular.copy(bookmark)
-      }
-    }).then(function(modal) {
-      modal.element.modal();
-      modal.close.then(function(bookmark) {
-        if (bookmark !== null){
-          StarMarks.update(bookmark);
-          $scope.allBookmarks[index] = bookmark;
-        }
-      });
-    });
   };
 
   $scope.addSearchTag = function(tag){
@@ -94,9 +133,10 @@ angular.module('app.main')
     });
   };
 
-  $scope.deleteBookmark = function(bookmark, index){
+  $scope.deleteBookmark = function(bookmark){
     // var ok = window.confirm('Are you sure?');
     // if (ok){
+      var index = $scope.allBookmarks.indexOf(bookmark);
       StarMarks.deleteBookmark(bookmark);
       console.log('deleted',$scope.allBookmarks[index]);
       $scope.allBookmarks.splice(index, 1);
