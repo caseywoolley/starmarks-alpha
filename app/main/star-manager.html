@@ -17,8 +17,9 @@
       {{collection.title}}
     </span>
   </header>
-  <div class="container-fullwidth">
-    <div class="row search" ng-mousedown="stopProp($event)">
+  <div class="col-md-1 right-of-table"></div>
+  <div class="container-fullwidth" ng-mousedown="stopProp($event)">
+    <div class="row search">
       <div class="col-md-10 col-md-offset-1 max">
         
         <nit-advanced-searchbox 
@@ -37,8 +38,8 @@
       </div>
     </div>
     
-    <div class="row mass-edit-bar" ng-if="(selectedBookmarks.length > 0)" ng-mousedown="stopProp($event)">
-      <div class="col-md-10 col-md-offset-1 max">
+    <div class="row mass-edit-bar" ng-if="(selectedBookmarks.length > 0)">
+      <div class="col-md-10 col-md-offset-1">
         <span>{{ selectedBookmarks.length + ' Selected' }}</span>
         <button  class="btn btn-lg btn-primary edit-btn"  ng-click="editBookmarks(selectedBookmarks)">Edit</button>
       </div>
@@ -46,12 +47,12 @@
     
 
     <div class="row table">
-      <div class="col-md-10 col-md-offset-1 max">
+      <div class="col-md-10 col-md-offset-1">
         <div class="table-responsive">
           <table class="table table-striped" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance="1">
             <thead>
               <tr>
-                <th class="fixed-col-60"></th>
+                <!-- <th class="fixed-col-60"></th> -->
                 <th></th>
                 <th class="clickable" ng-click="sortBookmarks('title')">Title</th>
                 <th class="clickable fixed-col-rating" ng-click="sortBookmarks('stars')">Rating</th>
@@ -77,28 +78,29 @@
                 | rangeFilter: {lastVisit: search.lastVisit} : 'date'
                 )| limitTo: ( searchLimit() || displayCount )
                 track by $index">
-                <td>
+                <!-- <td>
                   <div class="btn-default btn-xs edit-btn clickable" ng-click="deleteBookmark(bookmark, allBookmarks.indexOf(bookmark))">Delete</div>
-                  <div ng-show="false">{{ bookmark.selected = isSelected }}
                   </div>
-                </td>
+                </td> -->
                 <td>
+                  <div ng-show="false">{{ bookmark.selected = isSelected }}</div>
+
                   <img ng-if="!isCollection(bookmark)" class="favicon" ng-src="{{ (bookmark.favIconUrl || 'http://www.google.com/s2/favicons?domain=' + bookmark.url) }}">
                   <img ng-if="isCollection(bookmark)" class="favicon" src="http://www.iconj.com/ico/t/1/t1ggonzzko.ico">
                 </td>
-                <td>
-                  <div ng-if="!isCollection(bookmark)" class="title-width clip-text"><a class="starmark-link" ng-click="bookmarkClicked(bookmark)" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a>
+                <td >
+                  <div ng-if="!isCollection(bookmark)" ng-mousedown="stopProp($event)" class="title-width clip-text"><a class="starmark-link" ng-click="bookmarkClicked(bookmark)" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a>
                   </div>
-                  <div ng-if="isCollection(bookmark)" class="title-width clip-text clickable"><span class="starmark-link" ng-click="collectionClicked(bookmark)">{{ bookmark.title || 'Untitled' }}</span>
+                  <div ng-if="isCollection(bookmark)" ng-mousedown="stopProp($event)" class="title-width clip-text clickable"><span class="starmark-link" ng-click="collectionClicked(bookmark)">{{ bookmark.title || 'Untitled' }}</span>
                   </div>
                   <div>
-                    <span class="label label-info clickable" ng-if="isCollection(bookmark)" ng-click="showCollections()">Collection</span>
-                    <span class="tags" ng-repeat="(key, value) in bookmark.tags">
+                    <span class="label label-info clickable" ng-if="isCollection(bookmark)" ng-mousedown="stopProp($event)" ng-click="showCollections()">Collection</span>
+                    <span class="tags" ng-mousedown="stopProp($event)" ng-repeat="(key, value) in bookmark.tags">
                       <a class="tag" ng-click="addSearchTag(key)" href="">{{key}}</a>
                     </span>
                   </div>
                 </td>
-                <td class="bm-rating">
+                <td class="bm-rating" ng-mousedown="stopProp($event)">
                   <div star-selector bookmark="bookmark" rating="bookmark.stars" id="$index" update="update">
                   </div>
                 </td>
@@ -114,7 +116,9 @@
           <img class="loader text-center" src="../assets/img/loading.gif" ng-if="loading">
         </div>
       </div>
+
     </div>
+
   </div>
 
   <script src="../assets/js/jquery.min.js"></script>

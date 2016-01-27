@@ -16,11 +16,11 @@
     <span class="col-md-4"><b>Last Visit:</b> {{ bookmark.lastVisit | timeSince }}</span>
     <span class="col-md-4"><b>Visits:</b> {{ bookmark.visits || 1 }}</span>
   </div>
-  <div class="alert alert-info" ng-show="!bookmark.dateAdded"><b>Bookmark added!</b></div>
+  <div class="alert alert-info" ng-show="!bookmark.dateAdded"><b>{{bookmark.bulkCount ? 'Editing ' + bookmark.bulkCount + ' bookmarks' : 'Bookmark added!'}}</b></div>
 
   <div class="form-group-lg">
     <label for="title">Title</label>
-    <input type="text" placeholder="Mixed" class="form-control" ng-model="bookmark.title" id="title">
+    <input type="text" placeholder="{{bookmark.bulkCount > 1 ? 'Mixed' : ''}}" class="form-control" ng-model="bookmark.title" id="title">
   </div>
   <div class="form-group">
     <label for="tags">Tags</label>
@@ -28,7 +28,7 @@
   </div>
   <div class="form-group">
     <label for="notes">Notes</label>
-    <textarea placeholder="Mixed" rows="3" class="form-control" ng-model="bookmark.notes" id="notes"></textarea>
+    <textarea placeholder="{{bookmark.bulkCount > 1 ? 'Mixed' : ''}}" rows="3" class="form-control" ng-model="bookmark.notes" id="notes"></textarea>
   </div>
   <div class="checkbox">
     <label>
@@ -37,5 +37,5 @@
   </div>
 
 </form>
-<pre>{{ bookmark.url }}</pre>
+<pre>{{ (bookmark.url || bookmark.bulkCount + ' Selected') }}</pre>
 
