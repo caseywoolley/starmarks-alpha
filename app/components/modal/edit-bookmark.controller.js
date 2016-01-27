@@ -7,9 +7,14 @@ angular.module('app')
 
     $scope.collection = function(){
       var extensionUrl = chrome.extension.getURL('/');
-      if ($scope.bookmark.url.indexOf(extensionUrl) != -1){
+      if ($scope.bookmark.url && $scope.bookmark.url.indexOf(extensionUrl) != -1){
         return chrome.extension.getURL('/');
       }
+    };
+
+    $scope.stopProp = function(event){
+      event.stopPropagation();
+      //event.preventDefault();
     };
 
     $scope.parseTags = function(tagText) {

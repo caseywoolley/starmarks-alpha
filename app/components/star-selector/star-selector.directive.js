@@ -13,7 +13,18 @@ angular.module('app')
   })
   //TODO: find a home for these filters and directives
 
-  
+  //http://stackoverflow.com/questions/20300866/angularjs-ng-click-stoppropagation 
+  .directive('isolateClick', function() {
+      return {
+          link: function(scope, elem) {
+              elem.on('click', function(e){
+                  e.event.stopPropagation();
+                  e.event.preventDefault();
+              });
+          }
+     };
+  })
+
   .filter('matchFilter', function() {
     return function(items, match, prop) {
       return items.filter(function(item) {

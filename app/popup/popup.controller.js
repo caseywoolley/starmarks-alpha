@@ -56,7 +56,7 @@ angular.module('app.popup')
           $scope.$evalAsync(function() {
             $scope.setBadge(1);
             if (bookmark) {
-              if (!bookmark.tagField){
+              if (!bookmark.tagField && bookmark.tags){
                 bookmark.tagField = Object.keys(bookmark.tags).join(', ');
               }
               $scope.setBadge(bookmark.stars);

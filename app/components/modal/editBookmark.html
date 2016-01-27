@@ -1,4 +1,4 @@
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" ng-mousedown="stopProp($event)">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -7,14 +7,13 @@
       </div>
       <div class="modal-body">
 
-        <div edit-bookmark 
+        <div edit-bookmark
           bookmark="bookmark" 
           collection="collection"
           id="'edit-bookmark'"
           star-size="starSize"
           update="updateBookmark">
         </div>
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" ng-click="dismissModal()" data-dismiss="modal">Close</button>
