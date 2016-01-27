@@ -34,6 +34,7 @@ angular.module('app.main')
   };
 
   $scope.clearSelection = function(){
+    $scope.getSelected();
     if(!$scope.$$phase) {
       angular.element(document.body).triggerHandler('mousedown');
     }
@@ -79,13 +80,19 @@ angular.module('app.main')
       for (var i = 0; i < add.length; i++){ tagObj[add[i]] = add[i]; }
       for (var j = 0; j < remove.length; j++){ delete tagObj[remove[j]]; }
      };
+     //remove temp fields
+     delete data.bulkCount;
+     delete data.originalTags;
+     delete data.tags;
+     delete data.tagField;
+     data.selected = false;
      //iterate over each bookmarks and update fields
      for (var idx in bookmarks){
       var bookmark = bookmarks[idx];
       bookmark.tags = bookmark.tags || {};
       updateTags(bookmark.tags, addTags, deleteTags);
       for (var key in data){
-        if (data[key] !== '' && key !== 'tagField' && key !== 'tags'){
+        if (data[key] !== ''){
           bookmark[key] = data[key];
         }
       }
@@ -108,9 +115,16 @@ angular.module('app.main')
       modal.element.modal();
       modal.close.then(function(data) {
         if (data !== null){
-          $scope.confirmPopup(function(yes){
+          //confirm if editing multiple
+          if(bookmarks.length > 1){
+            $scope.confirmPopup(function(yes){
+              if (yes){
+                $scope.updateBookmarks(bookmarks, data);
+              }
+            });
+          } else {
             $scope.updateBookmarks(bookmarks, data);
-          });
+          }
           $scope.clearSelection();
         }
       });
@@ -119,17 +133,23 @@ angular.module('app.main')
   };
 
   $scope.deleteBookmarks = function(bookmarks){
-    $scope.confirmPopup(function(yes){
-      console.log(yes)
-      console.log(bookmarks)
-      if (yes){
-        bookmarks.forEach(function(bookmark){
-          //StarMarks.deleteBookmark(bookmark);
-          var index = $scope.allBookmarks.indexOf(bookmark);
-          $scope.allBookmarks.splice(index, 1);
+      //confirm if editing multiple
+      if(bookmarks.length > 1){
+        $scope.confirmPopup(function(yes){
+          if (yes){
+            bookmarks.forEach(function(bookmark){
+              StarMarks.deleteBookmark(bookmark);
+              var index = $scope.allBookmarks.indexOf(bookmark);
+              $scope.allBookmarks.splice(index, 1);
+            });
+          }
         });
+      } else {
+        var bookmark = bookmarks[0];
+        StarMarks.deleteBookmark(bookmark);
+        var index = $scope.allBookmarks.indexOf(bookmark);
+        $scope.allBookmarks.splice(index, 1);
       }
-    });
   };
 
   $scope.confirmPopup = function(callback) {
@@ -146,35 +166,6 @@ angular.module('app.main')
     });
 
   };
-
-  // $scope.deleteBookmark = function(bookmark){
-  //   // var ok = window.confirm('Are you sure?');
-  //   // if (ok){
-  //     var index = $scope.allBookmarks.indexOf(bookmark);
-  //     StarMarks.deleteBookmark(bookmark);
-  //     console.log('deleted',$scope.allBookmarks[index]);
-  //     $scope.allBookmarks.splice(index, 1);
-  //   // }
-  // };
-
-  // $scope.editBookmark = function(bookmark){
-  //   var index = $scope.allBookmarks.indexOf(bookmark);
-  //   ModalService.showModal({
-  //     templateUrl: "../components/modal/editBookmark.html",
-  //     controller: "editBookmark",
-  //     inputs: {
-  //       bookmark: angular.copy(bookmark)
-  //     }
-  //   }).then(function(modal) {
-  //     modal.element.modal();
-  //     modal.close.then(function(bookmark) {
-  //       if (bookmark !== null){
-  //         StarMarks.update(bookmark);
-  //         $scope.allBookmarks[index] = bookmark;
-  //       }
-  //     });
-  //   });
-  // };
 
 
   $scope.goHome = function(){
@@ -250,9 +241,9 @@ angular.module('app.main')
   };
 
   $scope.resetDisplay = function(){
-    $scope.clearSelection();
     $scope.displayCount = '0';
     $scope.displayBookmarks();
+    $scope.clearSelection();
   };
 
   $scope.sortBookmarks = function(column){
