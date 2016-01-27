@@ -41,7 +41,10 @@
     <div class="row mass-edit-bar" ng-if="(selectedBookmarks.length > 0)">
       <div class="col-md-10 col-md-offset-1">
         <span>{{ selectedBookmarks.length + ' Selected' }}</span>
-        <button  class="btn btn-lg btn-primary edit-btn"  ng-click="editBookmarks(selectedBookmarks)">Edit</button>
+        <span class="mass-edit-btns">
+          <button  class="btn btn-lg btn-default"  ng-click="deleteBookmarks(selectedBookmarks)">Delete</button>
+          <button  class="btn btn-lg btn-primary"  ng-click="editBookmarks(selectedBookmarks)">Edit</button>
+        </span>
       </div>
     </div>
     
@@ -134,6 +137,7 @@
   <script src="../components/edit-bookmark/edit-bookmark.directive.js"></script>
   <script src="../components/star-selector/star-selector.directive.js"></script>
   <script src="../components/modal/edit-bookmark.controller.js"></script>
+  <script src="../components/confirm-popup/confirm-popup.controller.js"></script>
   <script src="star-manager.controller.js"></script>
 </body>
 

@@ -112,24 +112,63 @@ angular.module('app.main')
     $scope.clearSelection();
   };
 
-  $scope.editBookmark = function(bookmark){
-    var index = $scope.allBookmarks.indexOf(bookmark);
+  $scope.deleteBookmarks = function(bookmarks){
+    // var ok = window.confirm('Are you sure?');
+    // if (ok){
+    $scope.confirmPopup(function(result){
+      console.log(result)
+      console.log(bookmarks)
+    });
+      // var index = $scope.allBookmarks.indexOf(bookmark);
+      // StarMarks.deleteBookmark(bookmark);
+      // console.log('deleted',$scope.allBookmarks[index]);
+      // $scope.allBookmarks.splice(index, 1);
+    // }
+  };
+
+  $scope.confirmPopup = function(callback) {
     ModalService.showModal({
-      templateUrl: "../components/modal/editBookmark.html",
-      controller: "editBookmark",
-      inputs: {
-        bookmark: angular.copy(bookmark)
-      }
+      templateUrl: "../components/confirm-popup/confirm-popup.html",
+      controller: "confirmPopup"
     }).then(function(modal) {
       modal.element.modal();
-      modal.close.then(function(bookmark) {
-        if (bookmark !== null){
-          StarMarks.update(bookmark);
-          $scope.allBookmarks[index] = bookmark;
+      modal.close.then(function(result) {
+        if (callback){
+          callback(result);
         }
       });
     });
+
   };
+
+  // $scope.deleteBookmark = function(bookmark){
+  //   // var ok = window.confirm('Are you sure?');
+  //   // if (ok){
+  //     var index = $scope.allBookmarks.indexOf(bookmark);
+  //     StarMarks.deleteBookmark(bookmark);
+  //     console.log('deleted',$scope.allBookmarks[index]);
+  //     $scope.allBookmarks.splice(index, 1);
+  //   // }
+  // };
+
+  // $scope.editBookmark = function(bookmark){
+  //   var index = $scope.allBookmarks.indexOf(bookmark);
+  //   ModalService.showModal({
+  //     templateUrl: "../components/modal/editBookmark.html",
+  //     controller: "editBookmark",
+  //     inputs: {
+  //       bookmark: angular.copy(bookmark)
+  //     }
+  //   }).then(function(modal) {
+  //     modal.element.modal();
+  //     modal.close.then(function(bookmark) {
+  //       if (bookmark !== null){
+  //         StarMarks.update(bookmark);
+  //         $scope.allBookmarks[index] = bookmark;
+  //       }
+  //     });
+  //   });
+  // };
 
 
   $scope.goHome = function(){
@@ -186,16 +225,6 @@ angular.module('app.main')
       $scope.loading = false;
       $scope.$apply();
     });
-  };
-
-  $scope.deleteBookmark = function(bookmark){
-    // var ok = window.confirm('Are you sure?');
-    // if (ok){
-      var index = $scope.allBookmarks.indexOf(bookmark);
-      StarMarks.deleteBookmark(bookmark);
-      console.log('deleted',$scope.allBookmarks[index]);
-      $scope.allBookmarks.splice(index, 1);
-    // }
   };
 
   $scope.bookmarkClicked = function(bookmark) {
