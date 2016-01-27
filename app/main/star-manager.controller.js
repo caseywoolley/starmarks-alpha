@@ -41,20 +41,48 @@ angular.module('app.main')
 
    $scope.stopProp = function(event){
     event.stopPropagation();
-    event.preventDefault();
+    //event.preventDefault();
   };
 
-  $scope.editBookmarks = function(bookmarks){
-    console.log(bookmarks)
+  $scope.mergeBookmarks = function(bookmarks){
+    //merge tags into one tag object
     var tags = _.reduce(bookmarks, function(allTags, bookmark){
       return _.extend(allTags, bookmark.tags);
     }, {});
-    console.log('tags',tags);
-    //iterate bookmarks
-      //build massbookmark where data is the same
-      //put 'mixed' placeholder when data vaires
-    //send massbookmark to modal
-      //apply massbookmark data to each bookmark in selection
+
+    //merge bookmarks where they match
+    var massBookmark = {};
+    for (var key in bookmarks[0]) {
+      var set = _.pluck(bookmarks, key);
+      if (_.every(set, function(item){
+        return item === bookmarks[0][key];
+      })){
+        massBookmark[key] = bookmarks[0][key];
+      }
+    }
+    massBookmark.tags = tags;
+    massBookmark.originalTags = tags;
+    return massBookmark;
+  };
+
+  $scope.editBookmarks = function(bookmarks){
+    var massBookmark = $scope.mergeBookmarks(bookmarks);
+    console.log('mass', massBookmark)
+    ModalService.showModal({
+      templateUrl: "../components/modal/editBookmark.html",
+      controller: "editBookmark",
+      inputs: {
+        bookmark: angular.copy(massBookmark)
+      }
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(bookmarks) {
+        if (bookmarks !== null){
+         //process each bookmark changes
+         console.log('returned', bookmarks)
+        }
+      });
+    });
     $scope.clearSelection();
   };
 
