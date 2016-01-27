@@ -198,6 +198,7 @@ angular.module('app.main')
   });
 
   $scope.setUrl = function(searchParams){
+    $scope.resetDisplay();
     $location.search($httpParamSerializer(searchParams));
     $scope.clearSelection();
     return $httpParamSerializer($scope.search);
