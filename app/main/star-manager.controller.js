@@ -67,6 +67,35 @@ angular.module('app.main')
     return mergedBookmark;
   };
 
+  $scope.updateBookmarks = function(bookmarks, data){
+    //find diff between orig tags and new tags
+     var originalTags = Object.keys(data.originalTags);
+     var newTags = Object.keys(data.tags);
+     
+     var addTags = _.difference(newTags, originalTags);
+     var deleteTags = _.difference(originalTags, newTags);
+
+     var updateTags = function(tagObj, add, remove){
+      for (var i = 0; i < add.length; i++){ tagObj[add[i]] = add[i]; }
+      for (var j = 0; j < remove.length; j++){ delete tagObj[remove[j]]; }
+     };
+     //iterate over each bookmarks and update fields
+     for (var idx in bookmarks){
+      var bookmark = bookmarks[idx];
+      bookmark.tags = bookmark.tags || {};
+      updateTags(bookmark.tags, addTags, deleteTags);
+      for (var key in data){
+        if (data[key] !== '' && key !== 'tagField' && key !== 'tags'){
+          bookmark[key] = data[key];
+        }
+      }
+      //save updated bookmark
+      StarMarks.update(bookmark);
+      var index = $scope.allBookmarks.indexOf(bookmark);
+      $scope.allBookmarks[index] = bookmark;
+     }
+  };
+
   $scope.editBookmarks = function(bookmarks){
     var mergedBookmark = $scope.mergeBookmarks(bookmarks);
     ModalService.showModal({
@@ -77,53 +106,30 @@ angular.module('app.main')
       }
     }).then(function(modal) {
       modal.element.modal();
-      modal.close.then(function(mergeMark) {
-        if (mergeMark !== null){
-         //find diff between orig tags and new tags
-         var originalTags = Object.keys(mergeMark.originalTags);
-         var newTags = Object.keys(mergeMark.tags);
-         
-         var addTags = _.difference(newTags, originalTags);
-         var deleteTags = _.difference(originalTags, newTags);
-
-         var updateTags = function(tagObj, add, remove){
-          for (var i = 0; i < add.length; i++){ tagObj[add[i]] = add[i]; }
-          for (var j = 0; j < remove.length; j++){ delete tagObj[remove[j]]; }
-         };
-         //iterate over each bookmarks and update fields
-         for (var idx in bookmarks){
-          var bookmark = bookmarks[idx];
-          bookmark.tags = bookmark.tags || {};
-          updateTags(bookmark.tags, addTags, deleteTags);
-          for (var key in mergeMark){
-            if (mergeMark[key] !== '' && key !== 'tagField' && key !== 'tags'){
-              bookmark[key] = mergeMark[key];
-            }
-          }
-          //save updated bookmark
-          StarMarks.update(bookmark);
-          var index = $scope.allBookmarks.indexOf(bookmark);
-          $scope.allBookmarks[index] = bookmark;
-         }
-
+      modal.close.then(function(data) {
+        if (data !== null){
+          $scope.confirmPopup(function(yes){
+            $scope.updateBookmarks(bookmarks, data);
+          });
+          $scope.clearSelection();
         }
       });
     });
-    $scope.clearSelection();
+    
   };
 
   $scope.deleteBookmarks = function(bookmarks){
-    // var ok = window.confirm('Are you sure?');
-    // if (ok){
-    $scope.confirmPopup(function(result){
-      console.log(result)
+    $scope.confirmPopup(function(yes){
+      console.log(yes)
       console.log(bookmarks)
+      if (yes){
+        bookmarks.forEach(function(bookmark){
+          //StarMarks.deleteBookmark(bookmark);
+          var index = $scope.allBookmarks.indexOf(bookmark);
+          $scope.allBookmarks.splice(index, 1);
+        });
+      }
     });
-      // var index = $scope.allBookmarks.indexOf(bookmark);
-      // StarMarks.deleteBookmark(bookmark);
-      // console.log('deleted',$scope.allBookmarks[index]);
-      // $scope.allBookmarks.splice(index, 1);
-    // }
   };
 
   $scope.confirmPopup = function(callback) {
