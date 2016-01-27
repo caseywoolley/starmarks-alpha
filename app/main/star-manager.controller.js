@@ -79,8 +79,6 @@ angular.module('app.main')
       modal.element.modal();
       modal.close.then(function(mergeMark) {
         if (mergeMark !== null){
-         //process each bookmark changes
-         console.log('returned', mergeMark)
          //find diff between orig tags and new tags
          var originalTags = Object.keys(mergeMark.originalTags);
          var newTags = Object.keys(mergeMark.tags);
@@ -92,7 +90,6 @@ angular.module('app.main')
           for (var i = 0; i < add.length; i++){ tagObj[add[i]] = add[i]; }
           for (var j = 0; j < remove.length; j++){ delete tagObj[remove[j]]; }
          };
-
          //iterate over each bookmarks and update fields
          for (var idx in bookmarks){
           var bookmark = bookmarks[idx];
@@ -103,12 +100,12 @@ angular.module('app.main')
               bookmark[key] = mergeMark[key];
             }
           }
-
           //save updated bookmark
+          StarMarks.update(bookmark);
           var index = $scope.allBookmarks.indexOf(bookmark);
           $scope.allBookmarks[index] = bookmark;
-          //update bookmark
          }
+
         }
       });
     });
