@@ -8,7 +8,7 @@ angular.module('app')
 
   var add = function(bookmark, callback) {
     var chromeMark = {
-      parentId: '1',
+      parentId: '2',
       title: bookmark.title,
       url: bookmark.url
     };
@@ -127,7 +127,9 @@ angular.module('app')
             bookmark = node;
             delete bookmark.children; //bookmarks don't need this
             //collect all ids associated for global deletion
-            starMark.ids.push(bookmark.id);
+            if (starMark.ids.indexOf(bookmark.id) === -1){
+              starMark.ids.push(bookmark.id);
+            }
             bookmark = _.extend(bookmark, starMark);
             //list.push(bookmark);
             list[node.url] = bookmark;

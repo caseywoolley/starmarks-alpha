@@ -93,9 +93,9 @@
                   <img ng-if="isCollection(bookmark)" class="favicon" src="http://www.iconj.com/ico/t/1/t1ggonzzko.ico">
                 </td>
                 <td >
-                  <div ng-if="!isCollection(bookmark)" ng-mousedown="stopProp($event)" class="title-width clip-text"><a class="starmark-link" ng-click="bookmarkClicked(bookmark)" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a>
+                  <div ng-if="!isCollection(bookmark)" ng-mousedown="stopProp($event)" class="title-width clip-text"><a class="starmark-link" ng-click="bookmarkClicked(bookmark)" target="_blank" href="{{ bookmark.url }}">{{ bookmark.title || 'Untitled' }}</a><span class="url">{{ bookmark.url }}</span>
                   </div>
-                  <div ng-if="isCollection(bookmark)" ng-mousedown="stopProp($event)" class="title-width clip-text clickable"><span class="starmark-link" ng-click="collectionClicked(bookmark)">{{ bookmark.title || 'Untitled' }}</span>
+                  <div ng-if="isCollection(bookmark)" ng-mousedown="stopProp($event)" class="title-width clip-text clickable"><span class="starmark-link" ng-click="collectionClicked(bookmark)">{{ bookmark.title || 'Untitled' }}</span><span class="url">{{ bookmark.url }}</span>
                   </div>
                   <div>
                     <span class="label label-info clickable" ng-if="isCollection(bookmark)" ng-mousedown="stopProp($event)" ng-click="showCollections()">Collection</span>

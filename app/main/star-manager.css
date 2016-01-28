@@ -120,13 +120,18 @@ header {
   text-decoration: none;
 }
 
+.url {
+  color: rgb(180, 180, 180);
+  padding-left: 10px;
+}
+
 .starmark-link,
 .starmark-link:link,
 .starmark-link:hover,
 .starmark-link:active,
 .starmark-link:visited {
-  display: block;
-  z-index: 20;
+  font-size: 25px;
+  font-weight: 200;
   text-decoration: none;
   color: #2B4162;
 }
@@ -137,7 +142,7 @@ header {
 
 .favicon {
   width:16px;
-  margin-right: 5px;
+  padding-top: 11px;
   display: inline-block;
 }
 
