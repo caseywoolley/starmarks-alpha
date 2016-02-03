@@ -6,12 +6,14 @@
     "bookmarks", "tabs", "storage", "background"
   ],
   "background": {
-    "scripts": ["app/app.js"]
+    "scripts": ["app/assets/js/angular.min.js",
+                "app/app.js"]
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["app/app.js"]
+      "js": ["app/assets/js/angular.min.js",
+             "app/app.js"]
     }
   ],
   "browser_action": {
