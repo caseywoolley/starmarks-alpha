@@ -46,6 +46,16 @@ angular.module('app')
         chrome.storage.local.set(saveObj, function(){
   	    	console.log('updated:', bookmark);
           if (callback) { callback(bookmark); }
+
+          //also update all chrome bookmark references
+          if (data.title !== bookmark.title) {
+            for (var i = 0; i < bookmark.ids.length; i++){
+              var id = bookmark.ids[i];
+              chrome.bookmarks.update(id, { title: bookmark.title }, function(){
+                console.log('updated reference');
+              });
+            }
+          }
         });
       }
     });
