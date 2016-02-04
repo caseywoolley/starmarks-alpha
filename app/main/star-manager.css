@@ -74,9 +74,18 @@ header {
   float:right;
 }
 
-/*.starmark-row:hover .edit-btn {
-    display: block;
-}*/
+.edit-btn {
+  display:none;
+  margin-top: 0.5em;
+  font-size:1.5em;
+  color: rgb(180, 180, 180);
+  position: absolute;
+  right: 30px;
+}
+
+.starmark-row:hover .edit-btn {
+    display: inline;
+}
 
 .bookmark-count{
   text-align: right;

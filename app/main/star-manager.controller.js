@@ -38,27 +38,12 @@ angular.module('app.main')
     //console.log($scope.selectedBookmarks)
   });
 
-  //watch DOM for selection changes
-  // $scope.$watch(function() { return document.body.innerHTML; }, function(){
-  //   $scope.getSelected();
-  // });
-
-  $scope.getSelected = function(){
-   // $scope.selectedBookmarks = $filter('filter')($scope.filteredBookmarks, {selected: true}, true);
-    //console.log($scope.selectedBookmarks)
-  };
-
   $scope.clearSelection = function(){
-    //$scope.getSelected();
     $scope.selectedBookmarks = [];
-    if(!$scope.$$phase) {
-      angular.element(document.body).triggerHandler('mousedown');
-    }
   };
 
    $scope.stopProp = function(event){
     event.stopPropagation();
-    //event.preventDefault();
   };
 
   $scope.mergeBookmarks = function(bookmarks){
@@ -101,7 +86,6 @@ angular.module('app.main')
      delete data.originalTags;
      delete data.tags;
      delete data.tagField;
-     data.selected = false;
      //iterate over each bookmarks and update fields
      for (var idx in bookmarks){
       var bookmark = bookmarks[idx];
