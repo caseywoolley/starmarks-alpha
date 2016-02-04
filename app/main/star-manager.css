@@ -21,11 +21,19 @@ header {
   margin: 0 !important;
 }
 
-.right-of-table {
+.right-of-table, .left-of-table {
   position: fixed;
+  height: 100%;
+}
+
+.right-of-table {
   top: 0px;
   right: 0px;
-  height: 100%;
+}
+
+.left-of-table {
+  top: 0px;
+  left: 0px;
 }
 
 .selected {
@@ -40,6 +48,14 @@ header {
     border: 1px dashed grey;
     background: grey;
     opacity: 0.2;
+}
+
+.no-highlight {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .mass-edit-bar {
@@ -58,9 +74,18 @@ header {
   float:right;
 }
 
-/*.starmark-row:hover .edit-btn {
-    display: block;
-}*/
+.edit-btn {
+  display:none;
+  margin-top: 0.5em;
+  font-size:1.5em;
+  color: rgb(180, 180, 180);
+  position: absolute;
+  right: 30px;
+}
+
+.starmark-row:hover .edit-btn {
+    display: inline;
+}
 
 .bookmark-count{
   text-align: right;

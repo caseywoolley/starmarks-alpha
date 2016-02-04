@@ -17,7 +17,10 @@
       {{collection.title}}
     </span>
   </header>
+
   <div class="col-md-1 right-of-table"></div>
+  <div class="col-md-1 left-of-table"></div>
+
   <div class="container-fullwidth" ng-mousedown="stopProp($event)">
     <div class="row search">
       <div class="col-md-10 col-md-offset-1 max">
@@ -56,20 +59,17 @@
           <table class="table table-striped" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance="1">
             <thead>
               <tr>
-                <!-- <th class="fixed-col-60"></th> -->
                 <th></th>
                 <th class="clickable" ng-click="sortBookmarks('title')">Title</th>
                 <th class="clickable fixed-col-rating" ng-click="sortBookmarks('stars')">Rating</th>
                 <th class="clickable fixed-col-100" ng-click="sortBookmarks('dateAdded')">Added</th>
                 <th class="clickable fixed-col-100" ng-click="sortBookmarks('lastVisit')">Visited</th>
                 <th class="clickable fixed-col-60" ng-click="sortBookmarks('visits')">Visits</th>
-                <!-- <th class="fixed-col-60"></th> -->
               </tr>
             </thead>
             
             <tbody>
-            <!-- | filter: {url: '!' + getLocation()} : true -->
-              <tr multiple-selection-item class="starmark-row" id="{{$index}}" ng-class="{'selecting': isSelecting ,'selected': isSelected}" ng-repeat="bookmark in filteredBookmarks = (
+              <tr multiple-selection-item class="starmark-row no-highlight" id="{{$index}}" ng-class="{'selecting': isSelecting,'selected': (isSelected && selectedBookmarks.length > 0 )}" ng-repeat="bookmark in filteredBookmarks = (
                 allBookmarks 
                 | filter: {url: '!' + getLocation()} : true
                 | filter: search.query
@@ -87,8 +87,6 @@
                   </div>
                 </td> -->
                 <td>
-                  <div ng-show="false">{{ bookmark.selected = isSelected }}</div>
-
                   <img ng-if="!isCollection(bookmark)" class="favicon" ng-src="{{ (bookmark.favIconUrl || 'http://www.google.com/s2/favicons?domain=' + bookmark.url) }}">
                   <img ng-if="isCollection(bookmark)" class="favicon" src="http://www.iconj.com/ico/t/1/t1ggonzzko.ico">
                 </td>
@@ -110,10 +108,10 @@
                 </td>
                 <td>{{ bookmark.dateAdded | timeSince }}</td>
                 <td>{{ bookmark.lastVisit | timeSince }}</td>
-                <td>{{ bookmark.visits || 1 }}</td>
-                <!-- <td>
-                  <div class="btn-info btn-xs edit-btn clickable" ng-click="editBookmark(bookmark, allBookmarks.indexOf(bookmark))">Edit</div>
-                </td> -->
+                <td>
+                  {{ bookmark.visits || 1 }}
+                  <i class="edit-btn fa fa-ellipsis-h clickable" ng-click="editBookmarks([bookmark])" ng-mousedown="stopProp($event)"></i>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -131,7 +129,7 @@
   <script src="../assets/js/ng-infinite-scroll.min.js"></script>
   <script src="../assets/js/underscore-min.js"></script>
   <script src="../../bower_components/angular-modal-service/dst/angular-modal-service.min.js"></script>
-  <script src="../../bower_components/angular-multiple-selection/multiple-selection.min.js"></script>
+  <script src="../../bower_components/angular-multiple-selection/multiple-selection.js"></script>
   <script src="../app.js"></script>
   <script src="../components/starmarks/starmarks.service.js"></script>
   <script src="../../bower_components/angular-advanced-searchbox/dist/angular-advanced-searchbox-tpls.min.js"></script>
