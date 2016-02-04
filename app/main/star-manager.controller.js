@@ -1,5 +1,5 @@
 angular.module('app.main')
-  .controller('starManager', function($rootElement, $scope, $filter, $location, $httpParamSerializer, ModalService, StarMarks) {
+  .controller('starManager', function($rootElement, $scope, $rootScope, $filter, $location, $httpParamSerializer, ModalService, StarMarks) {
 
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
@@ -23,18 +23,34 @@ angular.module('app.main')
     { key: "limit", name: "Limit Results", placeholder: "Results to return" },
   ];
 
-  //watch DOM for selection changes
-  $scope.$watch(function() { return document.body.innerHTML; }, function(){
-    $scope.getSelected();
+  $rootScope.$on('selection:select', function (event, data) {
+    //console.log('selected', event, data.$parent.bookmark)
+    var bookmark = data.$parent.bookmark
+    $scope.selectedBookmarks.push(bookmark);
+    //console.log($scope.selectedBookmarks)
   });
 
+  $rootScope.$on('selection:deselect', function (event, data) {
+    //console.log('deselected', event, data.$parent.bookmark)
+    var bookmark = data.$parent.bookmark;
+    var index = $scope.selectedBookmarks.indexOf(bookmark);
+    $scope.selectedBookmarks.splice(index, 1);
+    //console.log($scope.selectedBookmarks)
+  });
+
+  //watch DOM for selection changes
+  // $scope.$watch(function() { return document.body.innerHTML; }, function(){
+  //   $scope.getSelected();
+  // });
+
   $scope.getSelected = function(){
-    $scope.selectedBookmarks = $filter('filter')($scope.filteredBookmarks, {selected: true}, true);
+   // $scope.selectedBookmarks = $filter('filter')($scope.filteredBookmarks, {selected: true}, true);
     //console.log($scope.selectedBookmarks)
   };
 
   $scope.clearSelection = function(){
-    $scope.getSelected();
+    //$scope.getSelected();
+    $scope.selectedBookmarks = [];
     if(!$scope.$$phase) {
       angular.element(document.body).triggerHandler('mousedown');
     }

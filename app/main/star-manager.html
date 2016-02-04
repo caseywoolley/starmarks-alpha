@@ -87,7 +87,7 @@
                   </div>
                 </td> -->
                 <td>
-                  <div ng-show="false">{{ bookmark.selected = isSelected }}</div>
+                  <!-- <div ng-show="false">{{ bookmark.selected = isSelected }}</div> -->
 
                   <img ng-if="!isCollection(bookmark)" class="favicon" ng-src="{{ (bookmark.favIconUrl || 'http://www.google.com/s2/favicons?domain=' + bookmark.url) }}">
                   <img ng-if="isCollection(bookmark)" class="favicon" src="http://www.iconj.com/ico/t/1/t1ggonzzko.ico">
@@ -131,7 +131,7 @@
   <script src="../assets/js/ng-infinite-scroll.min.js"></script>
   <script src="../assets/js/underscore-min.js"></script>
   <script src="../../bower_components/angular-modal-service/dst/angular-modal-service.min.js"></script>
-  <script src="../../bower_components/angular-multiple-selection/multiple-selection.min.js"></script>
+  <script src="../../bower_components/angular-multiple-selection/multiple-selection.js"></script>
   <script src="../app.js"></script>
   <script src="../components/starmarks/starmarks.service.js"></script>
   <script src="../../bower_components/angular-advanced-searchbox/dist/angular-advanced-searchbox-tpls.min.js"></script>
