@@ -28,8 +28,6 @@ dist/
 node_modules/
 bower_components/
 
-# TODO: switch over to gulp and bower for dependencies
-bower.json
 
 # Floobits
 .floo
