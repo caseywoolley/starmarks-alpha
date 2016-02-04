@@ -17,7 +17,10 @@
       {{collection.title}}
     </span>
   </header>
+
   <div class="col-md-1 right-of-table"></div>
+  <div class="col-md-1 left-of-table"></div>
+
   <div class="container-fullwidth" ng-mousedown="stopProp($event)">
     <div class="row search">
       <div class="col-md-10 col-md-offset-1 max">
@@ -69,7 +72,7 @@
             
             <tbody>
             <!-- | filter: {url: '!' + getLocation()} : true -->
-              <tr multiple-selection-item class="starmark-row" id="{{$index}}" ng-class="{'selecting': isSelecting ,'selected': isSelected}" ng-repeat="bookmark in filteredBookmarks = (
+              <tr multiple-selection-item class="starmark-row no-highlight" id="{{$index}}" ng-class="{'selecting': isSelecting,'selected': (isSelected && selectedBookmarks.length > 0 )}" ng-repeat="bookmark in filteredBookmarks = (
                 allBookmarks 
                 | filter: {url: '!' + getLocation()} : true
                 | filter: search.query
