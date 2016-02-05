@@ -25,7 +25,7 @@ angular.module('app.main')
 
   $rootScope.$on('selection:select', function (event, data) {
     //console.log('selected', event, data.$parent.bookmark)
-    var bookmark = data.$parent.bookmark
+    var bookmark = data.$parent.bookmark;
     $scope.selectedBookmarks.push(bookmark);
     //console.log($scope.selectedBookmarks)
   });
@@ -114,6 +114,7 @@ angular.module('app.main')
     }).then(function(modal) {
       modal.element.modal();
       modal.close.then(function(data) {
+        $scope.clearSelection();
         if (data !== null){
           //confirm if editing multiple
           if(bookmarks.length > 1){
@@ -125,7 +126,6 @@ angular.module('app.main')
           } else {
             $scope.updateBookmarks(bookmarks, data);
           }
-          $scope.clearSelection();
         }
       });
     });
@@ -143,13 +143,16 @@ angular.module('app.main')
               $scope.allBookmarks.splice(index, 1);
             });
           }
+          $scope.clearSelection();
         });
       } else {
         var bookmark = bookmarks[0];
         StarMarks.deleteBookmark(bookmark);
         var index = $scope.allBookmarks.indexOf(bookmark);
         $scope.allBookmarks.splice(index, 1);
+        $scope.clearSelection();
       }
+
   };
 
   $scope.confirmPopup = function(callback) {
