@@ -1,17 +1,19 @@
 {
-  "name": "starmarks",
-  "version": "0.1",
-  "description": "A chrome bookmark manager with ratings",
+  "name": "Starmarks Bookmark Manager",
+  "version": "0.1.1",
+  "description": "Never lose a bookmark again. Powerfully filter and sort by tags, ratings, visit count, date added, and last visit. Build complex search filters in the Starbar and save them as smart collections for later!",
   "permissions": [
     "bookmarks", "tabs", "storage", "background"
   ],
   "background": {
-    "scripts": ["app/app.js"]
+    "scripts": ["app/assets/js/angular.min.js",
+                "app/app.js"]
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["app/app.js"]
+      "js": ["app/assets/js/angular.min.js",
+             "app/app.js"]
     }
   ],
   "browser_action": {

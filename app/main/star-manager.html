@@ -2,22 +2,26 @@
 <html>
 
 <head>
-  <title>StarMarks</title>
+  <title>Starmarks</title>
   <link rel="stylesheet" type="text/css" href="../assets/css/font-awesome.min.css">
+  <link rel="stylesheet" href="../../bower_components/angular-bootstrap/ui-bootstrap-csp.css">
   <link rel="stylesheet" href="../../bower_components/angular-advanced-searchbox/dist/angular-advanced-searchbox.min.css">
   <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="../app.css">
   <link rel="stylesheet" type="text/css" href="star-manager.css">
 </head>
 
-<body ng-app="app" ng-controller="starManager" multiple-selection-zone>
+<body ng-app="app" ng-controller="starManager" fix-modal-padding multiple-selection-zone>
   <header>
-    <h1 class="main-logo clickable" ng-click="goHome()">StarMarks</h1>
-    <span ng-if="(collections.length === 1)" ng-repeat="collection in collections = ( allBookmarks | filter: {url: getLocation()} : true )">
+    <h1 class="main-logo clickable" ng-click="goHome()">Starmarks</h1>
+    <span class="collection" ng-if="(collections.length === 1)" ng-repeat="collection in collections = ( allBookmarks | filter: {url: getLocation()} : true )">
       {{collection.title}}
     </span>
   </header>
   <div class="col-md-1 right-of-table"></div>
+  <div class="col-md-1 left-of-table"></div>
+
+
   <div class="container-fullwidth" ng-mousedown="stopProp($event)">
     <div class="row search">
       <div class="col-md-10 col-md-offset-1 max">
@@ -28,15 +32,26 @@
         parameters-label="Advanced Search" 
         placeholder="Search..." 
         onChangeHook="onSearchChange" 
-        search-throttle-time="100">
+        search-throttle-time="1">
         </nit-advanced-searchbox>
         
-        <div>
+        <div class="nav-btn-bar">
           <button class="btn btn-default" ng-click="showCollections()">Collections</button>
+          <button class="btn btn-default" type="button" data-toggle="collapse" data-target="#collapseTags" aria-expanded="false" aria-controls="collapseTags">Tags</button>
           <span class="bookmark-count">{{ (searchLimit() || filteredBookmarks.length) }} Found</span>
         </div>
+        
+        <div class="collapse tags-bin" id="collapseTags">
+          <div class="well">
+            <span class="tags" ng-repeat="tag in showTags()">
+                <a class="tag" ng-click="addSearchTag(tag)" href="">{{tag}}</a>
+            </span>
+          </div>
+        </div>
+
       </div>
     </div>
+
     
     <div class="row mass-edit-bar" ng-if="(selectedBookmarks.length > 0)">
       <div class="col-md-10 col-md-offset-1">
@@ -44,11 +59,10 @@
         <span class="mass-edit-btns">
           <button class="btn btn-lg btn-default" ng-click="deleteBookmarks(selectedBookmarks)">Delete</button>
           <button class="btn btn-lg btn-primary" ng-click="editBookmarks(selectedBookmarks)">Edit</button>
-          <!-- <button ng-click="clearSelection()">&times;</button> -->
+          <i class="fa fa-times clickable" ng-click="clearSelection()"></i>
         </span>
       </div>
-    </div>
-    
+    </div>   
 
     <div class="row table">
       <div class="col-md-10 col-md-offset-1">
@@ -56,20 +70,17 @@
           <table class="table table-striped" infinite-scroll="displayBookmarks()" infinite-scroll-disabled="loading" infinite-scroll-distance="1">
             <thead>
               <tr>
-                <!-- <th class="fixed-col-60"></th> -->
                 <th></th>
                 <th class="clickable" ng-click="sortBookmarks('title')">Title</th>
                 <th class="clickable fixed-col-rating" ng-click="sortBookmarks('stars')">Rating</th>
                 <th class="clickable fixed-col-100" ng-click="sortBookmarks('dateAdded')">Added</th>
                 <th class="clickable fixed-col-100" ng-click="sortBookmarks('lastVisit')">Visited</th>
                 <th class="clickable fixed-col-60" ng-click="sortBookmarks('visits')">Visits</th>
-                <!-- <th class="fixed-col-60"></th> -->
               </tr>
             </thead>
-            
+
             <tbody>
-            <!-- | filter: {url: '!' + getLocation()} : true -->
-              <tr multiple-selection-item class="starmark-row" id="{{$index}}" ng-class="{'selecting': isSelecting ,'selected': isSelected}" ng-repeat="bookmark in filteredBookmarks = (
+              <tr multiple-selection-item class="starmark-row no-highlight" id="{{$index}}" ng-class="{'selecting': isSelecting,'selected': (isSelected && selectedBookmarks.length > 0 )}" ng-repeat="bookmark in filteredBookmarks = (
                 allBookmarks 
                 | filter: {url: '!' + getLocation()} : true
                 | filter: search.query
@@ -80,15 +91,10 @@
                 | rangeFilter: {visits: search.visits}
                 | rangeFilter: {dateAdded: search.dateAdded} : 'date'
                 | rangeFilter: {lastVisit: search.lastVisit} : 'date'
-                )| limitTo: ( searchLimit() || displayCount )
+                )| limitTo: displayCount
                 track by $index">
-                <!-- <td>
-                  <div class="btn-default btn-xs edit-btn clickable" ng-click="deleteBookmark(bookmark, allBookmarks.indexOf(bookmark))">Delete</div>
-                  </div>
-                </td> -->
-                <td>
-                  <div ng-show="false">{{ bookmark.selected = isSelected }}</div>
 
+                <td>
                   <img ng-if="!isCollection(bookmark)" class="favicon" ng-src="{{ (bookmark.favIconUrl || 'http://www.google.com/s2/favicons?domain=' + bookmark.url) }}">
                   <img ng-if="isCollection(bookmark)" class="favicon" src="http://www.iconj.com/ico/t/1/t1ggonzzko.ico">
                 </td>
@@ -105,19 +111,23 @@
                   </div>
                 </td>
                 <td class="bm-rating" ng-mousedown="stopProp($event)">
-                  <div star-selector bookmark="bookmark" rating="bookmark.stars" id="$index" update="update">
+                  <div star-selector 
+                  bookmark="bookmark"  
+                  id="$index" 
+                  update="update">
                   </div>
                 </td>
                 <td>{{ bookmark.dateAdded | timeSince }}</td>
                 <td>{{ bookmark.lastVisit | timeSince }}</td>
-                <td>{{ bookmark.visits || 1 }}</td>
-                <!-- <td>
-                  <div class="btn-info btn-xs edit-btn clickable" ng-click="editBookmark(bookmark, allBookmarks.indexOf(bookmark))">Edit</div>
-                </td> -->
+                <td>
+                  {{ bookmark.visits || 1 }}
+                  <i class="edit-btn fa fa-pencil-square-o clickable" ng-click="editBookmarks([bookmark])" ng-mousedown="stopProp($event)"></i>
+                </td>
               </tr>
             </tbody>
           </table>
           <img class="loader text-center" src="../assets/img/loading.gif" ng-if="loading">
+          <div class="mass-edit-bar-spacer"></div> 
         </div>
       </div>
 
@@ -125,16 +135,18 @@
 
   </div>
 
-  <script src="../assets/js/jquery.min.js"></script>
+  <script src="../../bower_components/underscore/underscore-min.js"></script>
+  <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
   <script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="../assets/js/angular.min.js"></script>
-  <script src="../assets/js/ng-infinite-scroll.min.js"></script>
-  <script src="../assets/js/underscore-min.js"></script>
+  <script src="../../bower_components/angular/angular.min.js"></script>
+  <script src="../../bower_components/angular-animate/angular-animate.js"></script>
+  <script src="../../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script src="../../bower_components/angular-advanced-searchbox/dist/angular-advanced-searchbox-tpls.min.js"></script>
   <script src="../../bower_components/angular-modal-service/dst/angular-modal-service.min.js"></script>
-  <script src="../../bower_components/angular-multiple-selection/multiple-selection.min.js"></script>
+  <script src="../../bower_components/angular-multiple-selection/multiple-selection.js"></script>
+  <script src="../../bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js"></script>
   <script src="../app.js"></script>
   <script src="../components/starmarks/starmarks.service.js"></script>
-  <script src="../../bower_components/angular-advanced-searchbox/dist/angular-advanced-searchbox-tpls.min.js"></script>
   <script src="../components/edit-bookmark/edit-bookmark.directive.js"></script>
   <script src="../components/star-selector/star-selector.directive.js"></script>
   <script src="../components/modal/edit-bookmark.controller.js"></script>

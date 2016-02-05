@@ -14,13 +14,12 @@ angular.module('app')
 
     $scope.stopProp = function(event){
       event.stopPropagation();
-      //event.preventDefault();
     };
 
     $scope.parseTags = function(tagText) {
       return tagText.split(/\s*,\s*/)
       .reduce(function(o, v) {
-        o[v] = v;
+        if (v.match(/\S/g) !== null){ o[v] = v; }
         return o;
       }, {});
     };

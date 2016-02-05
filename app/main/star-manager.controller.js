@@ -1,5 +1,5 @@
 angular.module('app.main')
-  .controller('starManager', function($rootElement, $scope, $filter, $location, $httpParamSerializer, ModalService, StarMarks) {
+  .controller('starManager', function($rootElement, $scope, $rootScope, $filter, $location, $httpParamSerializer, ModalService, StarMarks) {
 
   $scope.update = StarMarks.update;
   $scope.allBookmarks = [];
@@ -13,36 +13,40 @@ angular.module('app.main')
 
   //Docs - https://github.com/dnauck/angular-advanced-searchbox
   $scope.availableSearchParams = [
-    { key: "stars", name: "Rating", placeholder: "number, range, etc. ( 5, 2-4, 3+ )" },
-    { key: "visits", name: "Visits", placeholder: "Visits..." },
-    { key: "dateAdded", name: "Date Added", placeholder: "Date Added..." },
-    { key: "lastVisit", name: "Last Visited", placeholder: "Last Visited..." },
-    { key: "tags", name: "Tags", suggestedValues: ['tag','tag2'], placeholder: "tag1, tag2" },
-    { key: "title", name: "Title", placeholder: "Title..." },
-    { key: "url", name: "Url", placeholder: "Url..." },
-    { key: "limit", name: "Limit Results", placeholder: "Results to return" },
+      { key: "stars", name: "Rating", placeholder: "ex 5, 2-4, 3+" },
+      { key: "visits", name: "Visits", placeholder: "ex 1-5, 20+, 2" },
+      { key: "dateAdded", name: "Date Added", placeholder: "ex 2012+, 1/16/15 - 5/18/15" },
+      { key: "lastVisit", name: "Last Visited", placeholder: "ex 2012+, 1/16/15 - 5/18/15" },
+      { key: "tags", name: "Tags", suggestedValues: [], placeholder: "ex tag1, tag2 ..." },
+      { key: "title", name: "Title", placeholder: "Title..." },
+      { key: "url", name: "Url", placeholder: "Url..." }
   ];
 
-  //watch DOM for selection changes
-  $scope.$watch(function() { return document.body.innerHTML; }, function(){
-    $scope.getSelected();
-  });
-
-  $scope.getSelected = function(){
-    $scope.selectedBookmarks = $filter('filter')($scope.filteredBookmarks, {selected: true}, true);
-    //console.log($scope.selectedBookmarks)
+  $scope.showTags = function(){
+    return Object.keys($scope.getTags());
   };
 
+  $rootScope.$on('selection:select', function (event, data) {
+    //console.log('selected', event, data.$parent.bookmark)
+    var bookmark = data.$parent.bookmark;
+    $scope.selectedBookmarks.push(bookmark);
+    //console.log($scope.selectedBookmarks)
+  });
+
+  $rootScope.$on('selection:deselect', function (event, data) {
+    //console.log('deselected', event, data.$parent.bookmark)
+    var bookmark = data.$parent.bookmark;
+    var index = $scope.selectedBookmarks.indexOf(bookmark);
+    $scope.selectedBookmarks.splice(index, 1);
+    //console.log($scope.selectedBookmarks)
+  });
+
   $scope.clearSelection = function(){
-    $scope.getSelected();
-    if(!$scope.$$phase) {
-      angular.element(document.body).triggerHandler('mousedown');
-    }
+    $scope.selectedBookmarks = [];
   };
 
    $scope.stopProp = function(event){
     event.stopPropagation();
-    //event.preventDefault();
   };
 
   $scope.mergeBookmarks = function(bookmarks){
@@ -85,7 +89,6 @@ angular.module('app.main')
      delete data.originalTags;
      delete data.tags;
      delete data.tagField;
-     data.selected = false;
      //iterate over each bookmarks and update fields
      for (var idx in bookmarks){
       var bookmark = bookmarks[idx];
@@ -114,6 +117,7 @@ angular.module('app.main')
     }).then(function(modal) {
       modal.element.modal();
       modal.close.then(function(data) {
+        $scope.clearSelection();
         if (data !== null){
           //confirm if editing multiple
           if(bookmarks.length > 1){
@@ -125,7 +129,6 @@ angular.module('app.main')
           } else {
             $scope.updateBookmarks(bookmarks, data);
           }
-          $scope.clearSelection();
         }
       });
     });
@@ -143,12 +146,14 @@ angular.module('app.main')
               $scope.allBookmarks.splice(index, 1);
             });
           }
+          $scope.clearSelection();
         });
       } else {
         var bookmark = bookmarks[0];
         StarMarks.deleteBookmark(bookmark);
         var index = $scope.allBookmarks.indexOf(bookmark);
         $scope.allBookmarks.splice(index, 1);
+        $scope.clearSelection();
       }
   };
 
@@ -166,7 +171,6 @@ angular.module('app.main')
     });
 
   };
-
 
   $scope.goHome = function(){
     $scope.search.query = '';
@@ -206,6 +210,7 @@ angular.module('app.main')
 
   $scope.addSearchTag = function(tag){
     $scope.search.tags = tag;
+    $scope.setUrl($scope.search);
   };
 
   $scope.getMax = function(field){
