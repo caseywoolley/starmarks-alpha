@@ -11,16 +11,21 @@ angular.module('app.main')
   $scope.urlParser = document.createElement('a');
   $scope.selectedBookmarks = [];
 
+  console.log('tags',$scope.getTags())
+  $scope.showTags = function(){
+   return Object.keys($scope.getTags());
+  };
+
+
   //Docs - https://github.com/dnauck/angular-advanced-searchbox
   $scope.availableSearchParams = [
-    { key: "stars", name: "Rating", placeholder: "number, range, etc. ( 5, 2-4, 3+ )" },
-    { key: "visits", name: "Visits", placeholder: "Visits..." },
-    { key: "dateAdded", name: "Date Added", placeholder: "Date Added..." },
-    { key: "lastVisit", name: "Last Visited", placeholder: "Last Visited..." },
-    { key: "tags", name: "Tags", suggestedValues: ['tag','tag2'], placeholder: "tag1, tag2" },
-    { key: "title", name: "Title", placeholder: "Title..." },
-    { key: "url", name: "Url", placeholder: "Url..." },
-    { key: "limit", name: "Limit Results", placeholder: "Results to return" },
+      { key: "stars", name: "Rating", placeholder: "ex 5, 2-4, 3+" },
+      { key: "visits", name: "Visits", placeholder: "ex 1-5, 20+, 2" },
+      { key: "dateAdded", name: "Date Added", placeholder: "ex 2012+, 1/16/15 - 5/18/15" },
+      { key: "lastVisit", name: "Last Visited", placeholder: "ex 2012+, 1/16/15 - 5/18/15" },
+      { key: "tags", name: "Tags", suggestedValues: $scope.showTags(), placeholder: "ex tag1, tag2 ..." },
+      { key: "title", name: "Title", placeholder: "Title..." },
+      { key: "url", name: "Url", placeholder: "Url..." }
   ];
 
   $rootScope.$on('selection:select', function (event, data) {

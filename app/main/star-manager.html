@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>StarMarks</title>
+  <title>Starmarks</title>
   <link rel="stylesheet" type="text/css" href="../assets/css/font-awesome.min.css">
   <link rel="stylesheet" href="../../bower_components/angular-bootstrap/ui-bootstrap-csp.css">
   <link rel="stylesheet" href="../../bower_components/angular-advanced-searchbox/dist/angular-advanced-searchbox.min.css">
@@ -13,7 +13,7 @@
 
 <body ng-app="app" ng-controller="starManager" multiple-selection-zone>
   <header>
-    <h1 class="main-logo clickable" ng-click="goHome()">StarMarks</h1>
+    <h1 class="main-logo clickable" ng-click="goHome()">Starmarks</h1>
     <span class="collection" ng-if="(collections.length === 1)" ng-repeat="collection in collections = ( allBookmarks | filter: {url: getLocation()} : true )">
       {{collection.title}}
     </span>
@@ -48,7 +48,7 @@
         <span class="mass-edit-btns">
           <button class="btn btn-lg btn-default" ng-click="deleteBookmarks(selectedBookmarks)">Delete</button>
           <button class="btn btn-lg btn-primary" ng-click="editBookmarks(selectedBookmarks)">Edit</button>
-          <!-- <button ng-click="clearSelection()">&times;</button> -->
+          <i class="fa fa-times clickable" ng-click="clearSelection()"></i>
         </span>
       </div>
     </div>
@@ -69,6 +69,8 @@
               </tr>
             </thead>
             
+            <!-- {{showTags()}} -->
+
             <tbody>
               <tr multiple-selection-item class="starmark-row no-highlight" id="{{$index}}" ng-class="{'selecting': isSelecting,'selected': (isSelected && selectedBookmarks.length > 0 )}" ng-repeat="bookmark in filteredBookmarks = (
                 allBookmarks 
@@ -81,7 +83,7 @@
                 | rangeFilter: {visits: search.visits}
                 | rangeFilter: {dateAdded: search.dateAdded} : 'date'
                 | rangeFilter: {lastVisit: search.lastVisit} : 'date'
-                )| limitTo: ( searchLimit() || displayCount )
+                )| limitTo: displayCount
                 track by $index">
                 <!-- <td>
                   <div class="btn-default btn-xs edit-btn clickable" ng-click="deleteBookmark(bookmark, allBookmarks.indexOf(bookmark))">Delete</div>

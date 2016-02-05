@@ -71,6 +71,15 @@ angular.module('app')
     console.log('removed:', bookmark);
   };
 
+  var parseTags = function(tagText) {
+      if (tagText === undefined){ return {}; }
+      return tagText.split(/\s*,\s*/)
+      .reduce(function(o, v) {
+        o[v] = v;
+        return o;
+      }, {});
+    };
+
   var getBookmarkList = function(callback) {
     //get chorme bookamrks
     loading = true;
@@ -85,7 +94,7 @@ angular.module('app')
         var currentTag;
         //key - id table
         var tagIds = {};
-        var mergeMarks = function(node) {
+        var mergeMarks = function(node, parents) {
           var list = {};
           
           //base - add bookmark if has url
@@ -128,12 +137,27 @@ angular.module('app')
             if (starMark.ids === undefined){
               starMark.ids = [];
             }
-            //push tags to starMark
-            if (currentTag !== undefined){
-              starMark.tags[currentTag] = currentTag;
-            }
+
+            //Update starmark tags
+            //find diff between old folders and new folders
+            starMark.folders = starMark.folders || {};
+
+            var oldFolders = Object.keys(starMark.folders);
+            var newFolders = Object.keys(parents);
+            
+            var addTags = _.difference(newFolders, oldFolders);
+            var deleteTags = _.difference(oldFolders, newFolders);
+
+            var updateTags = function(tagObj, add, remove){
+              for (var i = 0; i < add.length; i++){ tagObj[add[i]] = add[i]; }
+              for (var j = 0; j < remove.length; j++){ delete tagObj[remove[j]]; }
+            };
+            updateTags(starMark.tags, addTags, deleteTags);
+            //save folders for future reference
+            starMark.folders = parents;
 
 
+            //convert bookmark into a starmark
             bookmark = node;
             delete bookmark.children; //bookmarks don't need this
             //collect all ids associated for global deletion
@@ -143,10 +167,13 @@ angular.module('app')
             bookmark = _.extend(bookmark, starMark);
             //list.push(bookmark);
             list[node.url] = bookmark;
-          } else {
-            //else add tag if doesn't exist 
-            currentTag = node.title.toLowerCase();
-            tagIds[node.title.toLowerCase()] = currentTag.split(' ')[0];
+          } else { //this is a folder, not a bookmark
+            //else add tag if it's not a root folder
+            if (node.id !== '0' && node.id !== '1' && node.id !== '2' && node.id !== '3'){  
+              currentTag = node.title.toLowerCase();
+              tagIds[currentTag] = currentTag;
+              parents[currentTag] = currentTag;
+            }
           }
 
           //recurse
@@ -154,12 +181,12 @@ angular.module('app')
             for (var i = 0; i < node.children.length; i++) {
               var child = node.children[i];
               //list = list.concat(mergeMarks(child));
-              list = _.extend(list, mergeMarks(child));
+              list = _.extend( list, mergeMarks(child, _.clone(parents)) );
             }
           }
           return list;
         };
-        var fullList = mergeMarks(bookmarkTree[0]);
+        var fullList = mergeMarks(bookmarkTree[0], {});
 
         var arrList = [];
         var keys = Object.keys(fullList);
