@@ -11,22 +11,20 @@ angular.module('app.main')
   $scope.urlParser = document.createElement('a');
   $scope.selectedBookmarks = [];
 
-  console.log('tags',$scope.getTags())
-  $scope.showTags = function(){
-   return Object.keys($scope.getTags());
-  };
-
-
   //Docs - https://github.com/dnauck/angular-advanced-searchbox
   $scope.availableSearchParams = [
       { key: "stars", name: "Rating", placeholder: "ex 5, 2-4, 3+" },
       { key: "visits", name: "Visits", placeholder: "ex 1-5, 20+, 2" },
       { key: "dateAdded", name: "Date Added", placeholder: "ex 2012+, 1/16/15 - 5/18/15" },
       { key: "lastVisit", name: "Last Visited", placeholder: "ex 2012+, 1/16/15 - 5/18/15" },
-      { key: "tags", name: "Tags", suggestedValues: $scope.showTags(), placeholder: "ex tag1, tag2 ..." },
+      { key: "tags", name: "Tags", suggestedValues: [], placeholder: "ex tag1, tag2 ..." },
       { key: "title", name: "Title", placeholder: "Title..." },
       { key: "url", name: "Url", placeholder: "Url..." }
   ];
+
+  $scope.showTags = function(){
+    return Object.keys($scope.getTags());
+  };
 
   $rootScope.$on('selection:select', function (event, data) {
     //console.log('selected', event, data.$parent.bookmark)
@@ -157,7 +155,6 @@ angular.module('app.main')
         $scope.allBookmarks.splice(index, 1);
         $scope.clearSelection();
       }
-
   };
 
   $scope.confirmPopup = function(callback) {
@@ -174,7 +171,6 @@ angular.module('app.main')
     });
 
   };
-
 
   $scope.goHome = function(){
     $scope.search.query = '';

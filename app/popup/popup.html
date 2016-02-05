@@ -10,18 +10,14 @@
 </head>
 
 <body style="width: 400px" ng-app="app" ng-controller="popup">
-<form>
-  <div edit-bookmark 
-    bookmark="newStarmark"
-    collection="collection"
-    id="'newStarmark'"
-    star-size="starSize"
-    update="close">
-  </div>
-  <button type="submit" value="Update" class="btn btn-primary btn-block" ng-click="close(newStarmark)">Update</button>
-  <button class="btn btn-xs btn-default btn-block" ng-click="openManager()">Manage Bookmarks</button>
-  </form>
 
+  <div class="container">
+    <div edit-bookmark bookmark="newStarmark" collection="collection" id="'newStarmark'" star-size="starSize" update="close">
+    </div>
+    <button type="submit" value="Update" class="btn btn-primary btn-block" ng-click="close(newStarmark)">Update</button>
+    <button class="btn btn-xs btn-default btn-block" ng-click="openManager()">Manage Bookmarks</button>
+  </div>
+  
   <script src="../../bower_components/underscore/underscore-min.js"></script>
   <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
   <script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>

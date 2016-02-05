@@ -11,47 +11,42 @@ angular.module('app')
       templateUrl: '../components/star-selector/star-selector.html'
     };
   })
+
   //TODO: find a home for these filters and directives
 
-  //Temporary work around for non-fading modal (removes animation) - https://github.com/angular-ui/bootstrap/issues/3633
-  .directive('removeModal', ['$document', function ($document) {
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                element.bind('click', function () {
-                    $document[0].body.classList.remove('modal-open');
-                    angular.element($document[0].getElementsByClassName('modal-backdrop')).remove();
-                    angular.element($document[0].getElementsByClassName('modal')).remove();
-                });
-            }
-        };
-    }])
+//Temporary work around for modal padding shift issue - https://github.com/twbs/bootstrap/issues/9855
+.directive('fixModalPadding', function() {
+  return {
+    link: function(scope, element, attrs) {
+      scope.$watch(function() {
+          return element.css('padding-right');
+        }, styleChangedCallBack,
+        true);
 
-  //http://stackoverflow.com/questions/20300866/angularjs-ng-click-stoppropagation 
-  .directive('isolateClick', function() {
-      return {
-          link: function(scope, elem) {
-              elem.on('click', function(e){
-                  e.event.stopPropagation();
-                  e.event.preventDefault();
-              });
-          }
-     };
-  })
-
-  .filter('matchFilter', function() {
-    return function(items, match, prop) {
-      return items.filter(function(item) {
-        if (match && item[prop] === match[prop]) {
-          //console.log('match', item[prop], match[prop])
-          return item[prop] !== match[prop];
+      function styleChangedCallBack(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          element.css('padding-right', '0');
         }
-        return true;
-      });
-    };
-  })
+      }
+    }
+  };
+})
 
-  .directive('lowercase', function() {
+//Temporary work around for non-fading modal (removes animation) - https://github.com/angular-ui/bootstrap/issues/3633
+.directive('removeModal', ['$document', function($document) {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      element.bind('click', function() {
+        $document[0].body.classList.remove('modal-open');
+        angular.element($document[0].getElementsByClassName('modal-backdrop')).remove();
+        angular.element($document[0].getElementsByClassName('modal')).remove();
+      });
+    }
+  };
+}])
+
+.directive('lowercase', function() {
     return {
       require: 'ngModel',
       link: function(scope, element, attrs, modelCtrl) {
@@ -105,12 +100,16 @@ angular.module('app')
       return items;
     }
     var parseTags = function(tagText) {
-      if (tagText === undefined){ return {}; }
+      if (tagText === undefined) {
+        return {};
+      }
       return tagText.split(/\s*,\s*/)
-      .reduce(function(o, v) {
-        if (v.match(/\S/g) !== null){ o[v] = v; }
-        return o;
-      }, {});
+        .reduce(function(o, v) {
+          if (v.match(/\S/g) !== null) {
+            o[v] = v;
+          }
+          return o;
+        }, {});
     };
     var tagsObj = parseTags(tags);
     return items.filter(function(item) {
@@ -167,65 +166,3 @@ angular.module('app')
     });
   };
 });
-
-// .filter('applyFilters', function($filter) {
-//   return function(items, filters) {
-//     if (filters.length === 0) {
-//       return items;
-//     }
-//     var filtered = [];
-//     var range;
-//     angular.forEach(filters, function(filter) {
-//       var type = filter.split(':')[0].trim();
-//       var value = filter.split(':')[1].trim();
-
-//       //build filter object for text searching
-//       if (type === 'text') {
-//         type = '$';
-//       }
-//       var filterObj = {};
-//       filterObj[type] = value;
-
-//       if (type === '$' || type === 'title') {
-//         //console.log(filterObj)
-//         filtered = filtered.concat($filter('filter')(items, filterObj));
-//       } else if (type === 'tag') {
-//         //console.log(filterObj)
-//         //filter for tags object
-//       } else {
-//         //build filter object for ranges
-//         //TODO: handle non ranges and +/- markers
-//         var min = parseInt(value.split('-')[0].trim());
-//         var max = parseInt(value.split('-')[1].trim());
-//         range = {
-//           prop: type,
-//           min: min,
-//           max: max
-//         };
-//       }
-
-//       //handle ranges - stars, added, visited, visits
-//       if (type === 'stars' || type === 'visits') {
-
-//         //console.log(range)
-//         filtered = $filter('rangeFilter')(items, range);
-//       }
-//     });
-//     return filtered;
-//   };
-// })
-
-// .filter('rangeFilter', function() {
-//   return function(items, range) {
-//     return items.filter(function(item){
-//       return (item[range.prop] >= range.min && item[range.prop] <= range.max);
-//     });
-//   };
-// })
-
-// .filter('objectKeys', function() {
-//   return function(object) {
-//     var keys = Object.keys(object);
-//     return keys;
-//   };
-// });

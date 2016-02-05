@@ -1,5 +1,6 @@
-<form novalidate class="simple-form">
-  <div class="container">
+<form novalidate class="simple-form" autocomplete="off">
+
+  <div>
     <div class="row">
       <div star-selector 
       bookmark="bookmark" 
@@ -8,34 +9,32 @@
       update="update">
       </div>
     </div>
-  
-  </div>
-  <div class="label label-danger" ng-show="collection()"><b>Collection</b></div>
-  <div class="row alert alert-info" ng-show="bookmark.dateAdded">
-    <span class="col-md-4"><b>Added:</b> {{ bookmark.dateAdded | timeSince }}</span>
-    <span class="col-md-4"><b>Last Visit:</b> {{ bookmark.lastVisit | timeSince }}</span>
-    <span class="col-md-4"><b>Visits:</b> {{ bookmark.visits || 1 }}</span>
-  </div>
-  <div class="alert alert-info" ng-show="!bookmark.dateAdded"><b>{{bookmark.bulkCount ? 'Editing ' + bookmark.bulkCount + ' bookmarks' : 'Bookmark added!'}}</b></div>
 
-  <div class="form-group-lg">
-    <label for="title">Title</label>
-    <input type="text" placeholder="{{bookmark.bulkCount > 1 ? 'Mixed' : ''}}" class="form-control" ng-model="bookmark.title" id="title">
-  </div>
-  <div class="form-group">
-    <label for="tags">Tags</label>
-    <input type="text" class="form-control" ng-model="bookmark.tagField" id="tags" lowercase>
-  </div>
-  <div class="form-group">
-    <label for="notes">Notes</label>
-    <textarea placeholder="{{bookmark.bulkCount > 1 ? 'Mixed' : ''}}" rows="3" class="form-control" ng-model="bookmark.notes" id="notes"></textarea>
-  </div>
-  <div class="checkbox">
+    <div class="row">
+      <div class="label label-danger" ng-show="collection()"><b>Collection</b></div>
+      <div class="row alert alert-info" ng-show="bookmark.dateAdded">
+        <span class="col-md-4"><b>Added:</b> {{ bookmark.dateAdded | timeSince }}</span>
+        <span class="col-md-4"><b>Last Visit:</b> {{ bookmark.lastVisit | timeSince }}</span>
+        <span class="col-md-4"><b>Visits:</b> {{ bookmark.visits || 1 }}</span>
+      </div>
+      <div class="alert alert-warning" ng-show="!bookmark.dateAdded"><b>{{bookmark.bulkCount ? 'Editing ' + bookmark.bulkCount + ' bookmarks' : 'Bookmark added!'}}</b></div>
+      <div class="form-group-lg">
+        <label for="title">Title</label>
+        <input type="text" placeholder="{{bookmark.bulkCount > 1 ? 'Mixed' : ''}}" class="form-control" ng-model="bookmark.title" id="title" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="tags">Tags</label>
+        <input type="text" class="form-control" ng-model="bookmark.tagField" id="tags" autocomplete="off" lowercase>
+      </div>
+      <div class="form-group">
+        <label for="notes">Notes</label>
+        <textarea placeholder="{{bookmark.bulkCount > 1 ? 'Mixed' : ''}}" rows="3" class="form-control" ng-model="bookmark.notes" id="notes" autocomplete="off"></textarea>
+      </div>
+      <!-- <div class="checkbox">
     <label>
       <input type="checkbox"> Add to Bookmark Bar
     </label>
-  </div>
-
+  </div> -->
+      <pre>{{ (bookmark.url || bookmark.bulkCount + ' Selected') }}</pre>
+      </div>
 </form>
-<pre>{{ (bookmark.url || bookmark.bulkCount + ' Selected') }}</pre>
-

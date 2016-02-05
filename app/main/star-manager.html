@@ -11,16 +11,16 @@
   <link rel="stylesheet" type="text/css" href="star-manager.css">
 </head>
 
-<body ng-app="app" ng-controller="starManager" multiple-selection-zone>
+<body ng-app="app" ng-controller="starManager" fix-modal-padding multiple-selection-zone>
   <header>
     <h1 class="main-logo clickable" ng-click="goHome()">Starmarks</h1>
     <span class="collection" ng-if="(collections.length === 1)" ng-repeat="collection in collections = ( allBookmarks | filter: {url: getLocation()} : true )">
       {{collection.title}}
     </span>
   </header>
-
   <div class="col-md-1 right-of-table"></div>
   <div class="col-md-1 left-of-table"></div>
+
 
   <div class="container-fullwidth" ng-mousedown="stopProp($event)">
     <div class="row search">
@@ -121,7 +121,7 @@
                 <td>{{ bookmark.lastVisit | timeSince }}</td>
                 <td>
                   {{ bookmark.visits || 1 }}
-                  <i class="edit-btn fa fa-ellipsis-h clickable" ng-click="editBookmarks([bookmark])" ng-mousedown="stopProp($event)"></i>
+                  <i class="edit-btn fa fa-pencil-square-o clickable" ng-click="editBookmarks([bookmark])" ng-mousedown="stopProp($event)"></i>
                 </td>
               </tr>
             </tbody>
