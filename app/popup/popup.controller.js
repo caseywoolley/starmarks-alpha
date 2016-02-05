@@ -26,7 +26,6 @@ angular.module('app.popup')
     $scope.addBookmark = function(bookmark) {
       var tab = $scope.currentTab;
       $scope.setBadge(bookmark.stars);
-
       bookmark.tags = $scope.parseTags(bookmark.tagField);
       //update or add bookmark
       if (bookmark.id) {
@@ -56,6 +55,7 @@ angular.module('app.popup')
           $scope.$evalAsync(function() {
             $scope.setBadge(1);
             if (bookmark) {
+              bookmark.url = tab.url;
               if (!bookmark.tagField && bookmark.tags){
                 bookmark.tagField = Object.keys(bookmark.tags).join(', ');
               }

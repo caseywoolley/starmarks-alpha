@@ -4,7 +4,7 @@ angular.module('app.popup', []);
 angular.module('app', ['app.main', 'app.popup'])
   
   .config(['$compileProvider', '$locationProvider', function($compileProvider, $locationProvider) {
-    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension):/);
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|chrome):/);
     
     $locationProvider.html5Mode({
     	enabled: true,
