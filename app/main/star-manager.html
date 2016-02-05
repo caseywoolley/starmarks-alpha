@@ -40,7 +40,12 @@
           <span class="bookmark-count">{{ (searchLimit() || filteredBookmarks.length) }} Found</span>
         </div>
       </div>
+
+      <div><span class="tags" ng-repeat="tag in showTags()">
+          <a class="tag" ng-click="addSearchTag(tag)" href="">{{tag}}</a>
+      </span></div>
     </div>
+
     
     <div class="row mass-edit-bar" ng-if="(selectedBookmarks.length > 0)">
       <div class="col-md-10 col-md-offset-1">

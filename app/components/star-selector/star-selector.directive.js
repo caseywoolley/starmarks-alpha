@@ -104,12 +104,21 @@ angular.module('app')
     if (tags === undefined || tags.length === 0) {
       return items;
     }
+    var parseTags = function(tagText) {
+      if (tagText === undefined){ return {}; }
+      return tagText.split(/\s*,\s*/)
+      .reduce(function(o, v) {
+        if (v.match(/\S/g) !== null){ o[v] = v; }
+        return o;
+      }, {});
+    };
+    var tagsObj = parseTags(tags);
     return items.filter(function(item) {
       var itemTags = Object.keys(item[prop]);
       //console.log(itemTags)
       for (var i = 0; i < itemTags.length; i++) {
         var tag = itemTags[i];
-        if (tag.indexOf(tags) !== -1 || tags.indexOf(tag) !== -1) {
+        if (tag.indexOf(tags) !== -1 || tagsObj[tag] !== undefined) {
           return true;
         }
       }

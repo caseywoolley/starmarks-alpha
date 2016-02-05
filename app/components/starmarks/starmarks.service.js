@@ -75,7 +75,7 @@ angular.module('app')
       if (tagText === undefined){ return {}; }
       return tagText.split(/\s*,\s*/)
       .reduce(function(o, v) {
-        o[v] = v;
+        if (v.match(/\S/g) !== null){ o[v] = v; }
         return o;
       }, {});
     };
