@@ -4,6 +4,7 @@
 <head>
   <title>StarMarks</title>
   <link rel="stylesheet" type="text/css" href="../assets/css/font-awesome.min.css">
+  <link rel="stylesheet" href="../../bower_components/angular-bootstrap/ui-bootstrap-csp.css">
   <link rel="stylesheet" href="../../bower_components/angular-advanced-searchbox/dist/angular-advanced-searchbox.min.css">
   <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="../app.css">
@@ -13,7 +14,7 @@
 <body ng-app="app" ng-controller="starManager" multiple-selection-zone>
   <header>
     <h1 class="main-logo clickable" ng-click="goHome()">StarMarks</h1>
-    <span ng-if="(collections.length === 1)" ng-repeat="collection in collections = ( allBookmarks | filter: {url: getLocation()} : true )">
+    <span class="collection" ng-if="(collections.length === 1)" ng-repeat="collection in collections = ( allBookmarks | filter: {url: getLocation()} : true )">
       {{collection.title}}
     </span>
   </header>
@@ -31,7 +32,7 @@
         parameters-label="Advanced Search" 
         placeholder="Search..." 
         onChangeHook="onSearchChange" 
-        search-throttle-time="100">
+        search-throttle-time="1">
         </nit-advanced-searchbox>
         
         <div>
@@ -103,7 +104,10 @@
                   </div>
                 </td>
                 <td class="bm-rating" ng-mousedown="stopProp($event)">
-                  <div star-selector bookmark="bookmark" rating="bookmark.stars" id="$index" update="update">
+                  <div star-selector 
+                  bookmark="bookmark"  
+                  id="$index" 
+                  update="update">
                   </div>
                 </td>
                 <td>{{ bookmark.dateAdded | timeSince }}</td>
@@ -123,16 +127,18 @@
 
   </div>
 
-  <script src="../assets/js/jquery.min.js"></script>
+  <script src="../../bower_components/underscore/underscore-min.js"></script>
+  <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
   <script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="../assets/js/angular.min.js"></script>
-  <script src="../assets/js/ng-infinite-scroll.min.js"></script>
-  <script src="../assets/js/underscore-min.js"></script>
+  <script src="../../bower_components/angular/angular.min.js"></script>
+  <script src="../../bower_components/angular-animate/angular-animate.js"></script>
+  <script src="../../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script src="../../bower_components/angular-advanced-searchbox/dist/angular-advanced-searchbox-tpls.min.js"></script>
   <script src="../../bower_components/angular-modal-service/dst/angular-modal-service.min.js"></script>
   <script src="../../bower_components/angular-multiple-selection/multiple-selection.js"></script>
+  <script src="../../bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js"></script>
   <script src="../app.js"></script>
   <script src="../components/starmarks/starmarks.service.js"></script>
-  <script src="../../bower_components/angular-advanced-searchbox/dist/angular-advanced-searchbox-tpls.min.js"></script>
   <script src="../components/edit-bookmark/edit-bookmark.directive.js"></script>
   <script src="../components/star-selector/star-selector.directive.js"></script>
   <script src="../components/modal/edit-bookmark.controller.js"></script>

@@ -13,6 +13,20 @@ angular.module('app')
   })
   //TODO: find a home for these filters and directives
 
+  //Temporary work around for non-fading modal (removes animation) - https://github.com/angular-ui/bootstrap/issues/3633
+  .directive('removeModal', ['$document', function ($document) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                element.bind('click', function () {
+                    $document[0].body.classList.remove('modal-open');
+                    angular.element($document[0].getElementsByClassName('modal-backdrop')).remove();
+                    angular.element($document[0].getElementsByClassName('modal')).remove();
+                });
+            }
+        };
+    }])
+
   //http://stackoverflow.com/questions/20300866/angularjs-ng-click-stoppropagation 
   .directive('isolateClick', function() {
       return {

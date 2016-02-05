@@ -16,12 +16,14 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.4.8",
+    "angular": "~1.4.9",
     "bootstrap": "~3.3.6",
     "underscore": "~1.8.3",
     "angular-ui-router": "~0.2.15",
     "jquery": "~2.2.0",
-    "angular-advanced-searchbox": "~2.0.1",
-    "angular-multiple-selection": "tgelu/angular-multiple-selection#8c2aa3ea22a316362904b508ceaa4956d3d50fef"
+    "angular-advanced-searchbox": "~2.1.0",
+    "angular-multiple-selection": "tgelu/angular-multiple-selection#8c2aa3ea22a316362904b508ceaa4956d3d50fef",
+    "angular-bootstrap": "0.13.0",
+    "ngInfiniteScroll": "~1.2.2"
   }
 }
