@@ -83,6 +83,10 @@ header {
   float:right;
 }
 
+.mass-edit-bar-spacer {
+  height: 80px;
+}
+
 .edit-btn {
   display:none;
   margin-top: 0.5em;
@@ -153,6 +157,7 @@ header {
   display: inline-block;
   text-decoration: none;
 }
+
 
 .url {
   color: rgb(180, 180, 180);

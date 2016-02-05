@@ -35,15 +35,21 @@
         search-throttle-time="1">
         </nit-advanced-searchbox>
         
-        <div>
+        <div class="nav-btn-bar">
           <button class="btn btn-default" ng-click="showCollections()">Collections</button>
+          <button class="btn btn-default" type="button" data-toggle="collapse" data-target="#collapseTags" aria-expanded="false" aria-controls="collapseTags">Tags</button>
           <span class="bookmark-count">{{ (searchLimit() || filteredBookmarks.length) }} Found</span>
         </div>
-      </div>
+        
+        <div class="collapse tags-bin" id="collapseTags">
+          <div class="well">
+            <span class="tags" ng-repeat="tag in showTags()">
+                <a class="tag" ng-click="addSearchTag(tag)" href="">{{tag}}</a>
+            </span>
+          </div>
+        </div>
 
-      <div><span class="tags" ng-repeat="tag in showTags()">
-          <a class="tag" ng-click="addSearchTag(tag)" href="">{{tag}}</a>
-      </span></div>
+      </div>
     </div>
 
     
@@ -56,8 +62,7 @@
           <i class="fa fa-times clickable" ng-click="clearSelection()"></i>
         </span>
       </div>
-    </div>
-    
+    </div>   
 
     <div class="row table">
       <div class="col-md-10 col-md-offset-1">
@@ -73,8 +78,6 @@
                 <th class="clickable fixed-col-60" ng-click="sortBookmarks('visits')">Visits</th>
               </tr>
             </thead>
-            
-            <!-- {{showTags()}} -->
 
             <tbody>
               <tr multiple-selection-item class="starmark-row no-highlight" id="{{$index}}" ng-class="{'selecting': isSelecting,'selected': (isSelected && selectedBookmarks.length > 0 )}" ng-repeat="bookmark in filteredBookmarks = (
@@ -90,10 +93,7 @@
                 | rangeFilter: {lastVisit: search.lastVisit} : 'date'
                 )| limitTo: displayCount
                 track by $index">
-                <!-- <td>
-                  <div class="btn-default btn-xs edit-btn clickable" ng-click="deleteBookmark(bookmark, allBookmarks.indexOf(bookmark))">Delete</div>
-                  </div>
-                </td> -->
+
                 <td>
                   <img ng-if="!isCollection(bookmark)" class="favicon" ng-src="{{ (bookmark.favIconUrl || 'http://www.google.com/s2/favicons?domain=' + bookmark.url) }}">
                   <img ng-if="isCollection(bookmark)" class="favicon" src="http://www.iconj.com/ico/t/1/t1ggonzzko.ico">
@@ -127,6 +127,7 @@
             </tbody>
           </table>
           <img class="loader text-center" src="../assets/img/loading.gif" ng-if="loading">
+          <div class="mass-edit-bar-spacer"></div> 
         </div>
       </div>
 

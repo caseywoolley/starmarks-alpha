@@ -214,6 +214,7 @@ angular.module('app.main')
 
   $scope.addSearchTag = function(tag){
     $scope.search.tags = tag;
+    $scope.setUrl($scope.search);
   };
 
   $scope.getMax = function(field){
