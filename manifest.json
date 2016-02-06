@@ -1,7 +1,8 @@
 {
   "name": "Starmarks Bookmark Manager",
+  "short_name": "Starmarks",
   "version": "0.1.1",
-  "description": "Never lose a bookmark again. Powerfully filter and sort by tags, ratings, visit count, date added, and last visit. Build complex search filters in the Starbar and save them as smart collections for later!",
+  "description": "Powerfully filter & sort by tags, ratings, visit count, date added, and last visit. And save smart collections for later!",
   "permissions": [
     "bookmarks", "tabs", "storage", "background"
   ],
