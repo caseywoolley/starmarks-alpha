@@ -1,14 +1,15 @@
 {
   "name": "Starmarks Bookmark Manager",
   "short_name": "Starmarks",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Powerfully filter & sort by tags, ratings, visit count, date added, and last visit. And save smart collections for later!",
   "permissions": [
     "bookmarks", "tabs", "storage", "background"
   ],
-  "background": {
-    "scripts": ["app/assets/js/angular.min.js",
-                "app/app.js"]
+  "icons": { 
+    "16": "app/assets/img/icon.png",
+    "48": "app/assets/img/star-icon48.png",
+    "128": "app/assets/img/star-icon128.png" 
   },
   "content_scripts": [
     {
@@ -21,7 +22,6 @@
       "default_title": "starmarks",
       "default_icon": "app/assets/img/icon.png",
       "default_popup": "app/popup/popup.html"
-
   },
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'"
